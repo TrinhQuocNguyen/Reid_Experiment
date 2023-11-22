@@ -115,7 +115,7 @@ if __name__ == '__main__':
     parser.add_argument('--features', type=int, default=0)
     parser.add_argument('--dropout', type=float, default=0)
     parser.add_argument('--split-parts', type=int, default=2)       # splitted parts
-    parser.add_argument('--num-classes', type=int, default=900)       # cluster classes
+    parser.add_argument('--num-classes', type=int, default=700)       # cluster classes
     # testing configs
     parser.add_argument('--resume', type=str, metavar='PATH',\
                          default='logs_m2d_clusters_900/model_best.pth.tar')

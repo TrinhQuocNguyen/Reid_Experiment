@@ -104,6 +104,7 @@ def main_worker(args):
     print("==========\nArgs:{}\n==========".format(args))
 
     # Create data loaders
+    print("Creating the data loaders....")
     iters = args.iters if (args.iters>0) else None
     dataset_source, num_classes, train_loader_source, test_loader_source = \
         get_data(args.dataset_source, args.data_dir, args.height,
@@ -114,6 +115,7 @@ def main_worker(args):
                  args.width, args.batch_size, args.workers, 0, iters)
 
     # Create model
+    print("Creating the model....")
     model = models.create(args.arch, num_features=args.features, dropout=args.dropout, num_classes=num_classes).cuda()
     model = nn.DataParallel(model)
     # print(model)
