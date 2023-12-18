@@ -1,7 +1,8 @@
 from __future__ import absolute_import
 
 from .resnet import *
-from .resnet_source import *
+# from .resnet_source import *
+from .resnet152_source import *
 from .resnet_ibn import *
 from .resnext import *
 from .densenet import *
@@ -13,6 +14,7 @@ __factory = {
     'resnet34': resnet34,
     'resnet50': resnet50,
     'resnet50_source':resnet50_source,
+    'resnet152_source':resnet152_source,
     'resnet101': resnet101,
     'resnet152': resnet152,
     'resnet_ibn50a': resnet_ibn50a,
