@@ -8,7 +8,7 @@
             "name": "Python: Target Train on Market",
             "type": "python",
             // change the directory to your env variale
-            "pythonPath": "/home/dl-box/anaconda3/envs/yolov7_dsort/bin/python",
+            "python": "/home/dl-box/anaconda3/envs/yolov7_dsort/bin/python",
             "request": "launch",
             "program": "${workspaceFolder}/target_train.py",
             "console": "integratedTerminal",
