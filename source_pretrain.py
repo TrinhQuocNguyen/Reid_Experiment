@@ -4,7 +4,7 @@ import os.path as osp
 import random
 import numpy as np
 import os
-os.environ['CUDA_VISIBLE_DEVICE']='0,1'
+# os.environ['CUDA_VISIBLE_DEVICE']='0,1'
 
 import sys
 sys.path.append('..')
@@ -48,6 +48,7 @@ def get_data(name, data_dir, height, width, batch_size, workers, num_instances, 
              T.RandomHorizontalFlip(p=0.5),
              T.Pad(10, padding_mode='edge'),
              T.RandomCrop((height, width)),
+             T.RandomGrayscalePatchReplace(0.4),
              T.ToTensor(),
              normalizer
          ])
@@ -213,7 +214,7 @@ if __name__ == '__main__':
     parser.add_argument('--eval-step', type=int, default=5)
     parser.add_argument('--rerank', action='store_true',
                         help="evaluation only")
-    parser.add_argument('--epochs', type=int, default=80)
+    parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--iters', type=int, default=200)
     parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('--print-freq', type=int, default=50)

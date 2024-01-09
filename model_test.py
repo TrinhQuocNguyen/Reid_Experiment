@@ -1,6 +1,6 @@
 from __future__ import print_function, absolute_import
 import os
-os.environ['CUDA_VISIBLE_DEVICES']='0,1'
+# os.environ['CUDA_VISIBLE_DEVICES']='0,1'
 
 import warnings
 warnings.filterwarnings('ignore')
