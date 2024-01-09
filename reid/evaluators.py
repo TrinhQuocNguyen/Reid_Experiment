@@ -10,6 +10,7 @@ from .utils.meters import AverageMeter
 from .utils.rerank import re_ranking
 
 def fliplr(img):
+    '''flip horizontal'''
     inv_idx = torch.arange(img.size(3)-1,-1,-1).long()  # N x C x H x W
     img_flip = img.index_select(3,inv_idx)
     return img_flip

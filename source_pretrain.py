@@ -46,7 +46,7 @@ def get_data(name, data_dir, height, width, batch_size, workers, num_instances, 
     train_transformer = T.Compose([
              T.Resize((height, width), interpolation=3),
              T.RandomHorizontalFlip(p=0.5),
-             T.Pad(10),
+             T.Pad(10, padding_mode='edge'),
              T.RandomCrop((height, width)),
              T.RandomGrayscalePatchReplace(0.4),
              T.ToTensor(),
