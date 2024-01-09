@@ -8,7 +8,7 @@ import torch
 
 
 __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50_source', 'resnet101_source',
-           'resnet152']
+           'resnet152_source']
 
 
 class ResNet(nn.Module):
@@ -146,5 +146,5 @@ def resnet101_source(**kwargs):
     return ResNet(101, **kwargs)
 
 
-def resnet152(**kwargs):
+def resnet152_source(**kwargs):
     return ResNet(152, **kwargs)
