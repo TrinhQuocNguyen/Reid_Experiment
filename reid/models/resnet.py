@@ -286,6 +286,8 @@ class Encoder(nn.Module):
     def forward(self,input):
         x1, prob, channel_embed_upper_1, channel_embed_low_1,  x = self.model(input) 
         x1_ema, prob_ema,  channel_embed_upper_1_ema, channel_embed_low_1_ema, x_ema = self.model_ema(input)
+        # Teacher model will encode the global features -> only Teacher model will be used for inference
+        # Student model will encode the local features (upper and lower)
         outputs = self.fuse_net(x_ema, channel_embed_upper_1, channel_embed_low_1)
 
         if self.training is False:

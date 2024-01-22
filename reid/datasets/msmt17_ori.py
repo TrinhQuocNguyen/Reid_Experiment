@@ -27,23 +27,23 @@ def _pluck_msmt(list_file, subdir, pattern=re.compile(r'([-\d]+)_([-\d]+)_([-\d]
 
 class Dataset_MSMT(object):
     def __init__(self, root):
-        self.root = "/home/ccvn/Workspace/trinh/data/reid/"
+        self.root = root
         self.train, self.val, self.trainval = [], [], []
         self.query, self.gallery = [], []
         self.num_train_ids, self.num_val_ids, self.num_trainval_ids = 0, 0, 0
 
     @property
     def images_dir(self):
-        return osp.join(self.root, 'MSMT17_V1')
+        return osp.join(self.root)
 
     def load(self, verbose=True):
-        exdir = osp.join(self.root, 'MSMT17_V1')
-        self.train, train_pids = _pluck_msmt(osp.join(exdir, 'list_train.txt'), 'train')
-        self.val, val_pids = _pluck_msmt(osp.join(exdir, 'list_val.txt'), 'train')
-        self.train = self.train + self.val
-        self.query, query_pids = _pluck_msmt(osp.join(exdir, 'list_query.txt'), 'test')
-        self.gallery, gallery_pids = _pluck_msmt(osp.join(exdir, 'list_gallery.txt'), 'test')
-        self.num_train_pids = len(list(set(train_pids).union(set(val_pids))))
+        exdir = osp.join(self.root)
+        self.train, train_pids = _pluck_msmt(osp.join(exdir, 'list_train.txt'), 'bounding_box_train')
+        # self.val, val_pids = _pluck_msmt(osp.join(exdir, 'list_val.txt'), 'train')
+        self.train = self.train #+ self.val
+        self.query, query_pids = _pluck_msmt(osp.join(exdir, 'list_query.txt'), 'query')
+        self.gallery, gallery_pids = _pluck_msmt(osp.join(exdir, 'list_gallery.txt'), 'bounding_box_test')
+        self.num_train_pids = len(list(set(train_pids)))  # .union(set(val_pids))
 
         if verbose:
             print(self.__class__.__name__, "dataset loaded")
@@ -58,7 +58,7 @@ class Dataset_MSMT(object):
 
 class MSMT17(Dataset_MSMT):
 
-    def __init__(self, root, split_id=0, download=True):
+    def __init__(self, root, split_id=0, download=False):
         super(MSMT17, self).__init__(root)
 
         if download:
