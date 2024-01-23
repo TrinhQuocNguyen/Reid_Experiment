@@ -15,6 +15,7 @@ __factory = {
     'resnet50': resnet50,
     'resnet50_source':resnet50_source,
     'resnet152_source':resnet152_source,
+    'resnet101_source':resnet101_source,
     'resnet101': resnet101,
     'resnet152': resnet152,
     'resnet_ibn50a': resnet_ibn50a,
