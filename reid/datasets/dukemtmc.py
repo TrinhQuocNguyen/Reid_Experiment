@@ -29,7 +29,7 @@ class DukeMTMC(BaseImageDataset):
         super(DukeMTMC, self).__init__()
         self.dataset_dir = osp.join(root, self.dataset_dir)
         self.dataset_url = 'http://vision.cs.duke.edu/DukeMTMC/data/misc/DukeMTMC-reID.zip'
-        self.train_dir = osp.join(self.dataset_dir, 'bounding_box_train')
+        self.train_dir = osp.join(self.dataset_dir, 'bounding_box_train_merge')
         self.query_dir = osp.join(self.dataset_dir, 'query')
         self.gallery_dir = osp.join(self.dataset_dir, 'bounding_box_test')
 

@@ -9,13 +9,31 @@ from .feature_extraction import extract_cnn_feature
 from .utils.meters import AverageMeter
 from .utils.rerank import re_ranking
 
+import numpy as np
+import matplotlib.pyplot as plt
+from torchvision.utils import save_image
+from PIL import Image
+
+
 def fliplr(img):
     '''flip horizontal'''
     inv_idx = torch.arange(img.size(3)-1,-1,-1).long()  # N x C x H x W
     img_flip = img.index_select(3,inv_idx)
     return img_flip
 
+def tensor_to_image(tensor=[], img_name="abc_tmp.png"):
+    tensor = tensor*255
+    tensor = np.array(tensor, dtype=np.uint8)
+    if np.ndim(tensor)>3:
+        assert tensor.shape[0] == 1
+        tensor = tensor[0]
+    image = Image.fromarray(tensor)
+    image.save(img_name)
+    
+    return Image.fromarray(tensor)
+
 def extract_features(model, data_loader, print_freq=50, metric=None, source=False):
+    
     model.eval()
     batch_time = AverageMeter()
     data_time = AverageMeter()
@@ -31,8 +49,9 @@ def extract_features(model, data_loader, print_freq=50, metric=None, source=Fals
                 outputs_1 = extract_cnn_feature_source(model, imgs)
                 outputs_2 = extract_cnn_feature_source(model, fliplr(imgs))    
             else:
-                outputs_1 = extract_cnn_feature(model, imgs)
-                outputs_2 = extract_cnn_feature(model, fliplr(imgs))   
+                outputs_1 = extract_cnn_feature(model, imgs, mode=1)
+                outputs_2 = extract_cnn_feature(model, fliplr(imgs),mode=2)   
+                
             outputs = outputs_1 + outputs_2
             fnorm = torch.norm(outputs, p=2, dim=1, keepdim=True)
             outputs = outputs.div(fnorm.expand_as(outputs))
@@ -148,6 +167,19 @@ class Evaluator(object):
         super(Evaluator, self).__init__()
         self.model = model
 
+    def get_model(self):
+        return self.model
+
+    def save_act_map(self, data_loader, query, gallery, metric=None, cmc_flag=False, rerank=False, pre_features=None, source =False):
+        if (pre_features is None):
+            features, _ = extract_features(self.model, data_loader, source=source)
+        else:
+            features = pre_features
+        
+        return features
+    
+    
+    
     def evaluate(self, data_loader, query, gallery, metric=None, cmc_flag=False, rerank=False, pre_features=None, source =False):
         if (pre_features is None):
             features, _ = extract_features(self.model, data_loader, source=source)

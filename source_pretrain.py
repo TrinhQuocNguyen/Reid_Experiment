@@ -200,7 +200,7 @@ if __name__ == '__main__':
     parser.add_argument('--features', type=int, default=0)
     parser.add_argument('--dropout', type=float, default=0)
     # optimizer
-    parser.add_argument('--lr', type=float, default=0.00035,
+    parser.add_argument('--lr', type=float, default=0.00025,
                         help="learning rate of new parameters, for pretrained ")
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--weight-decay', type=float, default=5e-4)
@@ -213,7 +213,7 @@ if __name__ == '__main__':
     parser.add_argument('--eval-step', type=int, default=5)
     parser.add_argument('--rerank', action='store_true',
                         help="evaluation only")
-    parser.add_argument('--epochs', type=int, default=80)
+    parser.add_argument('--epochs', type=int, default=200)
     parser.add_argument('--iters', type=int, default=200)
     parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('--print-freq', type=int, default=50)

@@ -8,4 +8,4 @@
 
 ## step 3 Evaluate in the target domain
 # Market to Duke
-python model_test.py -dt duke --data-dir /mnt/AIProjects/trinh/DATA/reid --resume logs/market2duke_merge/target_fine_tuning/model_best.pth.tar --num-classes 900
+python model_test_visualize_heatmap.py -dt duke --data-dir /mnt/AIProjects/trinh/DATA/reid --resume logs/market2duke_merge/target_fine_tuning/model_best.pth.tar --num-classes 900

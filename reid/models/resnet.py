@@ -177,9 +177,11 @@ class ResNet(nn.Module):
             self.reset_params()
         
 
-    def forward(self, x):
+    def forward(self, x, return_featuremaps=False):
 
         x = self.base(x)  # [bs, 2048, 16, 8]
+        if return_featuremaps ==True:
+            return x
 
         if self.num_split > 1:
             h = x.size(2)
@@ -283,7 +285,22 @@ class Encoder(nn.Module):
         self.model_ema = model_ema
         self.fuse_net = Fuse().cuda()
 
-    def forward(self,input):
+
+    
+    def forward(self,input, return_featuremaps=False):
+        
+        if return_featuremaps==True:
+            x = self.model(input,return_featuremaps) 
+            x_ema = self.model_ema(input,return_featuremaps)
+            # actmap = self.fuse_net(x_ema, channel_embed_upper_1, channel_embed_low_1)
+            
+            # x2_ema = torch.cat(x_ema, dim=1)
+            # x2_ema = F.normalize(x2_ema)
+            
+            # x2 = torch.cat(x, dim=1)
+            # x2 = F.normalize(x2)
+            return x_ema, x
+        
         x1, prob, channel_embed_upper_1, channel_embed_low_1,  x = self.model(input) 
         x1_ema, prob_ema,  channel_embed_upper_1_ema, channel_embed_low_1_ema, x_ema = self.model_ema(input)
         outputs = self.fuse_net(x_ema, channel_embed_upper_1, channel_embed_low_1)

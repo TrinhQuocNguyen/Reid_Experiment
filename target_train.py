@@ -255,7 +255,7 @@ if __name__ == '__main__':
                              "each identity has num_instances instances, "
                              "default: 0 (NOT USE)")
     # model
-    parser.add_argument('-a', '--arch', type=str, default='resnet50')
+    parser.add_argument('-a', '--arch', type=str, default='resnet152')
     parser.add_argument('--features', type=int, default=0)
     parser.add_argument('--dropout', type=float, default=0)
     parser.add_argument('--split-parts', type=int, default=2)       # splitted parts
@@ -266,7 +266,7 @@ if __name__ == '__main__':
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--alpha', type=float, default=0.999)        # temporal ensemble momentum
     parser.add_argument('--weight-decay', type=float, default=5e-4)
-    parser.add_argument('--epochs', type=int, default=80) 
+    parser.add_argument('--epochs', type=int, default=200) 
     parser.add_argument('--iters', type=int, default=400)
     # training configs
     parser.add_argument('--seed', type=int, default=1)
