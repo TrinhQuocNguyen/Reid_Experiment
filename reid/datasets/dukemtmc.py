@@ -23,7 +23,7 @@ class DukeMTMC(BaseImageDataset):
     # images:16522 (train) + 2228 (query) + 17661 (gallery)
     # cameras: 8
     """
-    dataset_dir = '/data/reid/DukeMTMC-reID'
+    dataset_dir = '/home/ccvn/Workspace/trinh/data/reid/DukeMTMC-reID'
 
     def __init__(self, root, verbose=True, **kwargs):
         super(DukeMTMC, self).__init__()

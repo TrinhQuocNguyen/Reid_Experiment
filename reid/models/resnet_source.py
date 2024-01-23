@@ -7,7 +7,7 @@ import torchvision
 import torch
 
 
-__all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50_source', 'resnet101',
+__all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50_source', 'resnet101_source',
            'resnet152']
 
 
@@ -142,7 +142,7 @@ def resnet50_source(**kwargs):
     return ResNet(50, **kwargs)
 
 
-def resnet101(**kwargs):
+def resnet101_source(**kwargs):
     return ResNet(101, **kwargs)
 
 
