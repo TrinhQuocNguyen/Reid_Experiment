@@ -97,8 +97,6 @@ def main_worker(args):
     print("=> Checkpoint of epoch {}  best mAP {:.1%}".format(start_epoch, best_mAP))
     
     
-    print(encoder)
-
     # Evaluator
     print("Test on the target domain of {}:".format(args.dataset_target))
     evaluator_ = Evaluator(encoder)

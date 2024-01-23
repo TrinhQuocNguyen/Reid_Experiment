@@ -10,16 +10,7 @@ from PIL import Image
 from torch.nn import functional as F
 import cv2
 
-def tensor_to_image(tensor=[], img_name="abc_tmp.png"):
-    tensor = tensor*255
-    tensor = np.array(tensor, dtype=np.uint8)
-    if np.ndim(tensor)>3:
-        assert tensor.shape[0] == 1
-        tensor = tensor[0]
-    image = Image.fromarray(tensor)
-    image.save(img_name)
-    
-    return Image.fromarray(tensor)
+
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD = [0.229, 0.224, 0.225]
 GRID_SPACING = 10
