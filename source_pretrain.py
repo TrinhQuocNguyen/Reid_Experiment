@@ -4,7 +4,11 @@ import os.path as osp
 import random
 import numpy as np
 import os
-os.environ['CUDA_VISIBLE_DEVICE']='0,1'
+# os.environ['CUDA_VISIBLE_DEVICE']='1'
+
+# os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"  # specify which GPU(s) to be used
+
 
 import sys
 sys.path.append('..')
@@ -114,10 +118,18 @@ def main_worker(args):
         get_data(args.dataset_target, args.data_dir, args.height,
                  args.width, args.batch_size, args.workers, 0, iters)
 
+
+
     # Create model
     print("Creating the model....")
-    model = models.create(args.arch, num_features=args.features, dropout=args.dropout, num_classes=num_classes).cuda()
+    print("avaiable: ", torch.cuda.is_available())
+    print("count: ",torch.cuda.device_count())
+    print("current device: ",torch.cuda.current_device())
+    # device = torch.device("cuda")
+    model = models.create(args.arch, num_features=args.features, dropout=args.dropout, num_classes=num_classes)
+    model.cuda()
     model = nn.DataParallel(model)
+    
     # print(model)
 
     # Load from checkpoint

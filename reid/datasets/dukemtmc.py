@@ -23,13 +23,13 @@ class DukeMTMC(BaseImageDataset):
     # images:16522 (train) + 2228 (query) + 17661 (gallery)
     # cameras: 8
     """
-    dataset_dir = '/mnt/AIProjects/trinh/DATA/reid/DukeMTMC-reID'
+    dataset_dir = '/data/reid/DukeMTMC-reID'
 
     def __init__(self, root, verbose=True, **kwargs):
         super(DukeMTMC, self).__init__()
         self.dataset_dir = osp.join(root, self.dataset_dir)
         self.dataset_url = 'http://vision.cs.duke.edu/DukeMTMC/data/misc/DukeMTMC-reID.zip'
-        self.train_dir = osp.join(self.dataset_dir, 'bounding_box_train_merge')
+        self.train_dir = osp.join(self.dataset_dir, 'bounding_box_train')
         self.query_dir = osp.join(self.dataset_dir, 'query')
         self.gallery_dir = osp.join(self.dataset_dir, 'bounding_box_test')
 

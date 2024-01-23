@@ -1,0 +1,26 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [        
+        {
+            "name": "Source Train",
+            "type": "python",
+            "justMyCode": false,
+
+            // change the directory to your env variale
+            "python": "/home/ccvn/anaconda3/envs/trinh_python38/bin/python",
+            "request": "launch",
+            "program": "${workspaceFolder}/source_pretrain.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--dataset-source", "duke",
+                "--dataset-target", "market",
+                "--data-dir", "/data/reid/",
+                "--logs-dir", "logs/duke2market/source_pretraining",
+                "--batch-size", "64",
+           ],
+        }
+    ]
+}
