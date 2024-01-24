@@ -20,14 +20,14 @@ class Market1501(BaseImageDataset):
     # identities: 1501 (+1 for background)
     # images: 12936 (train) + 3368 (query) + 15913 (gallery)
     """
-    dataset_dir = '/home/ccvn/Workspace/trinh/data/reid/Market1501'
+    dataset_dir = '/mnt/AIProjects/trinh/DATA/reid/Market1501'
 
     def __init__(self, root, verbose=True, **kwargs):
         super(Market1501, self).__init__()
         self.dataset_dir = osp.join(root, self.dataset_dir)
-        self.train_dir = osp.join(self.dataset_dir, 'bounding_box_train')
-        self.query_dir = osp.join(self.dataset_dir, 'query')
-        self.gallery_dir = osp.join(self.dataset_dir, 'bounding_box_test')
+        self.train_dir = osp.join(self.dataset_dir, 'bounding_box_train_mini')
+        self.query_dir = osp.join(self.dataset_dir, 'query_mini')
+        self.gallery_dir = osp.join(self.dataset_dir, 'bounding_box_test_mini')
 
         self._check_before_run()
 
