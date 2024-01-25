@@ -149,6 +149,7 @@ def main_worker(args):
 
     # Trainer
     trainer = PreTrainer(model, num_classes, margin=args.margin)
+    print(model)
 
     # Start training
     for epoch in range(start_epoch, args.epochs):

@@ -36,9 +36,13 @@ class ChannelAttention(nn.Module):
         self.maxpool=nn.AdaptiveMaxPool2d(1)
         self.avgpool=nn.AdaptiveAvgPool2d(1)
         self.se=nn.Sequential(
-            nn.Conv2d(channel,channel//reduction,1,bias=False), 
+            nn.Conv2d(channel,channel//reduction,1,bias=True), 
             nn.ReLU(),
-            nn.Conv2d(channel//reduction,channel,1,bias=False)
+            nn.Conv2d(channel//reduction,channel//(reduction*reduction),1,bias=True),
+            nn.ReLU(),
+            nn.Conv2d(channel//(reduction*reduction),channel//reduction,1,bias=True),
+            nn.ReLU(),
+            nn.Conv2d(channel//reduction,channel,1,bias=True)
         )
         self.sigmoid=nn.Sigmoid()  
     
@@ -50,6 +54,20 @@ class ChannelAttention(nn.Module):
         output=self.sigmoid(max_out+avg_out) 
         return output  
 
+class SpatialAttention(nn.Module):
+    def __init__(self, kernel_size=5):
+        super().__init__()
+
+        self.conv1 = nn.Conv2d(2, 1, kernel_size, padding=kernel_size//2, bias=False)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        avg_out = torch.mean(x, dim=1, keepdim=True)
+        max_out, _ = torch.max(x, dim=1, keepdim=True)
+        x = torch.cat([avg_out, max_out], dim=1)
+        x = self.conv1(x)
+        return self.sigmoid(x)  
+    
 class Fuse(nn.Module):
     def __init__(self):
         super(Fuse, self).__init__()
@@ -119,8 +137,11 @@ class ResNet(nn.Module):
             resnet.layer1, resnet.layer2, resnet.layer3, resnet.layer4)
         self.gap = nn.AdaptiveAvgPool2d(1)
 
-        self.ca_upper = ChannelAttention(2048, reduction=4)  
+        self.ca_upper = ChannelAttention(2048, reduction=4)
+        self.sa_upper = SpatialAttention()  
         self.ca_low = ChannelAttention(2048, reduction=4)  
+        self.sa_low = SpatialAttention()  
+        
 
         if not self.cut_at_pooling:
             self.num_features = num_features
@@ -205,6 +226,8 @@ class ResNet(nn.Module):
                       
             # residual structure
             channel_embed_upper_1 = upper_embed_upper_1 * channel_embed_upper  
+            # add spacial attentions
+            # channel_embed_upper_1 = upper_embed_upper_1 * self.sa_upper(upper_embed_upper_1)
             # upper_embed_upper = upper_embed_upper_1.view(upper_embed_upper_1.size(0), -1)  
             upper_embed_upper = upper_embed_upper.view(upper_embed_upper.size(0), -1)  ## update: 4096
             upper_embed_upper = self.adativeFC_upper(upper_embed_upper) ##  [bs, 4096]-->[bs, 2048]
@@ -218,6 +241,8 @@ class ResNet(nn.Module):
 
             # residual structure
             channel_embed_low_1 = low_embed_low_1 * channel_embed_low
+            # add spacial attentions
+            # channel_embed_low_1 = channel_embed_low_1 * self.sa_low(channel_embed_low_1)
             # low_embed_low = low_embed_low_1.view(low_embed_low_1.size(0), -1)
             low_embed_low = low_embed_low.view(low_embed_low.size(0), -1)
             low_embed_low = self.adativeFC_low(low_embed_low)

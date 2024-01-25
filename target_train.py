@@ -277,7 +277,7 @@ if __name__ == '__main__':
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--alpha', type=float, default=0.999)        # temporal ensemble momentum
     parser.add_argument('--weight-decay', type=float, default=5e-4)
-    parser.add_argument('--epochs', type=int, default=100) 
+    parser.add_argument('--epochs', type=int, default=80) 
     parser.add_argument('--iters', type=int, default=400)
     # training configs
     parser.add_argument('--seed', type=int, default=1)
