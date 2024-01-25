@@ -30,8 +30,13 @@ def weights_init_classifier(m):
             nn.init.constant_(m.bias, 0.0)
 
 
-class ChannelAttention(nn.Module):
-    def __init__(self,channel,reduction=8):
+class ECAB(nn.Module):
+    """Enhanced Channel Attention Block
+
+    Args:
+        nn (Torch Module - Network): Input Module
+    """  
+    def __init__(self,channel,reduction=4):
         super().__init__()
         self.maxpool=nn.AdaptiveMaxPool2d(1)
         self.avgpool=nn.AdaptiveAvgPool2d(1)
@@ -55,6 +60,11 @@ class ChannelAttention(nn.Module):
         return output  
 
 class SpatialAttention(nn.Module):
+    """Spatial Attention from CBAM
+
+    Args:
+        nn (Torch Module - Network): Input Module
+    """    
     def __init__(self, kernel_size=5):
         super().__init__()
 
@@ -137,9 +147,9 @@ class ResNet(nn.Module):
             resnet.layer1, resnet.layer2, resnet.layer3, resnet.layer4)
         self.gap = nn.AdaptiveAvgPool2d(1)
 
-        self.ca_upper = ChannelAttention(2048, reduction=4)
+        self.ca_upper = ECAB(2048, reduction=4)
         self.sa_upper = SpatialAttention()  
-        self.ca_low = ChannelAttention(2048, reduction=4)  
+        self.ca_low = ECAB(2048, reduction=4)  
         self.sa_low = SpatialAttention()  
         
 
