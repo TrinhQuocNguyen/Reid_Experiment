@@ -15,6 +15,19 @@ def fliplr(img):
     img_flip = img.index_select(3,inv_idx)
     return img_flip
 
+def bidirectional_mean_feature_normalization (outputs_1, outputs_2):
+    '''
+    BiDirectional Mean Feature Normalization: BMFN
+    Indicates the bidirectional nature of the method, involving both original and horizontally flipped vectors.
+    It can increase the discriminability of the model at the feature level to a certain extent.
+    '''
+    # mean https://github.com/nixingyang/FlipReID
+    means = (outputs_1 + outputs_2)/2    
+    fnorm = torch.norm(means, p=2, dim=1, keepdim=True)
+    outputs = means.div(fnorm.expand_as(means))
+    
+    return outputs
+
 def extract_features(model, data_loader, print_freq=50, metric=None, source=False):
     model.eval()
     batch_time = AverageMeter()
@@ -33,9 +46,10 @@ def extract_features(model, data_loader, print_freq=50, metric=None, source=Fals
             else:
                 outputs_1 = extract_cnn_feature(model, imgs)
                 outputs_2 = extract_cnn_feature(model, fliplr(imgs))   
-            outputs = outputs_1 + outputs_2
-            fnorm = torch.norm(outputs, p=2, dim=1, keepdim=True)
-            outputs = outputs.div(fnorm.expand_as(outputs))
+            # outputs = outputs_1 + outputs_2
+            # fnorm = torch.norm(outputs, p=2, dim=1, keepdim=True)
+            # outputs = outputs.div(fnorm.expand_as(outputs))
+            outputs = bidirectional_mean_feature_normalization(outputs_1, outputs_2)
             
             for fname, output, pid in zip(fnames, outputs, pids):
                 features[fname] = output
@@ -70,10 +84,12 @@ def extract_features_new(model, data_loader):
         outputs = extract_cnn_feature_new(model, imgs)
         outputs_ = extract_cnn_feature_new(model,  fliplr(imgs))
         for i in range(len(outputs)):
-            out = outputs[i] + outputs_[i]
-            out_norm = torch.norm(out, p=2, dim=1, keepdim=True) 
-            out = out.div(out_norm.expand_as(out))
-            outputs[i] = out
+            # out = outputs[i] + outputs_[i]
+            # out_norm = torch.norm(out, p=2, dim=1, keepdim=True) 
+            # out = out.div(out_norm.expand_as(out))
+            # outputs[i] = out
+            outputs[i] = bidirectional_mean_feature_normalization(outputs[i], outputs_[i])
+            
         for index, (fname, pid, cam) in enumerate(zip(fnames, pids, cams)):
             features[fname] = [x[index] for x in outputs]             
             labels[fname] = pid
