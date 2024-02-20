@@ -16,7 +16,6 @@ def fliplr(img):
     img_flip = img.index_select(3,inv_idx)
     return img_flip
 
-<<<<<<< HEAD
 def extract_feature_maps(model, data_loader, source=False):
     model.eval()
     batch_time = AverageMeter()
@@ -52,7 +51,6 @@ def extract_feature_maps(model, data_loader, source=False):
                 
     return heatmap_ori, heatmap_flip, labels
 
-=======
 def bidirectional_mean_feature_normalization (outputs_1, outputs_2):
     '''
     BiDirectional Mean Feature Normalization: BMFN
@@ -65,7 +63,6 @@ def bidirectional_mean_feature_normalization (outputs_1, outputs_2):
     outputs = means.div(fnorm.expand_as(means))
     
     return outputs
->>>>>>> stable2-resnet101-good-results
 
 def extract_features(model, data_loader, print_freq=50, metric=None, source=False):
     model.eval()
