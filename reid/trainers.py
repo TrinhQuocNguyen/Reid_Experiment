@@ -9,7 +9,7 @@ from .utils.meters import AverageMeter
 use_gpu = torch.cuda.is_available()
 
 class PreTrainer(object):
-    def __init__(self, model, num_classes, margin=0.0):
+    def __init__(self, model, num_classes, margin=0.3):
         super(PreTrainer, self).__init__()
         self.model = model
         self.criterion_ce = CrossEntropyLabelSmooth(num_classes).cuda()
@@ -86,7 +86,7 @@ class PreTrainer(object):
 
 #################### 
 class SingelmeanTrainer(object):
-    def __init__(self, encoder, num_cluster=700, alpha=0.999):
+    def __init__(self, encoder, num_cluster=700, alpha=0.999, margin=0.3):
         super(SingelmeanTrainer, self).__init__()
     
         self.encoder = encoder
@@ -105,6 +105,8 @@ class SingelmeanTrainer(object):
         data_time = AverageMeter()
 
         losses_ce = [AverageMeter(),AverageMeter()]
+        losses_ce2 = [AverageMeter(),AverageMeter()]
+        losses_ce3 = [AverageMeter(),AverageMeter()]
         losses_tri = [AverageMeter(),AverageMeter()]
         losses_tri_2 = [AverageMeter(),AverageMeter()]
         losses_tri_3 = [AverageMeter(),AverageMeter()]
@@ -130,6 +132,12 @@ class SingelmeanTrainer(object):
 
             loss_ce_1 = 0
             loss_ce_1 += self.criterion_ce(prob, targets_global)
+            
+            # Local CrossEntropyLabelSmooth Loss
+            # loss_ce_2 = 0
+            # loss_ce_2 += self.criterion_ce(prob, targets_upper)
+            # loss_ce_3 = 0
+            # loss_ce_3 += self.criterion_ce(prob, targets_low)
 
             # global 
             loss_tri_1 = 0
@@ -141,7 +149,7 @@ class SingelmeanTrainer(object):
             loss_tri_3 = 0
             loss_tri_3 += self.criterion_tri(feat_list_3[2],feat_list_3[2], targets_low)
             # total loss
-            loss = loss_ce_1 + loss_tri_1 + 0.5*loss_tri_2 + 0.5*loss_tri_3
+            loss = loss_ce_1 + loss_tri_1 + 0.5*loss_tri_2 + 0.5*loss_tri_3 # + 0.01*loss_ce_2 + 0.01*loss_ce_3
 
             optimizer.zero_grad()
             loss.backward()
@@ -152,6 +160,8 @@ class SingelmeanTrainer(object):
             prec_1, = accuracy(prob.data, targets_global.data)
 
             losses_ce[0].update(loss_ce_1.item())
+            # losses_ce2[0].update(loss_ce_2.item())
+            # losses_ce3[0].update(loss_ce_3.item())
             losses_tri[0].update(loss_tri_1.item())
             losses_tri_2[0].update(loss_tri_2.item())
             losses_tri_3[0].update(loss_tri_3.item())
@@ -163,14 +173,19 @@ class SingelmeanTrainer(object):
             if (i + 1) % print_freq == 0:
                 print('Epoch: [{}][{}/{}]\n'
                       'Loss_ce {:.3f}\t'
+                    #   'Loss_ce_2 {:.3f}\t'
+                    #   'Loss_ce_3 {:.3f}\t'
                       'Loss_tri {:.3f}\t'
                       'Loss_tri_2 {:.3f}\t'
                       'Loss_tri_3 {:.3f}\t'
                       'Prec {:.2%}\t'
                       .format(epoch, i + 1, len(data_loader_target),
                               losses_ce[0].avg,
+                            #   losses_ce2[0].avg,
+                            #   losses_ce3[0].avg,
                               losses_tri[0].avg, 
-                              losses_tri_2[0].avg, losses_tri_3[0].avg, 
+                              losses_tri_2[0].avg, 
+                              losses_tri_3[0].avg, 
                               precisions[0].avg))
 
     def _update_ema_variables(self, model, ema_model, alpha, global_step):
