@@ -13,8 +13,8 @@ class PreTrainer(object):
         super(PreTrainer, self).__init__()
         self.model = model
         self.criterion_ce = CrossEntropyLabelSmooth(num_classes).cuda()
-        # self.criterion_triple = SoftTripletLoss(margin=margin).cuda()
-        self.criterion_triple = TripletLoss(margin=margin).cuda()
+        self.criterion_triple = SoftTripletLoss(margin=margin).cuda()
+        # self.criterion_triple = TripletLoss(margin=margin).cuda()
 
     def train(self, epoch, data_loader_source, data_loader_target, optimizer, train_iters=200, print_freq=1):
         self.model.train()
@@ -94,7 +94,7 @@ class SingelmeanTrainer(object):
         self.alpha = alpha
 
         self.criterion_ce = CrossEntropyLabelSmooth(num_cluster).cuda()
-        self.criterion_tri = SoftTripletLoss(margin=margin).cuda() # margin=0.0 is log-softmax; margin=None uses teacher's predictions as soft labels             
+        self.criterion_tri = SoftTripletLoss(margin=0.0).cuda() # margin=0.0 is log-softmax; margin=None uses teacher's predictions as soft labels             
                                                                 # attention: our LF2 doesn't use soft labels.
     def train(self, epoch, data_loader_target, loader_upper, loader_low,
             optimizer, print_freq=1, train_iters=200):

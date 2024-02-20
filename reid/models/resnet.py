@@ -41,25 +41,25 @@ class ECAB(nn.Module):
         self.maxpool=nn.AdaptiveMaxPool2d(1)
         self.avgpool=nn.AdaptiveAvgPool2d(1)
         self.se=nn.Sequential(
-            # nn.Conv2d(channel,channel//reduction,1,bias=False), 
-            # nn.ReLU(),
-            # nn.Conv2d(channel//reduction,channel//pow(reduction,2),1,bias=False), 
-            # nn.ReLU(),
-            # nn.Conv2d(channel//pow(reduction,2),channel//pow(reduction,3),1,bias=False), 
-            # nn.ReLU(),
-            # nn.Conv2d(channel//pow(reduction,3),channel//pow(reduction,2),1,bias=False), 
-            # nn.ReLU(),
-            # nn.Conv2d(channel//pow(reduction,2),channel//reduction,1,bias=False), 
-            # nn.ReLU(),
-            # nn.Conv2d(channel//reduction,channel,1,bias=False)
-
             nn.Conv2d(channel,channel//reduction,1,bias=False), 
             nn.ReLU(),
-            nn.Conv2d(channel//reduction,channel//(reduction*reduction),1,bias=False),
+            nn.Conv2d(channel//reduction,channel//pow(reduction,2),1,bias=False), 
             nn.ReLU(),
-            nn.Conv2d(channel//(reduction*reduction),channel//reduction,1,bias=False),
+            nn.Conv2d(channel//pow(reduction,2),channel//pow(reduction,3),1,bias=False), 
+            nn.ReLU(),
+            nn.Conv2d(channel//pow(reduction,3),channel//pow(reduction,2),1,bias=False), 
+            nn.ReLU(),
+            nn.Conv2d(channel//pow(reduction,2),channel//reduction,1,bias=False), 
             nn.ReLU(),
             nn.Conv2d(channel//reduction,channel,1,bias=False)
+
+            # nn.Conv2d(channel,channel//reduction,1,bias=False), 
+            # nn.ReLU(),
+            # nn.Conv2d(channel//reduction,channel//(reduction*reduction),1,bias=False),
+            # nn.ReLU(),
+            # nn.Conv2d(channel//(reduction*reduction),channel//reduction,1,bias=False),
+            # nn.ReLU(),
+            # nn.Conv2d(channel//reduction,channel,1,bias=False)
         )
         self.sigmoid=nn.Sigmoid()  
     
