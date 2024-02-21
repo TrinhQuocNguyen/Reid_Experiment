@@ -18,7 +18,7 @@ GRID_SPACING = 10
 def extract_cnn_feature_map(model, inputs):
     model.eval()
     inputs = to_torch(inputs).cuda()
-    x2_ema, x2 = model(inputs, True)
+    x2_ema, x2 = model(inputs, return_featuremaps=True)
     x2_ema = x2_ema.data.cpu()
     
     # use imagenet mean and std

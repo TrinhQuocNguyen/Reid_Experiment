@@ -11,7 +11,7 @@ import sys
 sys.path.insert(0, os.getcwd())
 sys.path.append('..')
 
-from sklearn.cluster import KMeans, MiniBatchKMeans, BisectingKMeans
+from sklearn.cluster import KMeans, MiniBatchKMeans #, BisectingKMeans
 from sklearn.preprocessing import normalize
 
 import warnings
