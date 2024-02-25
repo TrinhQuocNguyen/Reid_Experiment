@@ -82,7 +82,7 @@ def main_worker(args):
     cudnn.benchmark = True
 
     log_dir = osp.dirname(args.resume)
-    sys.stdout = Logger(osp.join(log_dir, 'log_test.txt'))
+    sys.stdout = Logger(osp.join(log_dir, 'log_sfm.txt'))
     print("==========\nArgs:{}\n==========".format(args))
 
     # Create data loaders
