@@ -64,6 +64,8 @@ class ECAB(nn.Module):
         self.sigmoid=nn.Sigmoid()  
     
     def forward(self, x) :
+        # NO ECAB
+        # return self.maxpool(x)
         max_result=self.maxpool(x) 
         avg_result=self.avgpool(x)
         max_out=self.se(max_result)
