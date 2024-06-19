@@ -1,0 +1,1540 @@
+==========
+Args:Namespace(arch='resnet101_source', batch_size=128, data_dir='/home/ccvn/Workspace/trinh/data/reid', dataset_source='duke', dataset_target='market', dropout=0, epochs=120, eval_step=5, evaluate=False, features=0, height=256, iters=200, logs_dir='logs/duke2market_ECAB_BFMN/source_pretraining', lr=0.00035, margin=0.0, milestones=[40, 70], momentum=0.9, num_instances=4, print_freq=50, rerank=False, resume='', seed=1, warmup_step=10, weight_decay=0.0005, width=128, workers=4)
+==========
+Creating the data loaders....
+This dataset has been downloaded.
+=> DukeMTMC-reID loaded
+Dataset statistics:
+  ----------------------------------------
+  subset   | # ids | # images | # cameras
+  ----------------------------------------
+  train    |  1812 |   273464 |         8
+  query    |   702 |     2228 |         8
+  gallery  |  1110 |    17661 |         8
+  ----------------------------------------
+=> Market1501 loaded
+Dataset statistics:
+  ----------------------------------------
+  subset   | # ids | # images | # cameras
+  ----------------------------------------
+  train    |  1500 |   155952 |         6
+  query    |   750 |     3368 |         6
+  gallery  |   751 |    15913 |         6
+  ----------------------------------------
+Creating the model....
+DataParallel(
+  (module): ResNet(
+    (base): Sequential(
+      (0): Conv2d(3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+      (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+      (3): MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+      (4): Sequential(
+        (0): Bottleneck(
+          (conv1): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (downsample): Sequential(
+            (0): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+        )
+        (1): Bottleneck(
+          (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (2): Bottleneck(
+          (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+      )
+      (5): Sequential(
+        (0): Bottleneck(
+          (conv1): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (downsample): Sequential(
+            (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(2, 2), bias=False)
+            (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+        )
+        (1): Bottleneck(
+          (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (2): Bottleneck(
+          (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (3): Bottleneck(
+          (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+      )
+      (6): Sequential(
+        (0): Bottleneck(
+          (conv1): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (downsample): Sequential(
+            (0): Conv2d(512, 1024, kernel_size=(1, 1), stride=(2, 2), bias=False)
+            (1): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+        )
+        (1): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (2): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (3): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (4): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (5): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (6): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (7): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (8): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (9): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (10): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (11): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (12): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (13): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (14): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (15): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (16): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (17): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (18): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (19): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (20): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (21): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (22): Bottleneck(
+          (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+      )
+      (7): Sequential(
+        (0): Bottleneck(
+          (conv1): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (downsample): Sequential(
+            (0): Conv2d(1024, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+        )
+        (1): Bottleneck(
+          (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+        (2): Bottleneck(
+          (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+        )
+      )
+    )
+    (gap): AdaptiveAvgPool2d(output_size=1)
+    (feat_bn): BatchNorm1d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (classifier): Linear(in_features=2048, out_features=1812, bias=False)
+  )
+)
+Epoch: [0][50/200]	Time 0.928 (1.149)	Data 0.001 (0.019)	Loss_ce 7.499 (7.503)	Loss_tr 2.890 (3.079)	Prec 0.00% (0.02%)
+Epoch: [0][100/200]	Time 0.966 (1.051)	Data 0.001 (0.019)	Loss_ce 7.496 (7.501)	Loss_tr 2.622 (2.850)	Prec 0.00% (0.05%)
+Epoch: [0][150/200]	Time 0.937 (1.016)	Data 0.001 (0.018)	Loss_ce 7.488 (7.498)	Loss_tr 2.348 (2.714)	Prec 0.78% (0.09%)
+Epoch: [0][200/200]	Time 0.948 (1.004)	Data 0.001 (0.019)	Loss_ce 7.474 (7.496)	Loss_tr 2.291 (2.614)	Prec 0.00% (0.15%)
+Epoch: [1][50/200]	Time 0.945 (0.935)	Data 0.000 (0.011)	Loss_ce 7.472 (7.472)	Loss_tr 1.869 (1.988)	Prec 0.00% (0.58%)
+Epoch: [1][100/200]	Time 0.942 (0.940)	Data 0.001 (0.015)	Loss_ce 7.373 (7.431)	Loss_tr 1.548 (1.823)	Prec 1.56% (3.15%)
+Epoch: [1][150/200]	Time 0.948 (0.939)	Data 0.001 (0.016)	Loss_ce 7.259 (7.384)	Loss_tr 1.082 (1.653)	Prec 7.81% (6.01%)
+Epoch: [1][200/200]	Time 0.938 (0.942)	Data 0.001 (0.017)	Loss_ce 7.130 (7.332)	Loss_tr 0.936 (1.494)	Prec 14.84% (8.45%)
+Epoch: [2][50/200]	Time 0.957 (0.931)	Data 0.001 (0.010)	Loss_ce 6.998 (7.006)	Loss_tr 0.831 (0.869)	Prec 2.34% (11.42%)
+Epoch: [2][100/200]	Time 1.053 (0.937)	Data 0.001 (0.014)	Loss_ce 6.619 (6.846)	Loss_tr 0.741 (0.843)	Prec 1.56% (13.66%)
+Epoch: [2][150/200]	Time 0.914 (0.943)	Data 0.001 (0.016)	Loss_ce 6.310 (6.682)	Loss_tr 0.760 (0.826)	Prec 17.19% (16.16%)
+Epoch: [2][200/200]	Time 1.062 (0.944)	Data 0.001 (0.017)	Loss_ce 5.848 (6.519)	Loss_tr 0.786 (0.813)	Prec 21.09% (18.72%)
+Epoch: [3][50/200]	Time 0.927 (0.926)	Data 0.000 (0.011)	Loss_ce 5.952 (5.743)	Loss_tr 0.782 (0.761)	Prec 12.50% (23.12%)
+Epoch: [3][100/200]	Time 0.486 (0.934)	Data 0.001 (0.015)	Loss_ce 5.343 (5.543)	Loss_tr 0.684 (0.751)	Prec 23.44% (27.89%)
+Epoch: [3][150/200]	Time 0.707 (0.918)	Data 0.001 (0.016)	Loss_ce 4.947 (5.352)	Loss_tr 0.755 (0.747)	Prec 39.06% (32.35%)
+Epoch: [3][200/200]	Time 0.735 (0.878)	Data 0.001 (0.017)	Loss_ce 4.346 (5.171)	Loss_tr 0.663 (0.739)	Prec 49.22% (36.09%)
+Epoch: [4][50/200]	Time 0.492 (0.725)	Data 0.000 (0.014)	Loss_ce 4.814 (4.324)	Loss_tr 0.741 (0.713)	Prec 25.00% (47.36%)
+Epoch: [4][100/200]	Time 0.931 (0.709)	Data 0.001 (0.016)	Loss_ce 4.113 (4.128)	Loss_tr 0.729 (0.703)	Prec 44.53% (51.96%)
+Epoch: [4][150/200]	Time 0.929 (0.789)	Data 0.000 (0.017)	Loss_ce 3.372 (3.948)	Loss_tr 0.665 (0.696)	Prec 66.41% (55.82%)
+Epoch: [4][200/200]	Time 0.948 (0.828)	Data 0.001 (0.018)	Loss_ce 3.085 (3.772)	Loss_tr 0.627 (0.686)	Prec 76.56% (59.44%)
+Extract Features: [50/156]	Time 0.539 (0.569)	Data 0.000 (0.013)	
+Extract Features: [100/156]	Time 0.560 (0.561)	Data 0.000 (0.007)	
+Extract Features: [150/156]	Time 0.512 (0.556)	Data 0.000 (0.005)	
+Mean AP: 62.5%
+CMC Scores:
+  top-1          77.8%
+  top-5          88.2%
+  top-10         90.9%
+
+ * Finished epoch   4  source mAP: 62.5%  best: 62.5% *
+
+Epoch: [5][50/200]	Time 0.924 (0.940)	Data 0.000 (0.014)	Loss_ce 3.196 (3.056)	Loss_tr 0.586 (0.650)	Prec 63.28% (69.47%)
+Epoch: [5][100/200]	Time 0.934 (0.950)	Data 0.001 (0.017)	Loss_ce 2.804 (2.926)	Loss_tr 0.612 (0.646)	Prec 75.78% (72.27%)
+Epoch: [5][150/200]	Time 0.966 (0.949)	Data 0.001 (0.018)	Loss_ce 3.045 (2.816)	Loss_tr 0.742 (0.645)	Prec 64.06% (74.24%)
+Epoch: [5][200/200]	Time 0.930 (0.948)	Data 0.001 (0.018)	Loss_ce 2.380 (2.716)	Loss_tr 0.591 (0.638)	Prec 83.59% (75.92%)
+Epoch: [6][50/200]	Time 0.928 (0.938)	Data 0.000 (0.010)	Loss_ce 2.760 (2.335)	Loss_tr 0.650 (0.608)	Prec 67.19% (80.84%)
+Epoch: [6][100/200]	Time 1.000 (0.946)	Data 0.001 (0.016)	Loss_ce 2.254 (2.254)	Loss_tr 0.623 (0.599)	Prec 85.94% (82.58%)
+Epoch: [6][150/200]	Time 0.986 (0.946)	Data 0.001 (0.017)	Loss_ce 2.216 (2.215)	Loss_tr 0.593 (0.598)	Prec 81.25% (83.22%)
+Epoch: [6][200/200]	Time 0.968 (0.949)	Data 0.001 (0.018)	Loss_ce 1.989 (2.166)	Loss_tr 0.605 (0.590)	Prec 85.16% (84.07%)
+Epoch: [7][50/200]	Time 0.929 (0.952)	Data 0.000 (0.012)	Loss_ce 1.960 (2.042)	Loss_tr 0.568 (0.589)	Prec 89.06% (85.45%)
+Epoch: [7][100/200]	Time 0.952 (0.954)	Data 0.001 (0.016)	Loss_ce 2.179 (1.999)	Loss_tr 0.618 (0.579)	Prec 81.25% (86.45%)
+Epoch: [7][150/200]	Time 0.982 (0.953)	Data 0.001 (0.017)	Loss_ce 1.837 (1.968)	Loss_tr 0.516 (0.574)	Prec 88.28% (86.91%)
+Epoch: [7][200/200]	Time 0.942 (0.954)	Data 0.001 (0.018)	Loss_ce 1.754 (1.944)	Loss_tr 0.579 (0.568)	Prec 93.75% (87.55%)
+Epoch: [8][50/200]	Time 0.914 (0.943)	Data 0.000 (0.012)	Loss_ce 1.955 (1.858)	Loss_tr 0.520 (0.537)	Prec 85.94% (88.87%)
+Epoch: [8][100/200]	Time 0.926 (0.945)	Data 0.001 (0.016)	Loss_ce 1.959 (1.852)	Loss_tr 0.566 (0.542)	Prec 89.06% (89.31%)
+Epoch: [8][150/200]	Time 0.730 (0.917)	Data 0.000 (0.017)	Loss_ce 1.968 (1.840)	Loss_tr 0.603 (0.542)	Prec 83.59% (89.36%)
+Epoch: [8][200/200]	Time 0.718 (0.876)	Data 0.001 (0.018)	Loss_ce 1.792 (1.829)	Loss_tr 0.506 (0.539)	Prec 89.84% (89.53%)
+Epoch: [9][50/200]	Time 0.484 (0.722)	Data 0.000 (0.012)	Loss_ce 1.827 (1.810)	Loss_tr 0.522 (0.527)	Prec 89.84% (90.06%)
+Epoch: [9][100/200]	Time 0.927 (0.722)	Data 0.001 (0.016)	Loss_ce 1.807 (1.790)	Loss_tr 0.567 (0.528)	Prec 89.06% (90.38%)
+Epoch: [9][150/200]	Time 0.826 (0.797)	Data 0.001 (0.017)	Loss_ce 1.656 (1.778)	Loss_tr 0.494 (0.524)	Prec 94.53% (90.69%)
+Epoch: [9][200/200]	Time 0.983 (0.836)	Data 0.000 (0.018)	Loss_ce 1.672 (1.776)	Loss_tr 0.433 (0.525)	Prec 93.75% (90.60%)
+Extract Features: [50/156]	Time 0.540 (0.550)	Data 0.000 (0.012)	
+Extract Features: [100/156]	Time 0.556 (0.543)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.550 (0.543)	Data 0.000 (0.004)	
+Mean AP: 74.8%
+CMC Scores:
+  top-1          86.0%
+  top-5          93.0%
+  top-10         94.9%
+
+ * Finished epoch   9  source mAP: 74.8%  best: 74.8% *
+
+Epoch: [10][50/200]	Time 0.955 (0.939)	Data 0.001 (0.012)	Loss_ce 1.835 (1.726)	Loss_tr 0.469 (0.509)	Prec 89.06% (91.52%)
+Epoch: [10][100/200]	Time 0.924 (0.956)	Data 0.001 (0.016)	Loss_ce 1.804 (1.736)	Loss_tr 0.506 (0.510)	Prec 87.50% (91.22%)
+Epoch: [10][150/200]	Time 1.012 (0.950)	Data 0.001 (0.017)	Loss_ce 1.692 (1.729)	Loss_tr 0.495 (0.512)	Prec 91.41% (91.48%)
+Epoch: [10][200/200]	Time 1.125 (0.951)	Data 0.001 (0.018)	Loss_ce 1.643 (1.717)	Loss_tr 0.439 (0.506)	Prec 95.31% (91.83%)
+Epoch: [11][50/200]	Time 0.908 (0.934)	Data 0.000 (0.011)	Loss_ce 1.583 (1.693)	Loss_tr 0.473 (0.498)	Prec 95.31% (92.05%)
+Epoch: [11][100/200]	Time 0.951 (0.948)	Data 0.001 (0.016)	Loss_ce 1.758 (1.690)	Loss_tr 0.463 (0.495)	Prec 88.28% (92.31%)
+Epoch: [11][150/200]	Time 0.935 (0.942)	Data 0.001 (0.017)	Loss_ce 1.782 (1.677)	Loss_tr 0.505 (0.492)	Prec 88.28% (92.59%)
+Epoch: [11][200/200]	Time 1.053 (0.945)	Data 0.001 (0.018)	Loss_ce 1.640 (1.676)	Loss_tr 0.543 (0.494)	Prec 96.09% (92.61%)
+Epoch: [12][50/200]	Time 0.939 (0.931)	Data 0.001 (0.013)	Loss_ce 1.684 (1.641)	Loss_tr 0.513 (0.477)	Prec 91.41% (93.67%)
+Epoch: [12][100/200]	Time 0.964 (0.952)	Data 0.001 (0.015)	Loss_ce 1.597 (1.629)	Loss_tr 0.412 (0.473)	Prec 92.19% (93.86%)
+Epoch: [12][150/200]	Time 0.931 (0.948)	Data 0.001 (0.017)	Loss_ce 1.853 (1.629)	Loss_tr 0.522 (0.473)	Prec 84.38% (93.78%)
+Epoch: [12][200/200]	Time 1.027 (0.947)	Data 0.001 (0.018)	Loss_ce 1.522 (1.625)	Loss_tr 0.383 (0.473)	Prec 96.88% (93.80%)
+Epoch: [13][50/200]	Time 0.943 (0.941)	Data 0.001 (0.014)	Loss_ce 1.697 (1.620)	Loss_tr 0.479 (0.470)	Prec 90.62% (93.62%)
+Epoch: [13][100/200]	Time 0.952 (0.954)	Data 0.001 (0.017)	Loss_ce 1.732 (1.610)	Loss_tr 0.522 (0.468)	Prec 92.19% (93.98%)
+Epoch: [13][150/200]	Time 0.781 (0.929)	Data 0.001 (0.018)	Loss_ce 1.830 (1.601)	Loss_tr 0.544 (0.466)	Prec 89.84% (94.25%)
+Epoch: [13][200/200]	Time 0.927 (0.888)	Data 0.001 (0.018)	Loss_ce 1.517 (1.596)	Loss_tr 0.446 (0.461)	Prec 96.88% (94.26%)
+Epoch: [14][50/200]	Time 0.522 (0.739)	Data 0.000 (0.011)	Loss_ce 1.685 (1.576)	Loss_tr 0.455 (0.447)	Prec 91.41% (94.62%)
+Epoch: [14][100/200]	Time 1.013 (0.708)	Data 0.001 (0.016)	Loss_ce 1.708 (1.575)	Loss_tr 0.482 (0.451)	Prec 89.84% (94.79%)
+Epoch: [14][150/200]	Time 0.927 (0.788)	Data 0.001 (0.017)	Loss_ce 1.512 (1.574)	Loss_tr 0.415 (0.449)	Prec 97.66% (94.71%)
+Epoch: [14][200/200]	Time 1.091 (0.830)	Data 0.001 (0.017)	Loss_ce 1.700 (1.576)	Loss_tr 0.509 (0.450)	Prec 90.62% (94.61%)
+Extract Features: [50/156]	Time 0.578 (0.557)	Data 0.000 (0.013)	
+Extract Features: [100/156]	Time 0.545 (0.545)	Data 0.000 (0.007)	
+Extract Features: [150/156]	Time 0.548 (0.546)	Data 0.000 (0.005)	
+Mean AP: 77.5%
+CMC Scores:
+  top-1          86.8%
+  top-5          94.4%
+  top-10         96.0%
+
+ * Finished epoch  14  source mAP: 77.5%  best: 77.5% *
+
+Epoch: [15][50/200]	Time 0.943 (0.961)	Data 0.000 (0.012)	Loss_ce 1.560 (1.580)	Loss_tr 0.365 (0.452)	Prec 95.31% (94.37%)
+Epoch: [15][100/200]	Time 0.939 (0.956)	Data 0.001 (0.016)	Loss_ce 1.598 (1.558)	Loss_tr 0.505 (0.439)	Prec 95.31% (94.96%)
+Epoch: [15][150/200]	Time 0.957 (0.950)	Data 0.001 (0.017)	Loss_ce 1.564 (1.553)	Loss_tr 0.435 (0.440)	Prec 96.88% (95.19%)
+Epoch: [15][200/200]	Time 0.944 (0.951)	Data 0.001 (0.018)	Loss_ce 1.565 (1.551)	Loss_tr 0.381 (0.440)	Prec 94.53% (95.24%)
+Epoch: [16][50/200]	Time 0.951 (0.960)	Data 0.000 (0.012)	Loss_ce 1.659 (1.530)	Loss_tr 0.434 (0.427)	Prec 88.28% (95.70%)
+Epoch: [16][100/200]	Time 0.916 (0.959)	Data 0.001 (0.016)	Loss_ce 1.733 (1.540)	Loss_tr 0.551 (0.442)	Prec 91.41% (95.28%)
+Epoch: [16][150/200]	Time 0.944 (0.950)	Data 0.001 (0.017)	Loss_ce 1.444 (1.532)	Loss_tr 0.383 (0.434)	Prec 97.66% (95.40%)
+Epoch: [16][200/200]	Time 0.938 (0.950)	Data 0.001 (0.017)	Loss_ce 1.541 (1.531)	Loss_tr 0.535 (0.434)	Prec 96.88% (95.43%)
+Epoch: [17][50/200]	Time 1.086 (0.960)	Data 0.001 (0.011)	Loss_ce 1.547 (1.516)	Loss_tr 0.430 (0.417)	Prec 98.44% (95.94%)
+Epoch: [17][100/200]	Time 0.931 (0.955)	Data 0.001 (0.016)	Loss_ce 1.590 (1.521)	Loss_tr 0.529 (0.427)	Prec 95.31% (95.83%)
+Epoch: [17][150/200]	Time 0.934 (0.947)	Data 0.001 (0.017)	Loss_ce 1.559 (1.519)	Loss_tr 0.451 (0.423)	Prec 93.75% (95.81%)
+Epoch: [17][200/200]	Time 0.927 (0.946)	Data 0.001 (0.018)	Loss_ce 1.545 (1.518)	Loss_tr 0.538 (0.423)	Prec 94.53% (95.83%)
+Epoch: [18][50/200]	Time 0.956 (0.958)	Data 0.000 (0.014)	Loss_ce 1.595 (1.519)	Loss_tr 0.503 (0.424)	Prec 92.19% (95.87%)
+Epoch: [18][100/200]	Time 0.936 (0.954)	Data 0.001 (0.017)	Loss_ce 1.564 (1.511)	Loss_tr 0.504 (0.422)	Prec 97.66% (95.95%)
+Epoch: [18][150/200]	Time 0.691 (0.933)	Data 0.001 (0.017)	Loss_ce 1.585 (1.512)	Loss_tr 0.465 (0.421)	Prec 96.09% (95.82%)
+Epoch: [18][200/200]	Time 0.738 (0.891)	Data 0.001 (0.018)	Loss_ce 1.585 (1.509)	Loss_tr 0.579 (0.421)	Prec 96.09% (95.93%)
+Epoch: [19][50/200]	Time 0.725 (0.756)	Data 0.000 (0.010)	Loss_ce 1.531 (1.500)	Loss_tr 0.474 (0.405)	Prec 96.88% (96.05%)
+Epoch: [19][100/200]	Time 0.938 (0.704)	Data 0.001 (0.015)	Loss_ce 1.564 (1.492)	Loss_tr 0.493 (0.402)	Prec 94.53% (96.08%)
+Epoch: [19][150/200]	Time 0.956 (0.786)	Data 0.001 (0.017)	Loss_ce 1.537 (1.495)	Loss_tr 0.355 (0.409)	Prec 94.53% (96.10%)
+Epoch: [19][200/200]	Time 0.925 (0.831)	Data 0.001 (0.018)	Loss_ce 1.479 (1.497)	Loss_tr 0.385 (0.408)	Prec 97.66% (96.02%)
+Extract Features: [50/156]	Time 0.548 (0.554)	Data 0.000 (0.012)	
+Extract Features: [100/156]	Time 0.569 (0.546)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.545 (0.547)	Data 0.000 (0.004)	
+Mean AP: 79.0%
+CMC Scores:
+  top-1          88.4%
+  top-5          93.9%
+  top-10         96.0%
+
+ * Finished epoch  19  source mAP: 79.0%  best: 79.0% *
+
+Epoch: [20][50/200]	Time 0.989 (0.961)	Data 0.000 (0.013)	Loss_ce 1.611 (1.503)	Loss_tr 0.471 (0.414)	Prec 94.53% (96.33%)
+Epoch: [20][100/200]	Time 0.949 (0.960)	Data 0.001 (0.017)	Loss_ce 1.604 (1.500)	Loss_tr 0.511 (0.415)	Prec 95.31% (96.40%)
+Epoch: [20][150/200]	Time 0.949 (0.953)	Data 0.001 (0.019)	Loss_ce 1.420 (1.501)	Loss_tr 0.311 (0.418)	Prec 99.22% (96.27%)
+Epoch: [20][200/200]	Time 0.916 (0.958)	Data 0.001 (0.019)	Loss_ce 1.516 (1.500)	Loss_tr 0.378 (0.419)	Prec 96.09% (96.25%)
+Epoch: [21][50/200]	Time 0.968 (0.955)	Data 0.000 (0.014)	Loss_ce 1.562 (1.495)	Loss_tr 0.421 (0.420)	Prec 93.75% (96.31%)
+Epoch: [21][100/200]	Time 0.951 (0.959)	Data 0.001 (0.017)	Loss_ce 1.431 (1.494)	Loss_tr 0.385 (0.424)	Prec 96.88% (96.28%)
+Epoch: [21][150/200]	Time 0.947 (0.951)	Data 0.001 (0.018)	Loss_ce 1.492 (1.487)	Loss_tr 0.317 (0.417)	Prec 96.09% (96.40%)
+Epoch: [21][200/200]	Time 0.987 (0.954)	Data 0.001 (0.018)	Loss_ce 1.513 (1.484)	Loss_tr 0.396 (0.416)	Prec 94.53% (96.42%)
+Epoch: [22][50/200]	Time 0.944 (0.942)	Data 0.000 (0.011)	Loss_ce 1.594 (1.491)	Loss_tr 0.402 (0.415)	Prec 92.97% (95.91%)
+Epoch: [22][100/200]	Time 0.945 (0.950)	Data 0.001 (0.015)	Loss_ce 1.401 (1.482)	Loss_tr 0.342 (0.415)	Prec 99.22% (96.21%)
+Epoch: [22][150/200]	Time 0.924 (0.948)	Data 0.001 (0.017)	Loss_ce 1.527 (1.480)	Loss_tr 0.458 (0.411)	Prec 97.66% (96.28%)
+Epoch: [22][200/200]	Time 0.945 (0.950)	Data 0.001 (0.017)	Loss_ce 1.528 (1.479)	Loss_tr 0.425 (0.406)	Prec 94.53% (96.34%)
+Epoch: [23][50/200]	Time 0.942 (0.941)	Data 0.000 (0.012)	Loss_ce 1.518 (1.489)	Loss_tr 0.523 (0.415)	Prec 93.75% (96.38%)
+Epoch: [23][100/200]	Time 0.924 (0.950)	Data 0.001 (0.016)	Loss_ce 1.500 (1.474)	Loss_tr 0.446 (0.409)	Prec 96.09% (96.69%)
+Epoch: [23][150/200]	Time 0.698 (0.945)	Data 0.001 (0.017)	Loss_ce 1.491 (1.475)	Loss_tr 0.339 (0.412)	Prec 95.31% (96.59%)
+Epoch: [23][200/200]	Time 0.742 (0.900)	Data 0.001 (0.018)	Loss_ce 1.463 (1.474)	Loss_tr 0.357 (0.411)	Prec 97.66% (96.61%)
+Epoch: [24][50/200]	Time 0.707 (0.757)	Data 0.000 (0.012)	Loss_ce 1.520 (1.478)	Loss_tr 0.532 (0.420)	Prec 96.09% (96.33%)
+Epoch: [24][100/200]	Time 0.968 (0.693)	Data 0.001 (0.016)	Loss_ce 1.479 (1.482)	Loss_tr 0.366 (0.419)	Prec 96.09% (96.17%)
+Epoch: [24][150/200]	Time 0.927 (0.777)	Data 0.000 (0.018)	Loss_ce 1.460 (1.472)	Loss_tr 0.402 (0.412)	Prec 96.09% (96.34%)
+Epoch: [24][200/200]	Time 0.944 (0.825)	Data 0.000 (0.018)	Loss_ce 1.553 (1.469)	Loss_tr 0.428 (0.409)	Prec 92.19% (96.45%)
+Extract Features: [50/156]	Time 0.537 (0.547)	Data 0.000 (0.012)	
+Extract Features: [100/156]	Time 0.517 (0.546)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.520 (0.546)	Data 0.000 (0.004)	
+Mean AP: 78.8%
+CMC Scores:
+  top-1          88.3%
+  top-5          94.5%
+  top-10         96.2%
+
+ * Finished epoch  24  source mAP: 78.8%  best: 79.0%
+
+Epoch: [25][50/200]	Time 0.930 (0.943)	Data 0.000 (0.013)	Loss_ce 1.480 (1.460)	Loss_tr 0.400 (0.396)	Prec 98.44% (97.23%)
+Epoch: [25][100/200]	Time 0.937 (0.945)	Data 0.001 (0.017)	Loss_ce 1.593 (1.458)	Loss_tr 0.378 (0.401)	Prec 93.75% (97.10%)
+Epoch: [25][150/200]	Time 0.489 (0.940)	Data 0.001 (0.017)	Loss_ce 1.445 (1.455)	Loss_tr 0.491 (0.402)	Prec 95.31% (97.01%)
+Epoch: [25][200/200]	Time 0.922 (0.947)	Data 0.001 (0.018)	Loss_ce 1.470 (1.455)	Loss_tr 0.434 (0.406)	Prec 96.88% (97.04%)
+Epoch: [26][50/200]	Time 0.943 (0.942)	Data 0.001 (0.010)	Loss_ce 1.490 (1.454)	Loss_tr 0.381 (0.407)	Prec 95.31% (96.75%)
+Epoch: [26][100/200]	Time 0.955 (0.945)	Data 0.001 (0.015)	Loss_ce 1.562 (1.457)	Loss_tr 0.437 (0.408)	Prec 92.97% (96.66%)
+Epoch: [26][150/200]	Time 0.500 (0.942)	Data 0.001 (0.017)	Loss_ce 1.463 (1.455)	Loss_tr 0.370 (0.406)	Prec 96.88% (96.69%)
+Epoch: [26][200/200]	Time 0.976 (0.947)	Data 0.001 (0.017)	Loss_ce 1.496 (1.457)	Loss_tr 0.450 (0.408)	Prec 96.88% (96.69%)
+Epoch: [27][50/200]	Time 0.990 (0.944)	Data 0.000 (0.013)	Loss_ce 1.512 (1.456)	Loss_tr 0.425 (0.400)	Prec 95.31% (96.88%)
+Epoch: [27][100/200]	Time 0.960 (0.950)	Data 0.001 (0.016)	Loss_ce 1.363 (1.455)	Loss_tr 0.370 (0.400)	Prec 99.22% (96.84%)
+Epoch: [27][150/200]	Time 0.512 (0.943)	Data 0.001 (0.017)	Loss_ce 1.433 (1.451)	Loss_tr 0.465 (0.400)	Prec 99.22% (96.92%)
+Epoch: [27][200/200]	Time 0.814 (0.946)	Data 0.001 (0.018)	Loss_ce 1.506 (1.452)	Loss_tr 0.480 (0.399)	Prec 96.09% (96.85%)
+Epoch: [28][50/200]	Time 0.909 (0.948)	Data 0.000 (0.012)	Loss_ce 1.463 (1.464)	Loss_tr 0.351 (0.404)	Prec 97.66% (96.59%)
+Epoch: [28][100/200]	Time 0.941 (0.944)	Data 0.001 (0.015)	Loss_ce 1.545 (1.456)	Loss_tr 0.506 (0.401)	Prec 94.53% (96.76%)
+Epoch: [28][150/200]	Time 0.531 (0.944)	Data 0.001 (0.017)	Loss_ce 1.439 (1.448)	Loss_tr 0.413 (0.398)	Prec 95.31% (96.91%)
+Epoch: [28][200/200]	Time 0.747 (0.898)	Data 0.001 (0.018)	Loss_ce 1.543 (1.443)	Loss_tr 0.458 (0.397)	Prec 92.19% (97.06%)
+Epoch: [29][50/200]	Time 0.722 (0.755)	Data 0.000 (0.012)	Loss_ce 1.476 (1.452)	Loss_tr 0.382 (0.392)	Prec 96.88% (97.14%)
+Epoch: [29][100/200]	Time 0.949 (0.684)	Data 0.001 (0.016)	Loss_ce 1.505 (1.451)	Loss_tr 0.322 (0.400)	Prec 95.31% (96.98%)
+Epoch: [29][150/200]	Time 0.491 (0.777)	Data 0.001 (0.017)	Loss_ce 1.419 (1.449)	Loss_tr 0.403 (0.398)	Prec 99.22% (96.97%)
+Epoch: [29][200/200]	Time 0.909 (0.823)	Data 0.001 (0.018)	Loss_ce 1.481 (1.447)	Loss_tr 0.402 (0.397)	Prec 96.09% (96.97%)
+Extract Features: [50/156]	Time 0.557 (0.542)	Data 0.000 (0.012)	
+Extract Features: [100/156]	Time 0.564 (0.539)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.541 (0.541)	Data 0.000 (0.004)	
+Mean AP: 78.2%
+CMC Scores:
+  top-1          87.7%
+  top-5          93.7%
+  top-10         95.5%
+
+ * Finished epoch  29  source mAP: 78.2%  best: 79.0%
+
+Epoch: [30][50/200]	Time 0.958 (0.937)	Data 0.000 (0.011)	Loss_ce 1.528 (1.446)	Loss_tr 0.473 (0.403)	Prec 94.53% (97.06%)
+Epoch: [30][100/200]	Time 0.927 (0.941)	Data 0.001 (0.016)	Loss_ce 1.425 (1.441)	Loss_tr 0.401 (0.398)	Prec 96.88% (96.99%)
+Epoch: [30][150/200]	Time 0.901 (0.942)	Data 0.002 (0.017)	Loss_ce 1.467 (1.434)	Loss_tr 0.323 (0.393)	Prec 94.53% (97.14%)
+Epoch: [30][200/200]	Time 0.969 (0.940)	Data 0.001 (0.018)	Loss_ce 1.507 (1.432)	Loss_tr 0.416 (0.392)	Prec 96.88% (97.22%)
+Epoch: [31][50/200]	Time 0.933 (0.934)	Data 0.000 (0.012)	Loss_ce 1.504 (1.431)	Loss_tr 0.335 (0.382)	Prec 94.53% (97.34%)
+Epoch: [31][100/200]	Time 0.943 (0.949)	Data 0.001 (0.016)	Loss_ce 1.405 (1.430)	Loss_tr 0.337 (0.387)	Prec 96.88% (97.16%)
+Epoch: [31][150/200]	Time 0.966 (0.949)	Data 0.001 (0.017)	Loss_ce 1.416 (1.428)	Loss_tr 0.261 (0.389)	Prec 98.44% (97.23%)
+Epoch: [31][200/200]	Time 0.922 (0.948)	Data 0.001 (0.017)	Loss_ce 1.432 (1.426)	Loss_tr 0.337 (0.389)	Prec 98.44% (97.26%)
+Epoch: [32][50/200]	Time 0.945 (0.948)	Data 0.000 (0.014)	Loss_ce 1.496 (1.448)	Loss_tr 0.409 (0.399)	Prec 96.88% (96.67%)
+Epoch: [32][100/200]	Time 0.937 (0.949)	Data 0.001 (0.016)	Loss_ce 1.428 (1.442)	Loss_tr 0.326 (0.392)	Prec 96.09% (96.81%)
+Epoch: [32][150/200]	Time 0.946 (0.949)	Data 0.001 (0.018)	Loss_ce 1.415 (1.437)	Loss_tr 0.379 (0.393)	Prec 98.44% (96.95%)
+Epoch: [32][200/200]	Time 0.968 (0.946)	Data 0.001 (0.018)	Loss_ce 1.385 (1.431)	Loss_tr 0.407 (0.391)	Prec 100.00% (97.09%)
+Epoch: [33][50/200]	Time 0.953 (0.936)	Data 0.000 (0.011)	Loss_ce 1.572 (1.417)	Loss_tr 0.526 (0.388)	Prec 92.97% (97.55%)
+Epoch: [33][100/200]	Time 0.965 (0.943)	Data 0.001 (0.015)	Loss_ce 1.367 (1.416)	Loss_tr 0.300 (0.384)	Prec 96.88% (97.45%)
+Epoch: [33][150/200]	Time 0.938 (0.946)	Data 0.001 (0.017)	Loss_ce 1.427 (1.422)	Loss_tr 0.318 (0.388)	Prec 96.88% (97.38%)
+Epoch: [33][200/200]	Time 0.743 (0.901)	Data 0.001 (0.018)	Loss_ce 1.422 (1.422)	Loss_tr 0.383 (0.390)	Prec 96.09% (97.36%)
+Epoch: [34][50/200]	Time 0.822 (0.764)	Data 0.001 (0.012)	Loss_ce 1.450 (1.414)	Loss_tr 0.314 (0.378)	Prec 94.53% (97.39%)
+Epoch: [34][100/200]	Time 0.792 (0.678)	Data 0.001 (0.016)	Loss_ce 1.417 (1.410)	Loss_tr 0.409 (0.376)	Prec 98.44% (97.42%)
+Epoch: [34][150/200]	Time 0.940 (0.772)	Data 0.001 (0.017)	Loss_ce 1.468 (1.413)	Loss_tr 0.361 (0.381)	Prec 98.44% (97.44%)
+Epoch: [34][200/200]	Time 0.958 (0.816)	Data 0.001 (0.018)	Loss_ce 1.453 (1.415)	Loss_tr 0.386 (0.382)	Prec 93.75% (97.42%)
+Extract Features: [50/156]	Time 0.516 (0.542)	Data 0.000 (0.012)	
+Extract Features: [100/156]	Time 0.568 (0.544)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.473 (0.542)	Data 0.000 (0.004)	
+Mean AP: 78.1%
+CMC Scores:
+  top-1          87.3%
+  top-5          93.8%
+  top-10         95.6%
+
+ * Finished epoch  34  source mAP: 78.1%  best: 79.0%
+
+Epoch: [35][50/200]	Time 0.928 (0.930)	Data 0.001 (0.010)	Loss_ce 1.410 (1.413)	Loss_tr 0.386 (0.380)	Prec 96.09% (97.59%)
+Epoch: [35][100/200]	Time 0.950 (0.941)	Data 0.001 (0.015)	Loss_ce 1.533 (1.411)	Loss_tr 0.411 (0.371)	Prec 96.88% (97.59%)
+Epoch: [35][150/200]	Time 0.924 (0.947)	Data 0.001 (0.017)	Loss_ce 1.401 (1.411)	Loss_tr 0.473 (0.379)	Prec 96.88% (97.57%)
+Epoch: [35][200/200]	Time 0.954 (0.947)	Data 0.001 (0.018)	Loss_ce 1.420 (1.413)	Loss_tr 0.346 (0.380)	Prec 96.09% (97.47%)
+Epoch: [36][50/200]	Time 0.924 (0.936)	Data 0.000 (0.014)	Loss_ce 1.464 (1.418)	Loss_tr 0.430 (0.386)	Prec 96.09% (97.25%)
+Epoch: [36][100/200]	Time 0.914 (0.947)	Data 0.001 (0.017)	Loss_ce 1.371 (1.415)	Loss_tr 0.334 (0.381)	Prec 97.66% (97.37%)
+Epoch: [36][150/200]	Time 0.910 (0.950)	Data 0.001 (0.018)	Loss_ce 1.477 (1.412)	Loss_tr 0.405 (0.375)	Prec 92.19% (97.39%)
+Epoch: [36][200/200]	Time 0.942 (0.950)	Data 0.001 (0.018)	Loss_ce 1.506 (1.405)	Loss_tr 0.383 (0.371)	Prec 92.97% (97.49%)
+Epoch: [37][50/200]	Time 0.918 (0.934)	Data 0.000 (0.010)	Loss_ce 1.392 (1.408)	Loss_tr 0.421 (0.382)	Prec 97.66% (97.52%)
+Epoch: [37][100/200]	Time 0.953 (0.943)	Data 0.001 (0.015)	Loss_ce 1.391 (1.403)	Loss_tr 0.371 (0.383)	Prec 97.66% (97.73%)
+Epoch: [37][150/200]	Time 0.928 (0.947)	Data 0.001 (0.017)	Loss_ce 1.533 (1.401)	Loss_tr 0.413 (0.381)	Prec 92.19% (97.72%)
+Epoch: [37][200/200]	Time 0.962 (0.949)	Data 0.001 (0.018)	Loss_ce 1.377 (1.398)	Loss_tr 0.369 (0.381)	Prec 97.66% (97.79%)
+Epoch: [38][50/200]	Time 0.949 (0.930)	Data 0.001 (0.010)	Loss_ce 1.423 (1.403)	Loss_tr 0.408 (0.372)	Prec 96.09% (97.50%)
+Epoch: [38][100/200]	Time 0.936 (0.942)	Data 0.001 (0.015)	Loss_ce 1.482 (1.404)	Loss_tr 0.369 (0.370)	Prec 95.31% (97.55%)
+Epoch: [38][150/200]	Time 0.992 (0.942)	Data 0.001 (0.016)	Loss_ce 1.466 (1.405)	Loss_tr 0.477 (0.375)	Prec 96.09% (97.53%)
+Epoch: [38][200/200]	Time 0.795 (0.903)	Data 0.002 (0.017)	Loss_ce 1.426 (1.407)	Loss_tr 0.259 (0.375)	Prec 96.09% (97.48%)
+Epoch: [39][50/200]	Time 0.771 (0.756)	Data 0.000 (0.012)	Loss_ce 1.395 (1.404)	Loss_tr 0.400 (0.375)	Prec 97.66% (97.52%)
+Epoch: [39][100/200]	Time 0.498 (0.680)	Data 0.001 (0.016)	Loss_ce 1.472 (1.393)	Loss_tr 0.391 (0.377)	Prec 95.31% (97.80%)
+Epoch: [39][150/200]	Time 0.934 (0.766)	Data 0.000 (0.017)	Loss_ce 1.360 (1.391)	Loss_tr 0.386 (0.374)	Prec 98.44% (97.73%)
+Epoch: [39][200/200]	Time 0.939 (0.815)	Data 0.001 (0.018)	Loss_ce 1.347 (1.393)	Loss_tr 0.265 (0.371)	Prec 99.22% (97.69%)
+Extract Features: [50/156]	Time 0.538 (0.564)	Data 0.000 (0.011)	
+Extract Features: [100/156]	Time 0.574 (0.551)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.557 (0.549)	Data 0.000 (0.004)	
+Mean AP: 78.7%
+CMC Scores:
+  top-1          87.9%
+  top-5          94.2%
+  top-10         95.8%
+
+ * Finished epoch  39  source mAP: 78.7%  best: 79.0%
+
+Epoch: [40][50/200]	Time 0.935 (0.949)	Data 0.001 (0.012)	Loss_ce 1.316 (1.355)	Loss_tr 0.322 (0.341)	Prec 97.66% (98.17%)
+Epoch: [40][100/200]	Time 0.939 (0.950)	Data 0.001 (0.016)	Loss_ce 1.296 (1.330)	Loss_tr 0.331 (0.311)	Prec 99.22% (98.59%)
+Epoch: [40][150/200]	Time 1.055 (0.954)	Data 0.001 (0.018)	Loss_ce 1.263 (1.319)	Loss_tr 0.256 (0.300)	Prec 100.00% (98.68%)
+Epoch: [40][200/200]	Time 0.953 (0.954)	Data 0.001 (0.018)	Loss_ce 1.263 (1.310)	Loss_tr 0.292 (0.288)	Prec 100.00% (98.77%)
+Epoch: [41][50/200]	Time 0.968 (0.975)	Data 0.001 (0.009)	Loss_ce 1.246 (1.277)	Loss_tr 0.146 (0.251)	Prec 99.22% (99.16%)
+Epoch: [41][100/200]	Time 0.933 (0.965)	Data 0.001 (0.014)	Loss_ce 1.249 (1.273)	Loss_tr 0.242 (0.252)	Prec 100.00% (99.22%)
+Epoch: [41][150/200]	Time 0.982 (0.965)	Data 0.001 (0.017)	Loss_ce 1.243 (1.269)	Loss_tr 0.221 (0.242)	Prec 100.00% (99.24%)
+Epoch: [41][200/200]	Time 0.952 (0.958)	Data 0.001 (0.018)	Loss_ce 1.291 (1.266)	Loss_tr 0.290 (0.239)	Prec 98.44% (99.26%)
+Epoch: [42][50/200]	Time 0.954 (0.939)	Data 0.001 (0.010)	Loss_ce 1.290 (1.256)	Loss_tr 0.231 (0.228)	Prec 98.44% (99.37%)
+Epoch: [42][100/200]	Time 0.914 (0.945)	Data 0.001 (0.015)	Loss_ce 1.219 (1.251)	Loss_tr 0.152 (0.225)	Prec 100.00% (99.43%)
+Epoch: [42][150/200]	Time 0.941 (0.948)	Data 0.001 (0.017)	Loss_ce 1.263 (1.250)	Loss_tr 0.236 (0.224)	Prec 99.22% (99.43%)
+Epoch: [42][200/200]	Time 0.937 (0.946)	Data 0.000 (0.018)	Loss_ce 1.226 (1.249)	Loss_tr 0.212 (0.222)	Prec 100.00% (99.42%)
+Epoch: [43][50/200]	Time 0.949 (0.943)	Data 0.000 (0.013)	Loss_ce 1.280 (1.245)	Loss_tr 0.242 (0.212)	Prec 98.44% (99.42%)
+Epoch: [43][100/200]	Time 0.928 (0.946)	Data 0.000 (0.017)	Loss_ce 1.210 (1.243)	Loss_tr 0.155 (0.213)	Prec 100.00% (99.46%)
+Epoch: [43][150/200]	Time 0.932 (0.945)	Data 0.001 (0.018)	Loss_ce 1.268 (1.241)	Loss_tr 0.203 (0.208)	Prec 98.44% (99.49%)
+Epoch: [43][200/200]	Time 0.716 (0.908)	Data 0.001 (0.019)	Loss_ce 1.241 (1.239)	Loss_tr 0.145 (0.205)	Prec 99.22% (99.51%)
+Epoch: [44][50/200]	Time 0.703 (0.751)	Data 0.001 (0.014)	Loss_ce 1.251 (1.231)	Loss_tr 0.236 (0.191)	Prec 99.22% (99.55%)
+Epoch: [44][100/200]	Time 0.489 (0.687)	Data 0.001 (0.017)	Loss_ce 1.220 (1.231)	Loss_tr 0.198 (0.189)	Prec 100.00% (99.59%)
+Epoch: [44][150/200]	Time 0.939 (0.755)	Data 0.001 (0.017)	Loss_ce 1.222 (1.232)	Loss_tr 0.183 (0.191)	Prec 100.00% (99.58%)
+Epoch: [44][200/200]	Time 0.883 (0.805)	Data 0.000 (0.018)	Loss_ce 1.218 (1.231)	Loss_tr 0.125 (0.187)	Prec 99.22% (99.61%)
+Extract Features: [50/156]	Time 0.491 (0.544)	Data 0.000 (0.012)	
+Extract Features: [100/156]	Time 0.534 (0.548)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.470 (0.545)	Data 0.000 (0.004)	
+Mean AP: 85.8%
+CMC Scores:
+  top-1          91.2%
+  top-5          95.8%
+  top-10         97.1%
+
+ * Finished epoch  44  source mAP: 85.8%  best: 85.8% *
+
+Epoch: [45][50/200]	Time 0.962 (0.934)	Data 0.001 (0.010)	Loss_ce 1.264 (1.232)	Loss_tr 0.247 (0.185)	Prec 99.22% (99.56%)
+Epoch: [45][100/200]	Time 0.938 (0.948)	Data 0.001 (0.015)	Loss_ce 1.226 (1.230)	Loss_tr 0.173 (0.183)	Prec 100.00% (99.59%)
+Epoch: [45][150/200]	Time 0.947 (0.950)	Data 0.001 (0.017)	Loss_ce 1.220 (1.228)	Loss_tr 0.116 (0.182)	Prec 99.22% (99.61%)
+Epoch: [45][200/200]	Time 0.941 (0.947)	Data 0.001 (0.018)	Loss_ce 1.235 (1.226)	Loss_tr 0.178 (0.177)	Prec 98.44% (99.65%)
+Epoch: [46][50/200]	Time 0.930 (0.946)	Data 0.000 (0.013)	Loss_ce 1.219 (1.223)	Loss_tr 0.151 (0.169)	Prec 100.00% (99.69%)
+Epoch: [46][100/200]	Time 0.933 (0.947)	Data 0.001 (0.016)	Loss_ce 1.207 (1.223)	Loss_tr 0.135 (0.170)	Prec 100.00% (99.58%)
+Epoch: [46][150/200]	Time 0.918 (0.947)	Data 0.001 (0.017)	Loss_ce 1.220 (1.223)	Loss_tr 0.150 (0.175)	Prec 100.00% (99.61%)
+Epoch: [46][200/200]	Time 0.963 (0.945)	Data 0.001 (0.018)	Loss_ce 1.205 (1.221)	Loss_tr 0.116 (0.172)	Prec 100.00% (99.66%)
+Epoch: [47][50/200]	Time 0.968 (0.939)	Data 0.000 (0.011)	Loss_ce 1.243 (1.222)	Loss_tr 0.160 (0.169)	Prec 98.44% (99.66%)
+Epoch: [47][100/200]	Time 0.933 (0.945)	Data 0.001 (0.016)	Loss_ce 1.232 (1.220)	Loss_tr 0.210 (0.164)	Prec 100.00% (99.66%)
+Epoch: [47][150/200]	Time 1.073 (0.949)	Data 0.001 (0.017)	Loss_ce 1.214 (1.220)	Loss_tr 0.137 (0.164)	Prec 100.00% (99.65%)
+Epoch: [47][200/200]	Time 0.927 (0.948)	Data 0.001 (0.018)	Loss_ce 1.215 (1.218)	Loss_tr 0.113 (0.162)	Prec 99.22% (99.66%)
+Epoch: [48][50/200]	Time 0.909 (0.939)	Data 0.000 (0.012)	Loss_ce 1.226 (1.216)	Loss_tr 0.163 (0.162)	Prec 99.22% (99.59%)
+Epoch: [48][100/200]	Time 0.903 (0.941)	Data 0.001 (0.016)	Loss_ce 1.201 (1.214)	Loss_tr 0.121 (0.155)	Prec 100.00% (99.67%)
+Epoch: [48][150/200]	Time 0.936 (0.941)	Data 0.001 (0.017)	Loss_ce 1.233 (1.215)	Loss_tr 0.215 (0.153)	Prec 99.22% (99.68%)
+Epoch: [48][200/200]	Time 0.696 (0.913)	Data 0.001 (0.018)	Loss_ce 1.205 (1.215)	Loss_tr 0.153 (0.152)	Prec 100.00% (99.67%)
+Epoch: [49][50/200]	Time 0.704 (0.758)	Data 0.000 (0.012)	Loss_ce 1.197 (1.215)	Loss_tr 0.088 (0.149)	Prec 100.00% (99.83%)
+Epoch: [49][100/200]	Time 0.485 (0.701)	Data 0.001 (0.015)	Loss_ce 1.212 (1.214)	Loss_tr 0.106 (0.150)	Prec 100.00% (99.76%)
+Epoch: [49][150/200]	Time 0.949 (0.756)	Data 0.001 (0.017)	Loss_ce 1.231 (1.213)	Loss_tr 0.125 (0.149)	Prec 100.00% (99.76%)
+Epoch: [49][200/200]	Time 0.919 (0.804)	Data 0.001 (0.017)	Loss_ce 1.207 (1.213)	Loss_tr 0.157 (0.147)	Prec 100.00% (99.75%)
+Extract Features: [50/156]	Time 0.560 (0.556)	Data 0.000 (0.012)	
+Extract Features: [100/156]	Time 0.539 (0.552)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.579 (0.548)	Data 0.000 (0.004)	
+Mean AP: 88.3%
+CMC Scores:
+  top-1          92.5%
+  top-5          96.2%
+  top-10         97.3%
+
+ * Finished epoch  49  source mAP: 88.3%  best: 88.3% *
+
+Epoch: [50][50/200]	Time 0.937 (0.937)	Data 0.000 (0.011)	Loss_ce 1.210 (1.208)	Loss_tr 0.117 (0.134)	Prec 99.22% (99.77%)
+Epoch: [50][100/200]	Time 0.936 (0.943)	Data 0.001 (0.016)	Loss_ce 1.206 (1.210)	Loss_tr 0.100 (0.137)	Prec 100.00% (99.76%)
+Epoch: [50][150/200]	Time 0.910 (0.946)	Data 0.001 (0.017)	Loss_ce 1.205 (1.210)	Loss_tr 0.112 (0.138)	Prec 100.00% (99.73%)
+Epoch: [50][200/200]	Time 0.933 (0.949)	Data 0.001 (0.018)	Loss_ce 1.197 (1.211)	Loss_tr 0.100 (0.139)	Prec 100.00% (99.74%)
+Epoch: [51][50/200]	Time 0.906 (0.956)	Data 0.000 (0.013)	Loss_ce 1.194 (1.211)	Loss_tr 0.091 (0.139)	Prec 100.00% (99.64%)
+Epoch: [51][100/200]	Time 0.943 (0.952)	Data 0.001 (0.017)	Loss_ce 1.199 (1.210)	Loss_tr 0.125 (0.137)	Prec 100.00% (99.73%)
+Epoch: [51][150/200]	Time 0.978 (0.952)	Data 0.001 (0.018)	Loss_ce 1.204 (1.209)	Loss_tr 0.097 (0.136)	Prec 100.00% (99.75%)
+Epoch: [51][200/200]	Time 0.959 (0.953)	Data 0.001 (0.018)	Loss_ce 1.205 (1.208)	Loss_tr 0.130 (0.135)	Prec 100.00% (99.77%)
+Epoch: [52][50/200]	Time 0.973 (0.934)	Data 0.000 (0.010)	Loss_ce 1.205 (1.210)	Loss_tr 0.136 (0.130)	Prec 100.00% (99.75%)
+Epoch: [52][100/200]	Time 0.937 (0.944)	Data 0.000 (0.015)	Loss_ce 1.222 (1.209)	Loss_tr 0.137 (0.131)	Prec 100.00% (99.75%)
+Epoch: [52][150/200]	Time 0.931 (0.944)	Data 0.001 (0.016)	Loss_ce 1.206 (1.209)	Loss_tr 0.121 (0.131)	Prec 100.00% (99.78%)
+Epoch: [52][200/200]	Time 0.917 (0.948)	Data 0.001 (0.017)	Loss_ce 1.217 (1.209)	Loss_tr 0.119 (0.130)	Prec 100.00% (99.78%)
+Epoch: [53][50/200]	Time 0.961 (0.941)	Data 0.001 (0.013)	Loss_ce 1.227 (1.207)	Loss_tr 0.084 (0.125)	Prec 100.00% (99.77%)
+Epoch: [53][100/200]	Time 0.935 (0.947)	Data 0.001 (0.016)	Loss_ce 1.211 (1.206)	Loss_tr 0.130 (0.124)	Prec 100.00% (99.77%)
+Epoch: [53][150/200]	Time 0.934 (0.953)	Data 0.001 (0.018)	Loss_ce 1.195 (1.206)	Loss_tr 0.078 (0.124)	Prec 100.00% (99.77%)
+Epoch: [53][200/200]	Time 0.784 (0.923)	Data 0.001 (0.018)	Loss_ce 1.180 (1.206)	Loss_tr 0.149 (0.125)	Prec 100.00% (99.77%)
+Epoch: [54][50/200]	Time 0.716 (0.754)	Data 0.000 (0.011)	Loss_ce 1.203 (1.205)	Loss_tr 0.097 (0.117)	Prec 100.00% (99.73%)
+Epoch: [54][100/200]	Time 0.487 (0.708)	Data 0.001 (0.016)	Loss_ce 1.205 (1.204)	Loss_tr 0.106 (0.119)	Prec 99.22% (99.77%)
+Epoch: [54][150/200]	Time 0.937 (0.756)	Data 0.001 (0.018)	Loss_ce 1.196 (1.203)	Loss_tr 0.111 (0.116)	Prec 100.00% (99.78%)
+Epoch: [54][200/200]	Time 0.960 (0.807)	Data 0.001 (0.018)	Loss_ce 1.208 (1.204)	Loss_tr 0.112 (0.118)	Prec 100.00% (99.80%)
+Extract Features: [50/156]	Time 0.540 (0.555)	Data 0.000 (0.013)	
+Extract Features: [100/156]	Time 0.564 (0.552)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.535 (0.550)	Data 0.000 (0.004)	
+Mean AP: 89.9%
+CMC Scores:
+  top-1          93.4%
+  top-5          96.6%
+  top-10         97.5%
+
+ * Finished epoch  54  source mAP: 89.9%  best: 89.9% *
+
+Epoch: [55][50/200]	Time 1.015 (0.946)	Data 0.000 (0.010)	Loss_ce 1.239 (1.207)	Loss_tr 0.180 (0.117)	Prec 100.00% (99.73%)
+Epoch: [55][100/200]	Time 0.992 (0.950)	Data 0.001 (0.015)	Loss_ce 1.187 (1.204)	Loss_tr 0.088 (0.116)	Prec 99.22% (99.76%)
+Epoch: [55][150/200]	Time 0.942 (0.951)	Data 0.001 (0.017)	Loss_ce 1.192 (1.203)	Loss_tr 0.124 (0.116)	Prec 99.22% (99.77%)
+Epoch: [55][200/200]	Time 0.942 (0.948)	Data 0.001 (0.017)	Loss_ce 1.212 (1.203)	Loss_tr 0.078 (0.114)	Prec 99.22% (99.80%)
+Epoch: [56][50/200]	Time 0.993 (0.940)	Data 0.000 (0.010)	Loss_ce 1.210 (1.201)	Loss_tr 0.074 (0.117)	Prec 100.00% (99.80%)
+Epoch: [56][100/200]	Time 0.937 (0.945)	Data 0.001 (0.015)	Loss_ce 1.197 (1.203)	Loss_tr 0.086 (0.113)	Prec 100.00% (99.80%)
+Epoch: [56][150/200]	Time 0.942 (0.947)	Data 0.001 (0.017)	Loss_ce 1.198 (1.202)	Loss_tr 0.080 (0.112)	Prec 100.00% (99.80%)
+Epoch: [56][200/200]	Time 0.949 (0.945)	Data 0.001 (0.017)	Loss_ce 1.202 (1.203)	Loss_tr 0.128 (0.113)	Prec 100.00% (99.80%)
+Epoch: [57][50/200]	Time 0.949 (0.937)	Data 0.000 (0.011)	Loss_ce 1.195 (1.200)	Loss_tr 0.094 (0.101)	Prec 99.22% (99.78%)
+Epoch: [57][100/200]	Time 0.926 (0.941)	Data 0.001 (0.015)	Loss_ce 1.206 (1.201)	Loss_tr 0.159 (0.101)	Prec 100.00% (99.80%)
+Epoch: [57][150/200]	Time 0.982 (0.943)	Data 0.001 (0.016)	Loss_ce 1.194 (1.200)	Loss_tr 0.101 (0.100)	Prec 100.00% (99.84%)
+Epoch: [57][200/200]	Time 0.969 (0.943)	Data 0.001 (0.017)	Loss_ce 1.228 (1.200)	Loss_tr 0.080 (0.102)	Prec 99.22% (99.83%)
+Epoch: [58][50/200]	Time 0.952 (0.949)	Data 0.001 (0.012)	Loss_ce 1.196 (1.201)	Loss_tr 0.068 (0.109)	Prec 99.22% (99.78%)
+Epoch: [58][100/200]	Time 0.986 (0.953)	Data 0.001 (0.016)	Loss_ce 1.210 (1.198)	Loss_tr 0.117 (0.103)	Prec 99.22% (99.82%)
+Epoch: [58][150/200]	Time 0.955 (0.956)	Data 0.001 (0.017)	Loss_ce 1.212 (1.198)	Loss_tr 0.154 (0.102)	Prec 100.00% (99.83%)
+Epoch: [58][200/200]	Time 0.740 (0.929)	Data 0.000 (0.018)	Loss_ce 1.215 (1.198)	Loss_tr 0.194 (0.102)	Prec 100.00% (99.83%)
+Epoch: [59][50/200]	Time 0.879 (0.759)	Data 0.000 (0.012)	Loss_ce 1.226 (1.202)	Loss_tr 0.131 (0.106)	Prec 100.00% (99.75%)
+Epoch: [59][100/200]	Time 0.496 (0.722)	Data 0.001 (0.017)	Loss_ce 1.199 (1.199)	Loss_tr 0.078 (0.099)	Prec 100.00% (99.76%)
+Epoch: [59][150/200]	Time 0.924 (0.750)	Data 0.001 (0.018)	Loss_ce 1.195 (1.198)	Loss_tr 0.109 (0.098)	Prec 100.00% (99.78%)
+Epoch: [59][200/200]	Time 0.948 (0.800)	Data 0.001 (0.018)	Loss_ce 1.183 (1.198)	Loss_tr 0.076 (0.097)	Prec 100.00% (99.78%)
+Extract Features: [50/156]	Time 0.537 (0.551)	Data 0.000 (0.012)	
+Extract Features: [100/156]	Time 0.503 (0.549)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.585 (0.547)	Data 0.000 (0.004)	
+Mean AP: 91.3%
+CMC Scores:
+  top-1          94.0%
+  top-5          96.9%
+  top-10         97.8%
+
+ * Finished epoch  59  source mAP: 91.3%  best: 91.3% *
+
+Epoch: [60][50/200]	Time 0.938 (0.936)	Data 0.000 (0.011)	Loss_ce 1.192 (1.201)	Loss_tr 0.091 (0.100)	Prec 100.00% (99.73%)
+Epoch: [60][100/200]	Time 0.994 (0.944)	Data 0.001 (0.015)	Loss_ce 1.196 (1.199)	Loss_tr 0.131 (0.100)	Prec 100.00% (99.74%)
+Epoch: [60][150/200]	Time 0.933 (0.944)	Data 0.001 (0.016)	Loss_ce 1.207 (1.199)	Loss_tr 0.164 (0.099)	Prec 99.22% (99.74%)
+Epoch: [60][200/200]	Time 0.937 (0.943)	Data 0.001 (0.017)	Loss_ce 1.201 (1.199)	Loss_tr 0.101 (0.098)	Prec 99.22% (99.75%)
+Epoch: [61][50/200]	Time 0.929 (0.947)	Data 0.000 (0.011)	Loss_ce 1.201 (1.196)	Loss_tr 0.084 (0.088)	Prec 99.22% (99.83%)
+Epoch: [61][100/200]	Time 0.933 (0.949)	Data 0.001 (0.016)	Loss_ce 1.206 (1.195)	Loss_tr 0.093 (0.089)	Prec 100.00% (99.87%)
+Epoch: [61][150/200]	Time 0.982 (0.949)	Data 0.001 (0.017)	Loss_ce 1.186 (1.195)	Loss_tr 0.092 (0.090)	Prec 100.00% (99.84%)
+Epoch: [61][200/200]	Time 0.955 (0.950)	Data 0.001 (0.018)	Loss_ce 1.199 (1.195)	Loss_tr 0.094 (0.090)	Prec 100.00% (99.82%)
+Epoch: [62][50/200]	Time 0.937 (0.940)	Data 0.001 (0.011)	Loss_ce 1.201 (1.193)	Loss_tr 0.081 (0.092)	Prec 100.00% (99.89%)
+Epoch: [62][100/200]	Time 0.953 (0.942)	Data 0.000 (0.015)	Loss_ce 1.209 (1.193)	Loss_tr 0.218 (0.091)	Prec 100.00% (99.87%)
+Epoch: [62][150/200]	Time 0.958 (0.945)	Data 0.001 (0.017)	Loss_ce 1.183 (1.192)	Loss_tr 0.074 (0.090)	Prec 100.00% (99.88%)
+Epoch: [62][200/200]	Time 0.923 (0.944)	Data 0.001 (0.017)	Loss_ce 1.195 (1.193)	Loss_tr 0.102 (0.089)	Prec 100.00% (99.86%)
+Epoch: [63][50/200]	Time 0.948 (0.931)	Data 0.001 (0.013)	Loss_ce 1.191 (1.193)	Loss_tr 0.056 (0.091)	Prec 100.00% (99.84%)
+Epoch: [63][100/200]	Time 0.942 (0.945)	Data 0.001 (0.018)	Loss_ce 1.203 (1.193)	Loss_tr 0.076 (0.087)	Prec 100.00% (99.84%)
+Epoch: [63][150/200]	Time 0.931 (0.945)	Data 0.001 (0.018)	Loss_ce 1.185 (1.193)	Loss_tr 0.093 (0.086)	Prec 100.00% (99.81%)
+Epoch: [63][200/200]	Time 0.814 (0.922)	Data 0.001 (0.019)	Loss_ce 1.210 (1.193)	Loss_tr 0.072 (0.086)	Prec 99.22% (99.84%)
+Epoch: [64][50/200]	Time 0.752 (0.751)	Data 0.000 (0.010)	Loss_ce 1.200 (1.192)	Loss_tr 0.097 (0.084)	Prec 100.00% (99.78%)
+Epoch: [64][100/200]	Time 0.483 (0.720)	Data 0.001 (0.015)	Loss_ce 1.194 (1.191)	Loss_tr 0.057 (0.085)	Prec 100.00% (99.84%)
+Epoch: [64][150/200]	Time 0.940 (0.756)	Data 0.001 (0.017)	Loss_ce 1.189 (1.192)	Loss_tr 0.085 (0.086)	Prec 100.00% (99.83%)
+Epoch: [64][200/200]	Time 0.940 (0.805)	Data 0.001 (0.017)	Loss_ce 1.177 (1.192)	Loss_tr 0.069 (0.085)	Prec 100.00% (99.82%)
+Extract Features: [50/156]	Time 0.562 (0.573)	Data 0.000 (0.013)	
+Extract Features: [100/156]	Time 0.539 (0.560)	Data 0.000 (0.007)	
+Extract Features: [150/156]	Time 0.549 (0.552)	Data 0.000 (0.005)	
+Mean AP: 92.1%
+CMC Scores:
+  top-1          94.3%
+  top-5          97.2%
+  top-10         97.8%
+
+ * Finished epoch  64  source mAP: 92.1%  best: 92.1% *
+
+Epoch: [65][50/200]	Time 0.920 (0.943)	Data 0.000 (0.010)	Loss_ce 1.199 (1.192)	Loss_tr 0.074 (0.080)	Prec 99.22% (99.84%)
+Epoch: [65][100/200]	Time 0.990 (0.954)	Data 0.001 (0.016)	Loss_ce 1.198 (1.191)	Loss_tr 0.131 (0.081)	Prec 100.00% (99.86%)
+Epoch: [65][150/200]	Time 0.954 (0.956)	Data 0.001 (0.017)	Loss_ce 1.176 (1.191)	Loss_tr 0.092 (0.080)	Prec 100.00% (99.86%)
+Epoch: [65][200/200]	Time 0.938 (0.952)	Data 0.001 (0.018)	Loss_ce 1.191 (1.190)	Loss_tr 0.088 (0.082)	Prec 100.00% (99.86%)
+Epoch: [66][50/200]	Time 0.919 (0.941)	Data 0.001 (0.012)	Loss_ce 1.178 (1.188)	Loss_tr 0.061 (0.077)	Prec 100.00% (99.87%)
+Epoch: [66][100/200]	Time 0.966 (0.946)	Data 0.001 (0.015)	Loss_ce 1.179 (1.188)	Loss_tr 0.082 (0.079)	Prec 100.00% (99.87%)
+Epoch: [66][150/200]	Time 0.916 (0.952)	Data 0.001 (0.017)	Loss_ce 1.180 (1.189)	Loss_tr 0.050 (0.078)	Prec 100.00% (99.85%)
+Epoch: [66][200/200]	Time 0.918 (0.949)	Data 0.001 (0.018)	Loss_ce 1.203 (1.190)	Loss_tr 0.088 (0.078)	Prec 100.00% (99.84%)
+Epoch: [67][50/200]	Time 0.917 (0.943)	Data 0.000 (0.011)	Loss_ce 1.216 (1.190)	Loss_tr 0.131 (0.080)	Prec 99.22% (99.81%)
+Epoch: [67][100/200]	Time 0.922 (0.947)	Data 0.001 (0.015)	Loss_ce 1.223 (1.191)	Loss_tr 0.111 (0.080)	Prec 99.22% (99.78%)
+Epoch: [67][150/200]	Time 0.918 (0.948)	Data 0.001 (0.017)	Loss_ce 1.179 (1.190)	Loss_tr 0.060 (0.078)	Prec 100.00% (99.78%)
+Epoch: [67][200/200]	Time 0.940 (0.946)	Data 0.001 (0.018)	Loss_ce 1.199 (1.191)	Loss_tr 0.050 (0.078)	Prec 100.00% (99.79%)
+Epoch: [68][50/200]	Time 0.988 (0.942)	Data 0.000 (0.014)	Loss_ce 1.209 (1.187)	Loss_tr 0.113 (0.076)	Prec 100.00% (99.86%)
+Epoch: [68][100/200]	Time 0.993 (0.948)	Data 0.001 (0.017)	Loss_ce 1.187 (1.187)	Loss_tr 0.044 (0.075)	Prec 100.00% (99.87%)
+Epoch: [68][150/200]	Time 0.940 (0.954)	Data 0.001 (0.018)	Loss_ce 1.192 (1.187)	Loss_tr 0.078 (0.075)	Prec 98.44% (99.87%)
+Epoch: [68][200/200]	Time 0.721 (0.927)	Data 0.001 (0.018)	Loss_ce 1.172 (1.187)	Loss_tr 0.043 (0.074)	Prec 100.00% (99.86%)
+Epoch: [69][50/200]	Time 0.709 (0.748)	Data 0.000 (0.010)	Loss_ce 1.198 (1.191)	Loss_tr 0.076 (0.076)	Prec 100.00% (99.73%)
+Epoch: [69][100/200]	Time 0.490 (0.716)	Data 0.001 (0.015)	Loss_ce 1.199 (1.190)	Loss_tr 0.060 (0.075)	Prec 100.00% (99.81%)
+Epoch: [69][150/200]	Time 0.946 (0.741)	Data 0.001 (0.016)	Loss_ce 1.186 (1.188)	Loss_tr 0.077 (0.075)	Prec 99.22% (99.78%)
+Epoch: [69][200/200]	Time 0.924 (0.794)	Data 0.001 (0.017)	Loss_ce 1.188 (1.187)	Loss_tr 0.071 (0.072)	Prec 100.00% (99.82%)
+Extract Features: [50/156]	Time 0.555 (0.555)	Data 0.000 (0.013)	
+Extract Features: [100/156]	Time 0.554 (0.555)	Data 0.000 (0.007)	
+Extract Features: [150/156]	Time 0.541 (0.551)	Data 0.000 (0.004)	
+Mean AP: 92.9%
+CMC Scores:
+  top-1          94.3%
+  top-5          97.2%
+  top-10         97.9%
+
+ * Finished epoch  69  source mAP: 92.9%  best: 92.9% *
+
+Epoch: [70][50/200]	Time 0.925 (0.942)	Data 0.000 (0.012)	Loss_ce 1.185 (1.180)	Loss_tr 0.056 (0.066)	Prec 100.00% (99.87%)
+Epoch: [70][100/200]	Time 0.931 (0.946)	Data 0.001 (0.016)	Loss_ce 1.173 (1.181)	Loss_tr 0.055 (0.068)	Prec 100.00% (99.87%)
+Epoch: [70][150/200]	Time 0.939 (0.947)	Data 0.000 (0.018)	Loss_ce 1.172 (1.181)	Loss_tr 0.036 (0.068)	Prec 100.00% (99.90%)
+Epoch: [70][200/200]	Time 0.952 (0.946)	Data 0.001 (0.018)	Loss_ce 1.183 (1.180)	Loss_tr 0.064 (0.068)	Prec 100.00% (99.89%)
+Epoch: [71][50/200]	Time 0.925 (0.956)	Data 0.000 (0.014)	Loss_ce 1.194 (1.177)	Loss_tr 0.054 (0.065)	Prec 100.00% (99.84%)
+Epoch: [71][100/200]	Time 0.930 (0.956)	Data 0.001 (0.017)	Loss_ce 1.191 (1.176)	Loss_tr 0.057 (0.065)	Prec 99.22% (99.86%)
+Epoch: [71][150/200]	Time 0.932 (0.954)	Data 0.000 (0.017)	Loss_ce 1.197 (1.177)	Loss_tr 0.122 (0.065)	Prec 99.22% (99.86%)
+Epoch: [71][200/200]	Time 0.948 (0.953)	Data 0.001 (0.018)	Loss_ce 1.165 (1.176)	Loss_tr 0.040 (0.064)	Prec 100.00% (99.88%)
+Epoch: [72][50/200]	Time 0.957 (0.930)	Data 0.001 (0.011)	Loss_ce 1.171 (1.175)	Loss_tr 0.041 (0.062)	Prec 100.00% (99.89%)
+Epoch: [72][100/200]	Time 0.941 (0.938)	Data 0.001 (0.015)	Loss_ce 1.185 (1.174)	Loss_tr 0.179 (0.060)	Prec 100.00% (99.91%)
+Epoch: [72][150/200]	Time 0.901 (0.941)	Data 0.000 (0.017)	Loss_ce 1.164 (1.175)	Loss_tr 0.048 (0.061)	Prec 100.00% (99.91%)
+Epoch: [72][200/200]	Time 0.935 (0.942)	Data 0.001 (0.018)	Loss_ce 1.168 (1.175)	Loss_tr 0.069 (0.061)	Prec 100.00% (99.91%)
+Epoch: [73][50/200]	Time 0.928 (0.971)	Data 0.001 (0.013)	Loss_ce 1.181 (1.175)	Loss_tr 0.116 (0.063)	Prec 100.00% (99.87%)
+Epoch: [73][100/200]	Time 0.991 (0.959)	Data 0.001 (0.016)	Loss_ce 1.169 (1.175)	Loss_tr 0.042 (0.062)	Prec 100.00% (99.91%)
+Epoch: [73][150/200]	Time 0.989 (0.955)	Data 0.000 (0.017)	Loss_ce 1.175 (1.174)	Loss_tr 0.050 (0.061)	Prec 100.00% (99.89%)
+Epoch: [73][200/200]	Time 0.760 (0.932)	Data 0.001 (0.018)	Loss_ce 1.164 (1.174)	Loss_tr 0.038 (0.061)	Prec 100.00% (99.90%)
+Epoch: [74][50/200]	Time 0.853 (0.763)	Data 0.001 (0.013)	Loss_ce 1.183 (1.175)	Loss_tr 0.075 (0.061)	Prec 100.00% (99.86%)
+Epoch: [74][100/200]	Time 0.484 (0.730)	Data 0.001 (0.017)	Loss_ce 1.171 (1.174)	Loss_tr 0.051 (0.060)	Prec 100.00% (99.86%)
+Epoch: [74][150/200]	Time 0.937 (0.746)	Data 0.001 (0.018)	Loss_ce 1.188 (1.174)	Loss_tr 0.064 (0.058)	Prec 100.00% (99.89%)
+Epoch: [74][200/200]	Time 0.938 (0.797)	Data 0.001 (0.018)	Loss_ce 1.176 (1.174)	Loss_tr 0.055 (0.059)	Prec 100.00% (99.88%)
+Extract Features: [50/156]	Time 0.515 (0.545)	Data 0.000 (0.012)	
+Extract Features: [100/156]	Time 0.527 (0.548)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.572 (0.547)	Data 0.000 (0.004)	
+Mean AP: 93.3%
+CMC Scores:
+  top-1          94.7%
+  top-5          97.1%
+  top-10         97.9%
+
+ * Finished epoch  74  source mAP: 93.3%  best: 93.3% *
+
+Epoch: [75][50/200]	Time 0.942 (0.948)	Data 0.000 (0.014)	Loss_ce 1.194 (1.173)	Loss_tr 0.078 (0.060)	Prec 100.00% (99.94%)
+Epoch: [75][100/200]	Time 0.950 (0.945)	Data 0.001 (0.017)	Loss_ce 1.172 (1.172)	Loss_tr 0.053 (0.057)	Prec 100.00% (99.91%)
+Epoch: [75][150/200]	Time 0.935 (0.947)	Data 0.001 (0.018)	Loss_ce 1.172 (1.173)	Loss_tr 0.049 (0.058)	Prec 100.00% (99.91%)
+Epoch: [75][200/200]	Time 0.932 (0.945)	Data 0.001 (0.018)	Loss_ce 1.165 (1.173)	Loss_tr 0.057 (0.058)	Prec 100.00% (99.90%)
+Epoch: [76][50/200]	Time 0.963 (0.936)	Data 0.000 (0.012)	Loss_ce 1.164 (1.172)	Loss_tr 0.051 (0.056)	Prec 100.00% (99.98%)
+Epoch: [76][100/200]	Time 0.939 (0.943)	Data 0.001 (0.016)	Loss_ce 1.193 (1.172)	Loss_tr 0.079 (0.059)	Prec 100.00% (99.95%)
+Epoch: [76][150/200]	Time 0.943 (0.944)	Data 0.001 (0.017)	Loss_ce 1.186 (1.172)	Loss_tr 0.077 (0.059)	Prec 100.00% (99.94%)
+Epoch: [76][200/200]	Time 0.957 (0.944)	Data 0.001 (0.017)	Loss_ce 1.172 (1.171)	Loss_tr 0.056 (0.058)	Prec 99.22% (99.93%)
+Epoch: [77][50/200]	Time 0.929 (0.936)	Data 0.000 (0.010)	Loss_ce 1.167 (1.169)	Loss_tr 0.056 (0.058)	Prec 100.00% (99.95%)
+Epoch: [77][100/200]	Time 0.991 (0.948)	Data 0.001 (0.015)	Loss_ce 1.170 (1.170)	Loss_tr 0.064 (0.057)	Prec 100.00% (99.95%)
+Epoch: [77][150/200]	Time 0.960 (0.947)	Data 0.001 (0.017)	Loss_ce 1.163 (1.171)	Loss_tr 0.028 (0.058)	Prec 100.00% (99.92%)
+Epoch: [77][200/200]	Time 0.912 (0.946)	Data 0.001 (0.017)	Loss_ce 1.172 (1.171)	Loss_tr 0.044 (0.056)	Prec 100.00% (99.93%)
+Epoch: [78][50/200]	Time 0.940 (0.941)	Data 0.001 (0.013)	Loss_ce 1.169 (1.173)	Loss_tr 0.048 (0.061)	Prec 100.00% (99.91%)
+Epoch: [78][100/200]	Time 0.975 (0.945)	Data 0.001 (0.016)	Loss_ce 1.171 (1.171)	Loss_tr 0.052 (0.058)	Prec 100.00% (99.92%)
+Epoch: [78][150/200]	Time 1.087 (0.947)	Data 0.001 (0.017)	Loss_ce 1.154 (1.171)	Loss_tr 0.024 (0.058)	Prec 100.00% (99.92%)
+Epoch: [78][200/200]	Time 0.758 (0.928)	Data 0.001 (0.018)	Loss_ce 1.160 (1.171)	Loss_tr 0.039 (0.058)	Prec 100.00% (99.94%)
+Epoch: [79][50/200]	Time 0.693 (0.754)	Data 0.000 (0.013)	Loss_ce 1.189 (1.172)	Loss_tr 0.051 (0.058)	Prec 100.00% (99.89%)
+Epoch: [79][100/200]	Time 0.494 (0.732)	Data 0.001 (0.017)	Loss_ce 1.168 (1.171)	Loss_tr 0.084 (0.057)	Prec 100.00% (99.91%)
+Epoch: [79][150/200]	Time 0.931 (0.738)	Data 0.001 (0.018)	Loss_ce 1.167 (1.171)	Loss_tr 0.054 (0.056)	Prec 100.00% (99.89%)
+Epoch: [79][200/200]	Time 0.946 (0.792)	Data 0.001 (0.018)	Loss_ce 1.179 (1.171)	Loss_tr 0.033 (0.055)	Prec 100.00% (99.90%)
+Extract Features: [50/156]	Time 0.324 (0.546)	Data 0.000 (0.011)	
+Extract Features: [100/156]	Time 0.568 (0.545)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.565 (0.542)	Data 0.000 (0.004)	
+Mean AP: 93.5%
+CMC Scores:
+  top-1          94.9%
+  top-5          97.2%
+  top-10         98.0%
+
+ * Finished epoch  79  source mAP: 93.5%  best: 93.5% *
+
+Epoch: [80][50/200]	Time 0.968 (0.940)	Data 0.001 (0.012)	Loss_ce 1.161 (1.170)	Loss_tr 0.034 (0.054)	Prec 100.00% (99.97%)
+Epoch: [80][100/200]	Time 0.934 (0.945)	Data 0.000 (0.016)	Loss_ce 1.166 (1.170)	Loss_tr 0.072 (0.054)	Prec 100.00% (99.95%)
+Epoch: [80][150/200]	Time 0.560 (0.948)	Data 0.001 (0.018)	Loss_ce 1.179 (1.170)	Loss_tr 0.041 (0.054)	Prec 100.00% (99.94%)
+Epoch: [80][200/200]	Time 0.939 (0.948)	Data 0.001 (0.018)	Loss_ce 1.182 (1.170)	Loss_tr 0.070 (0.053)	Prec 100.00% (99.93%)
+Epoch: [81][50/200]	Time 0.956 (0.944)	Data 0.001 (0.010)	Loss_ce 1.176 (1.170)	Loss_tr 0.098 (0.058)	Prec 100.00% (99.97%)
+Epoch: [81][100/200]	Time 0.945 (0.943)	Data 0.001 (0.015)	Loss_ce 1.166 (1.171)	Loss_tr 0.040 (0.055)	Prec 100.00% (99.93%)
+Epoch: [81][150/200]	Time 0.554 (0.948)	Data 0.001 (0.016)	Loss_ce 1.165 (1.170)	Loss_tr 0.047 (0.054)	Prec 100.00% (99.93%)
+Epoch: [81][200/200]	Time 0.941 (0.946)	Data 0.001 (0.017)	Loss_ce 1.196 (1.170)	Loss_tr 0.060 (0.054)	Prec 99.22% (99.93%)
+Epoch: [82][50/200]	Time 0.959 (0.952)	Data 0.001 (0.012)	Loss_ce 1.160 (1.170)	Loss_tr 0.053 (0.053)	Prec 100.00% (99.84%)
+Epoch: [82][100/200]	Time 0.947 (0.953)	Data 0.001 (0.016)	Loss_ce 1.180 (1.169)	Loss_tr 0.079 (0.053)	Prec 100.00% (99.87%)
+Epoch: [82][150/200]	Time 0.566 (0.962)	Data 0.001 (0.017)	Loss_ce 1.169 (1.169)	Loss_tr 0.078 (0.053)	Prec 100.00% (99.91%)
+Epoch: [82][200/200]	Time 0.934 (0.954)	Data 0.001 (0.018)	Loss_ce 1.218 (1.170)	Loss_tr 0.084 (0.053)	Prec 100.00% (99.90%)
+Epoch: [83][50/200]	Time 0.922 (0.946)	Data 0.000 (0.011)	Loss_ce 1.178 (1.169)	Loss_tr 0.059 (0.053)	Prec 100.00% (99.89%)
+Epoch: [83][100/200]	Time 0.931 (0.947)	Data 0.001 (0.016)	Loss_ce 1.172 (1.170)	Loss_tr 0.059 (0.053)	Prec 100.00% (99.90%)
+Epoch: [83][150/200]	Time 0.556 (0.957)	Data 0.001 (0.018)	Loss_ce 1.176 (1.169)	Loss_tr 0.061 (0.052)	Prec 100.00% (99.92%)
+Epoch: [83][200/200]	Time 0.803 (0.936)	Data 0.001 (0.018)	Loss_ce 1.172 (1.169)	Loss_tr 0.058 (0.053)	Prec 100.00% (99.93%)
+Epoch: [84][50/200]	Time 0.715 (0.760)	Data 0.001 (0.010)	Loss_ce 1.175 (1.169)	Loss_tr 0.065 (0.052)	Prec 100.00% (99.91%)
+Epoch: [84][100/200]	Time 0.497 (0.747)	Data 0.001 (0.016)	Loss_ce 1.172 (1.170)	Loss_tr 0.061 (0.053)	Prec 100.00% (99.90%)
+Epoch: [84][150/200]	Time 0.986 (0.739)	Data 0.001 (0.017)	Loss_ce 1.155 (1.170)	Loss_tr 0.036 (0.053)	Prec 100.00% (99.91%)
+Epoch: [84][200/200]	Time 0.988 (0.791)	Data 0.001 (0.018)	Loss_ce 1.158 (1.170)	Loss_tr 0.046 (0.054)	Prec 100.00% (99.92%)
+Extract Features: [50/156]	Time 0.500 (0.551)	Data 0.000 (0.012)	
+Extract Features: [100/156]	Time 0.614 (0.542)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.520 (0.545)	Data 0.000 (0.004)	
+Mean AP: 93.7%
+CMC Scores:
+  top-1          95.0%
+  top-5          97.2%
+  top-10         98.1%
+
+ * Finished epoch  84  source mAP: 93.7%  best: 93.7% *
+
+Epoch: [85][50/200]	Time 0.938 (0.941)	Data 0.000 (0.012)	Loss_ce 1.163 (1.169)	Loss_tr 0.061 (0.053)	Prec 100.00% (99.91%)
+Epoch: [85][100/200]	Time 0.937 (0.946)	Data 0.001 (0.016)	Loss_ce 1.175 (1.169)	Loss_tr 0.054 (0.050)	Prec 100.00% (99.93%)
+Epoch: [85][150/200]	Time 0.949 (0.953)	Data 0.001 (0.017)	Loss_ce 1.175 (1.170)	Loss_tr 0.038 (0.051)	Prec 99.22% (99.91%)
+Epoch: [85][200/200]	Time 0.953 (0.946)	Data 0.001 (0.018)	Loss_ce 1.160 (1.169)	Loss_tr 0.047 (0.051)	Prec 100.00% (99.92%)
+Epoch: [86][50/200]	Time 0.962 (0.944)	Data 0.001 (0.011)	Loss_ce 1.173 (1.170)	Loss_tr 0.043 (0.052)	Prec 100.00% (99.91%)
+Epoch: [86][100/200]	Time 0.945 (0.946)	Data 0.001 (0.016)	Loss_ce 1.168 (1.170)	Loss_tr 0.061 (0.053)	Prec 100.00% (99.91%)
+Epoch: [86][150/200]	Time 0.929 (0.954)	Data 0.001 (0.017)	Loss_ce 1.161 (1.169)	Loss_tr 0.033 (0.052)	Prec 100.00% (99.92%)
+Epoch: [86][200/200]	Time 0.933 (0.951)	Data 0.001 (0.018)	Loss_ce 1.169 (1.169)	Loss_tr 0.053 (0.052)	Prec 100.00% (99.91%)
+Epoch: [87][50/200]	Time 0.923 (0.943)	Data 0.001 (0.012)	Loss_ce 1.193 (1.170)	Loss_tr 0.098 (0.055)	Prec 99.22% (99.92%)
+Epoch: [87][100/200]	Time 1.003 (0.954)	Data 0.003 (0.016)	Loss_ce 1.170 (1.168)	Loss_tr 0.041 (0.053)	Prec 100.00% (99.93%)
+Epoch: [87][150/200]	Time 0.964 (0.958)	Data 0.001 (0.017)	Loss_ce 1.174 (1.168)	Loss_tr 0.049 (0.054)	Prec 100.00% (99.94%)
+Epoch: [87][200/200]	Time 0.939 (0.951)	Data 0.001 (0.018)	Loss_ce 1.176 (1.169)	Loss_tr 0.070 (0.054)	Prec 100.00% (99.93%)
+Epoch: [88][50/200]	Time 0.943 (0.945)	Data 0.000 (0.014)	Loss_ce 1.168 (1.171)	Loss_tr 0.049 (0.055)	Prec 99.22% (99.87%)
+Epoch: [88][100/200]	Time 0.955 (0.948)	Data 0.001 (0.018)	Loss_ce 1.164 (1.170)	Loss_tr 0.048 (0.055)	Prec 100.00% (99.89%)
+Epoch: [88][150/200]	Time 0.942 (0.956)	Data 0.000 (0.019)	Loss_ce 1.171 (1.169)	Loss_tr 0.040 (0.054)	Prec 100.00% (99.91%)
+Epoch: [88][200/200]	Time 0.708 (0.937)	Data 0.001 (0.019)	Loss_ce 1.166 (1.169)	Loss_tr 0.040 (0.054)	Prec 100.00% (99.90%)
+Epoch: [89][50/200]	Time 0.704 (0.758)	Data 0.000 (0.011)	Loss_ce 1.174 (1.166)	Loss_tr 0.039 (0.050)	Prec 100.00% (99.91%)
+Epoch: [89][100/200]	Time 0.496 (0.754)	Data 0.001 (0.016)	Loss_ce 1.160 (1.167)	Loss_tr 0.025 (0.049)	Prec 100.00% (99.91%)
+Epoch: [89][150/200]	Time 0.955 (0.734)	Data 0.001 (0.017)	Loss_ce 1.163 (1.167)	Loss_tr 0.092 (0.051)	Prec 100.00% (99.92%)
+Epoch: [89][200/200]	Time 0.958 (0.789)	Data 0.001 (0.017)	Loss_ce 1.167 (1.167)	Loss_tr 0.055 (0.051)	Prec 100.00% (99.92%)
+Extract Features: [50/156]	Time 0.556 (0.557)	Data 0.000 (0.012)	
+Extract Features: [100/156]	Time 0.539 (0.543)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.523 (0.539)	Data 0.000 (0.004)	
+Mean AP: 93.8%
+CMC Scores:
+  top-1          94.9%
+  top-5          97.2%
+  top-10         98.1%
+
+ * Finished epoch  89  source mAP: 93.8%  best: 93.8% *
+
+Epoch: [90][50/200]	Time 0.945 (0.937)	Data 0.000 (0.014)	Loss_ce 1.166 (1.166)	Loss_tr 0.035 (0.050)	Prec 100.00% (99.91%)
+Epoch: [90][100/200]	Time 0.918 (0.953)	Data 0.001 (0.018)	Loss_ce 1.168 (1.167)	Loss_tr 0.050 (0.050)	Prec 100.00% (99.91%)
+Epoch: [90][150/200]	Time 1.053 (0.954)	Data 0.001 (0.018)	Loss_ce 1.161 (1.167)	Loss_tr 0.045 (0.050)	Prec 100.00% (99.90%)
+Epoch: [90][200/200]	Time 0.910 (0.950)	Data 0.001 (0.019)	Loss_ce 1.167 (1.168)	Loss_tr 0.043 (0.049)	Prec 100.00% (99.91%)
+Epoch: [91][50/200]	Time 0.958 (0.931)	Data 0.000 (0.012)	Loss_ce 1.168 (1.168)	Loss_tr 0.064 (0.049)	Prec 100.00% (99.92%)
+Epoch: [91][100/200]	Time 0.531 (0.948)	Data 0.001 (0.016)	Loss_ce 1.169 (1.169)	Loss_tr 0.059 (0.050)	Prec 100.00% (99.94%)
+Epoch: [91][150/200]	Time 0.937 (0.950)	Data 0.001 (0.017)	Loss_ce 1.153 (1.168)	Loss_tr 0.026 (0.049)	Prec 100.00% (99.94%)
+Epoch: [91][200/200]	Time 0.970 (0.943)	Data 0.001 (0.018)	Loss_ce 1.186 (1.168)	Loss_tr 0.047 (0.049)	Prec 100.00% (99.94%)
+Epoch: [92][50/200]	Time 0.957 (0.933)	Data 0.000 (0.010)	Loss_ce 1.162 (1.167)	Loss_tr 0.066 (0.049)	Prec 100.00% (99.89%)
+Epoch: [92][100/200]	Time 0.657 (0.946)	Data 0.001 (0.014)	Loss_ce 1.155 (1.168)	Loss_tr 0.035 (0.050)	Prec 100.00% (99.91%)
+Epoch: [92][150/200]	Time 0.958 (0.952)	Data 0.001 (0.017)	Loss_ce 1.176 (1.168)	Loss_tr 0.051 (0.051)	Prec 100.00% (99.91%)
+Epoch: [92][200/200]	Time 0.945 (0.945)	Data 0.001 (0.017)	Loss_ce 1.169 (1.168)	Loss_tr 0.026 (0.051)	Prec 100.00% (99.91%)
+Epoch: [93][50/200]	Time 0.936 (0.929)	Data 0.000 (0.012)	Loss_ce 1.166 (1.169)	Loss_tr 0.053 (0.052)	Prec 100.00% (99.92%)
+Epoch: [93][100/200]	Time 0.686 (0.943)	Data 0.001 (0.016)	Loss_ce 1.178 (1.169)	Loss_tr 0.046 (0.051)	Prec 100.00% (99.93%)
+Epoch: [93][150/200]	Time 0.925 (0.946)	Data 0.001 (0.017)	Loss_ce 1.169 (1.168)	Loss_tr 0.034 (0.049)	Prec 100.00% (99.92%)
+Epoch: [93][200/200]	Time 0.746 (0.932)	Data 0.001 (0.018)	Loss_ce 1.165 (1.168)	Loss_tr 0.038 (0.049)	Prec 100.00% (99.93%)
+Epoch: [94][50/200]	Time 0.762 (0.754)	Data 0.000 (0.010)	Loss_ce 1.166 (1.167)	Loss_tr 0.046 (0.050)	Prec 100.00% (99.92%)
+Epoch: [94][100/200]	Time 0.614 (0.759)	Data 0.001 (0.016)	Loss_ce 1.162 (1.167)	Loss_tr 0.059 (0.047)	Prec 100.00% (99.92%)
+Epoch: [94][150/200]	Time 0.918 (0.728)	Data 0.001 (0.017)	Loss_ce 1.168 (1.168)	Loss_tr 0.040 (0.049)	Prec 100.00% (99.93%)
+Epoch: [94][200/200]	Time 0.929 (0.780)	Data 0.001 (0.017)	Loss_ce 1.170 (1.167)	Loss_tr 0.056 (0.048)	Prec 100.00% (99.94%)
+Extract Features: [50/156]	Time 0.489 (0.559)	Data 0.000 (0.013)	
+Extract Features: [100/156]	Time 0.570 (0.545)	Data 0.000 (0.007)	
+Extract Features: [150/156]	Time 0.538 (0.544)	Data 0.000 (0.005)	
+Mean AP: 93.9%
+CMC Scores:
+  top-1          95.0%
+  top-5          97.4%
+  top-10         98.1%
+
+ * Finished epoch  94  source mAP: 93.9%  best: 93.9% *
+
+Epoch: [95][50/200]	Time 1.026 (0.938)	Data 0.000 (0.011)	Loss_ce 1.167 (1.165)	Loss_tr 0.075 (0.049)	Prec 100.00% (99.94%)
+Epoch: [95][100/200]	Time 0.938 (0.950)	Data 0.001 (0.015)	Loss_ce 1.177 (1.167)	Loss_tr 0.062 (0.050)	Prec 100.00% (99.94%)
+Epoch: [95][150/200]	Time 0.997 (0.949)	Data 0.000 (0.016)	Loss_ce 1.163 (1.167)	Loss_tr 0.046 (0.049)	Prec 100.00% (99.92%)
+Epoch: [95][200/200]	Time 0.942 (0.947)	Data 0.001 (0.017)	Loss_ce 1.163 (1.168)	Loss_tr 0.026 (0.050)	Prec 100.00% (99.91%)
+Epoch: [96][50/200]	Time 1.023 (0.941)	Data 0.001 (0.010)	Loss_ce 1.168 (1.168)	Loss_tr 0.049 (0.050)	Prec 100.00% (99.87%)
+Epoch: [96][100/200]	Time 0.926 (0.951)	Data 0.001 (0.015)	Loss_ce 1.157 (1.169)	Loss_tr 0.036 (0.049)	Prec 100.00% (99.91%)
+Epoch: [96][150/200]	Time 0.939 (0.948)	Data 0.001 (0.016)	Loss_ce 1.182 (1.168)	Loss_tr 0.065 (0.048)	Prec 100.00% (99.93%)
+Epoch: [96][200/200]	Time 0.920 (0.951)	Data 0.000 (0.017)	Loss_ce 1.176 (1.168)	Loss_tr 0.062 (0.047)	Prec 100.00% (99.91%)
+Epoch: [97][50/200]	Time 1.011 (0.940)	Data 0.000 (0.011)	Loss_ce 1.168 (1.167)	Loss_tr 0.039 (0.043)	Prec 100.00% (99.91%)
+Epoch: [97][100/200]	Time 0.945 (0.952)	Data 0.001 (0.016)	Loss_ce 1.167 (1.166)	Loss_tr 0.048 (0.045)	Prec 100.00% (99.94%)
+Epoch: [97][150/200]	Time 0.930 (0.961)	Data 0.001 (0.017)	Loss_ce 1.159 (1.166)	Loss_tr 0.056 (0.047)	Prec 100.00% (99.94%)
+Epoch: [97][200/200]	Time 0.941 (0.955)	Data 0.001 (0.018)	Loss_ce 1.163 (1.167)	Loss_tr 0.043 (0.047)	Prec 100.00% (99.91%)
+Epoch: [98][50/200]	Time 0.913 (0.940)	Data 0.000 (0.010)	Loss_ce 1.167 (1.165)	Loss_tr 0.044 (0.047)	Prec 100.00% (99.86%)
+Epoch: [98][100/200]	Time 0.933 (0.951)	Data 0.001 (0.015)	Loss_ce 1.165 (1.165)	Loss_tr 0.045 (0.047)	Prec 100.00% (99.90%)
+Epoch: [98][150/200]	Time 0.930 (0.949)	Data 0.001 (0.016)	Loss_ce 1.185 (1.166)	Loss_tr 0.054 (0.048)	Prec 100.00% (99.93%)
+Epoch: [98][200/200]	Time 0.699 (0.945)	Data 0.001 (0.017)	Loss_ce 1.162 (1.166)	Loss_tr 0.058 (0.048)	Prec 100.00% (99.93%)
+Epoch: [99][50/200]	Time 0.747 (0.760)	Data 0.000 (0.013)	Loss_ce 1.175 (1.167)	Loss_tr 0.052 (0.049)	Prec 100.00% (99.97%)
+Epoch: [99][100/200]	Time 0.756 (0.763)	Data 0.001 (0.018)	Loss_ce 1.192 (1.167)	Loss_tr 0.060 (0.050)	Prec 99.22% (99.95%)
+Epoch: [99][150/200]	Time 0.912 (0.724)	Data 0.001 (0.019)	Loss_ce 1.157 (1.166)	Loss_tr 0.027 (0.049)	Prec 100.00% (99.96%)
+Epoch: [99][200/200]	Time 0.967 (0.781)	Data 0.001 (0.019)	Loss_ce 1.152 (1.165)	Loss_tr 0.022 (0.048)	Prec 100.00% (99.96%)
+Extract Features: [50/156]	Time 0.560 (0.561)	Data 0.000 (0.012)	
+Extract Features: [100/156]	Time 0.511 (0.546)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.332 (0.546)	Data 0.000 (0.004)	
+Mean AP: 94.2%
+CMC Scores:
+  top-1          95.0%
+  top-5          97.4%
+  top-10         98.2%
+
+ * Finished epoch  99  source mAP: 94.2%  best: 94.2% *
+
+Epoch: [100][50/200]	Time 1.017 (0.955)	Data 0.000 (0.009)	Loss_ce 1.182 (1.166)	Loss_tr 0.054 (0.043)	Prec 100.00% (99.91%)
+Epoch: [100][100/200]	Time 0.868 (0.954)	Data 0.001 (0.014)	Loss_ce 1.165 (1.165)	Loss_tr 0.042 (0.044)	Prec 100.00% (99.94%)
+Epoch: [100][150/200]	Time 0.939 (0.953)	Data 0.000 (0.016)	Loss_ce 1.169 (1.166)	Loss_tr 0.029 (0.045)	Prec 100.00% (99.93%)
+Epoch: [100][200/200]	Time 1.000 (0.946)	Data 0.001 (0.017)	Loss_ce 1.161 (1.167)	Loss_tr 0.037 (0.046)	Prec 100.00% (99.92%)
+Epoch: [101][50/200]	Time 0.938 (0.954)	Data 0.001 (0.010)	Loss_ce 1.182 (1.164)	Loss_tr 0.065 (0.045)	Prec 100.00% (99.95%)
+Epoch: [101][100/200]	Time 0.965 (0.951)	Data 0.001 (0.015)	Loss_ce 1.163 (1.165)	Loss_tr 0.036 (0.046)	Prec 100.00% (99.95%)
+Epoch: [101][150/200]	Time 0.975 (0.950)	Data 0.001 (0.016)	Loss_ce 1.166 (1.166)	Loss_tr 0.042 (0.046)	Prec 100.00% (99.95%)
+Epoch: [101][200/200]	Time 1.025 (0.942)	Data 0.001 (0.017)	Loss_ce 1.170 (1.166)	Loss_tr 0.034 (0.047)	Prec 100.00% (99.94%)
+Epoch: [102][50/200]	Time 0.947 (0.950)	Data 0.000 (0.011)	Loss_ce 1.163 (1.165)	Loss_tr 0.025 (0.044)	Prec 100.00% (99.98%)
+Epoch: [102][100/200]	Time 1.008 (0.951)	Data 0.001 (0.015)	Loss_ce 1.167 (1.166)	Loss_tr 0.042 (0.047)	Prec 100.00% (99.95%)
+Epoch: [102][150/200]	Time 0.950 (0.949)	Data 0.001 (0.016)	Loss_ce 1.146 (1.166)	Loss_tr 0.019 (0.046)	Prec 100.00% (99.95%)
+Epoch: [102][200/200]	Time 1.070 (0.943)	Data 0.001 (0.017)	Loss_ce 1.161 (1.166)	Loss_tr 0.023 (0.047)	Prec 100.00% (99.93%)
+Epoch: [103][50/200]	Time 0.919 (0.968)	Data 0.000 (0.011)	Loss_ce 1.170 (1.163)	Loss_tr 0.040 (0.045)	Prec 100.00% (99.98%)
+Epoch: [103][100/200]	Time 0.923 (0.955)	Data 0.001 (0.015)	Loss_ce 1.172 (1.165)	Loss_tr 0.035 (0.044)	Prec 100.00% (99.96%)
+Epoch: [103][150/200]	Time 0.934 (0.951)	Data 0.001 (0.017)	Loss_ce 1.177 (1.165)	Loss_tr 0.074 (0.045)	Prec 100.00% (99.96%)
+Epoch: [103][200/200]	Time 0.735 (0.943)	Data 0.000 (0.017)	Loss_ce 1.160 (1.166)	Loss_tr 0.031 (0.047)	Prec 100.00% (99.95%)
+Epoch: [104][50/200]	Time 0.749 (0.753)	Data 0.001 (0.013)	Loss_ce 1.166 (1.168)	Loss_tr 0.048 (0.046)	Prec 100.00% (99.92%)
+Epoch: [104][100/200]	Time 0.745 (0.760)	Data 0.001 (0.018)	Loss_ce 1.171 (1.167)	Loss_tr 0.047 (0.047)	Prec 100.00% (99.94%)
+Epoch: [104][150/200]	Time 0.937 (0.718)	Data 0.001 (0.019)	Loss_ce 1.169 (1.167)	Loss_tr 0.078 (0.048)	Prec 100.00% (99.95%)
+Epoch: [104][200/200]	Time 0.967 (0.774)	Data 0.001 (0.019)	Loss_ce 1.154 (1.166)	Loss_tr 0.024 (0.047)	Prec 100.00% (99.95%)
+Extract Features: [50/156]	Time 0.598 (0.560)	Data 0.000 (0.013)	
+Extract Features: [100/156]	Time 0.531 (0.547)	Data 0.000 (0.007)	
+Extract Features: [150/156]	Time 0.579 (0.548)	Data 0.000 (0.004)	
+Mean AP: 94.3%
+CMC Scores:
+  top-1          95.0%
+  top-5          97.6%
+  top-10         98.2%
+
+ * Finished epoch 104  source mAP: 94.3%  best: 94.3% *
+
+Epoch: [105][50/200]	Time 0.907 (0.950)	Data 0.001 (0.014)	Loss_ce 1.162 (1.165)	Loss_tr 0.038 (0.049)	Prec 100.00% (99.89%)
+Epoch: [105][100/200]	Time 0.916 (0.958)	Data 0.000 (0.018)	Loss_ce 1.171 (1.165)	Loss_tr 0.042 (0.047)	Prec 100.00% (99.93%)
+Epoch: [105][150/200]	Time 0.952 (0.959)	Data 0.001 (0.019)	Loss_ce 1.163 (1.166)	Loss_tr 0.033 (0.046)	Prec 100.00% (99.91%)
+Epoch: [105][200/200]	Time 0.729 (0.960)	Data 0.001 (0.019)	Loss_ce 1.160 (1.165)	Loss_tr 0.038 (0.046)	Prec 100.00% (99.92%)
+Epoch: [106][50/200]	Time 0.929 (0.954)	Data 0.000 (0.012)	Loss_ce 1.170 (1.165)	Loss_tr 0.051 (0.044)	Prec 100.00% (99.97%)
+Epoch: [106][100/200]	Time 0.819 (0.956)	Data 0.001 (0.017)	Loss_ce 1.172 (1.164)	Loss_tr 0.052 (0.044)	Prec 100.00% (99.98%)
+Epoch: [106][150/200]	Time 0.935 (0.959)	Data 0.001 (0.018)	Loss_ce 1.159 (1.164)	Loss_tr 0.034 (0.045)	Prec 100.00% (99.96%)
+Epoch: [106][200/200]	Time 0.495 (0.958)	Data 0.001 (0.019)	Loss_ce 1.163 (1.164)	Loss_tr 0.048 (0.043)	Prec 100.00% (99.96%)
+Epoch: [107][50/200]	Time 0.976 (0.951)	Data 0.000 (0.012)	Loss_ce 1.163 (1.162)	Loss_tr 0.064 (0.042)	Prec 100.00% (99.98%)
+Epoch: [107][100/200]	Time 0.814 (0.953)	Data 0.001 (0.017)	Loss_ce 1.171 (1.163)	Loss_tr 0.051 (0.042)	Prec 100.00% (99.97%)
+Epoch: [107][150/200]	Time 0.938 (0.957)	Data 0.001 (0.018)	Loss_ce 1.168 (1.163)	Loss_tr 0.106 (0.043)	Prec 100.00% (99.97%)
+Epoch: [107][200/200]	Time 0.491 (0.954)	Data 0.001 (0.019)	Loss_ce 1.161 (1.163)	Loss_tr 0.032 (0.043)	Prec 100.00% (99.96%)
+Epoch: [108][50/200]	Time 0.928 (0.945)	Data 0.000 (0.011)	Loss_ce 1.170 (1.166)	Loss_tr 0.065 (0.047)	Prec 99.22% (99.87%)
+Epoch: [108][100/200]	Time 0.825 (0.950)	Data 0.001 (0.016)	Loss_ce 1.159 (1.164)	Loss_tr 0.059 (0.046)	Prec 100.00% (99.90%)
+Epoch: [108][150/200]	Time 0.918 (0.954)	Data 0.001 (0.017)	Loss_ce 1.165 (1.164)	Loss_tr 0.030 (0.045)	Prec 100.00% (99.92%)
+Epoch: [108][200/200]	Time 0.587 (0.953)	Data 0.000 (0.018)	Loss_ce 1.159 (1.164)	Loss_tr 0.042 (0.044)	Prec 100.00% (99.93%)
+Epoch: [109][50/200]	Time 0.810 (0.760)	Data 0.000 (0.010)	Loss_ce 1.167 (1.164)	Loss_tr 0.044 (0.044)	Prec 100.00% (99.97%)
+Epoch: [109][100/200]	Time 0.724 (0.763)	Data 0.001 (0.016)	Loss_ce 1.172 (1.165)	Loss_tr 0.043 (0.046)	Prec 100.00% (99.95%)
+Epoch: [109][150/200]	Time 0.927 (0.714)	Data 0.001 (0.017)	Loss_ce 1.177 (1.164)	Loss_tr 0.034 (0.045)	Prec 100.00% (99.96%)
+Epoch: [109][200/200]	Time 0.484 (0.773)	Data 0.001 (0.018)	Loss_ce 1.167 (1.164)	Loss_tr 0.076 (0.044)	Prec 100.00% (99.96%)
+Extract Features: [50/156]	Time 0.546 (0.555)	Data 0.000 (0.013)	
+Extract Features: [100/156]	Time 0.543 (0.544)	Data 0.000 (0.007)	
+Extract Features: [150/156]	Time 0.541 (0.546)	Data 0.000 (0.004)	
+Mean AP: 94.4%
+CMC Scores:
+  top-1          95.1%
+  top-5          97.5%
+  top-10         98.2%
+
+ * Finished epoch 109  source mAP: 94.4%  best: 94.4% *
+
+Epoch: [110][50/200]	Time 0.948 (0.943)	Data 0.000 (0.013)	Loss_ce 1.156 (1.164)	Loss_tr 0.029 (0.040)	Prec 100.00% (99.94%)
+Epoch: [110][100/200]	Time 0.917 (0.946)	Data 0.001 (0.017)	Loss_ce 1.163 (1.164)	Loss_tr 0.033 (0.041)	Prec 100.00% (99.91%)
+Epoch: [110][150/200]	Time 0.997 (0.945)	Data 0.001 (0.018)	Loss_ce 1.170 (1.165)	Loss_tr 0.041 (0.043)	Prec 100.00% (99.92%)
+Epoch: [110][200/200]	Time 0.913 (0.948)	Data 0.000 (0.018)	Loss_ce 1.171 (1.165)	Loss_tr 0.046 (0.044)	Prec 100.00% (99.92%)
+Epoch: [111][50/200]	Time 0.954 (0.937)	Data 0.000 (0.014)	Loss_ce 1.163 (1.166)	Loss_tr 0.057 (0.043)	Prec 100.00% (99.91%)
+Epoch: [111][100/200]	Time 0.922 (0.941)	Data 0.001 (0.016)	Loss_ce 1.156 (1.164)	Loss_tr 0.029 (0.043)	Prec 100.00% (99.93%)
+Epoch: [111][150/200]	Time 0.947 (0.944)	Data 0.001 (0.017)	Loss_ce 1.156 (1.164)	Loss_tr 0.030 (0.043)	Prec 100.00% (99.92%)
+Epoch: [111][200/200]	Time 0.872 (0.944)	Data 0.001 (0.018)	Loss_ce 1.189 (1.164)	Loss_tr 0.046 (0.043)	Prec 99.22% (99.92%)
+Epoch: [112][50/200]	Time 0.992 (0.936)	Data 0.000 (0.012)	Loss_ce 1.161 (1.164)	Loss_tr 0.036 (0.043)	Prec 100.00% (99.94%)
+Epoch: [112][100/200]	Time 1.033 (0.949)	Data 0.001 (0.016)	Loss_ce 1.173 (1.164)	Loss_tr 0.033 (0.042)	Prec 99.22% (99.91%)
+Epoch: [112][150/200]	Time 0.932 (0.950)	Data 0.001 (0.017)	Loss_ce 1.167 (1.163)	Loss_tr 0.060 (0.041)	Prec 100.00% (99.93%)
+Epoch: [112][200/200]	Time 0.944 (0.949)	Data 0.001 (0.018)	Loss_ce 1.155 (1.164)	Loss_tr 0.044 (0.043)	Prec 100.00% (99.93%)
+Epoch: [113][50/200]	Time 0.947 (0.936)	Data 0.001 (0.013)	Loss_ce 1.150 (1.163)	Loss_tr 0.023 (0.043)	Prec 100.00% (99.98%)
+Epoch: [113][100/200]	Time 0.956 (0.943)	Data 0.001 (0.016)	Loss_ce 1.162 (1.163)	Loss_tr 0.055 (0.044)	Prec 100.00% (99.98%)
+Epoch: [113][150/200]	Time 0.916 (0.944)	Data 0.001 (0.017)	Loss_ce 1.165 (1.164)	Loss_tr 0.043 (0.045)	Prec 99.22% (99.96%)
+Epoch: [113][200/200]	Time 0.981 (0.947)	Data 0.001 (0.018)	Loss_ce 1.162 (1.164)	Loss_tr 0.022 (0.044)	Prec 100.00% (99.96%)
+Epoch: [114][50/200]	Time 0.761 (0.744)	Data 0.000 (0.010)	Loss_ce 1.160 (1.164)	Loss_tr 0.030 (0.040)	Prec 100.00% (99.92%)
+Epoch: [114][100/200]	Time 0.724 (0.756)	Data 0.001 (0.015)	Loss_ce 1.168 (1.163)	Loss_tr 0.029 (0.042)	Prec 100.00% (99.93%)
+Epoch: [114][150/200]	Time 0.526 (0.700)	Data 0.001 (0.017)	Loss_ce 1.156 (1.164)	Loss_tr 0.034 (0.041)	Prec 100.00% (99.93%)
+Epoch: [114][200/200]	Time 0.937 (0.767)	Data 0.001 (0.018)	Loss_ce 1.156 (1.163)	Loss_tr 0.034 (0.041)	Prec 100.00% (99.95%)
+Extract Features: [50/156]	Time 0.528 (0.546)	Data 0.000 (0.013)	
+Extract Features: [100/156]	Time 0.527 (0.539)	Data 0.000 (0.006)	
+Extract Features: [150/156]	Time 0.581 (0.543)	Data 0.000 (0.004)	
+Mean AP: 94.5%
+CMC Scores:
+  top-1          95.1%
+  top-5          97.6%
+  top-10         98.2%
+
+ * Finished epoch 114  source mAP: 94.5%  best: 94.5% *
+
+Epoch: [115][50/200]	Time 0.903 (0.928)	Data 0.000 (0.010)	Loss_ce 1.169 (1.166)	Loss_tr 0.067 (0.044)	Prec 100.00% (99.94%)
+Epoch: [115][100/200]	Time 0.914 (0.939)	Data 0.001 (0.015)	Loss_ce 1.150 (1.165)	Loss_tr 0.020 (0.046)	Prec 100.00% (99.94%)
+Epoch: [115][150/200]	Time 0.943 (0.940)	Data 0.001 (0.017)	Loss_ce 1.171 (1.165)	Loss_tr 0.055 (0.045)	Prec 100.00% (99.92%)
+Epoch: [115][200/200]	Time 0.942 (0.942)	Data 0.001 (0.017)	Loss_ce 1.168 (1.164)	Loss_tr 0.048 (0.043)	Prec 100.00% (99.93%)
+Epoch: [116][50/200]	Time 0.943 (0.932)	Data 0.000 (0.012)	Loss_ce 1.162 (1.165)	Loss_tr 0.040 (0.045)	Prec 100.00% (99.95%)
+Epoch: [116][100/200]	Time 0.928 (0.939)	Data 0.001 (0.016)	Loss_ce 1.165 (1.163)	Loss_tr 0.043 (0.042)	Prec 100.00% (99.95%)
+Epoch: [116][150/200]	Time 0.980 (0.945)	Data 0.001 (0.018)	Loss_ce 1.164 (1.163)	Loss_tr 0.070 (0.042)	Prec 100.00% (99.94%)
+Epoch: [116][200/200]	Time 0.916 (0.946)	Data 0.001 (0.018)	Loss_ce 1.154 (1.163)	Loss_tr 0.026 (0.042)	Prec 100.00% (99.94%)
+Epoch: [117][50/200]	Time 0.937 (0.933)	Data 0.000 (0.010)	Loss_ce 1.158 (1.164)	Loss_tr 0.032 (0.044)	Prec 100.00% (99.98%)
+Epoch: [117][100/200]	Time 0.953 (0.941)	Data 0.001 (0.015)	Loss_ce 1.171 (1.163)	Loss_tr 0.036 (0.044)	Prec 100.00% (99.95%)
+Epoch: [117][150/200]	Time 0.918 (0.944)	Data 0.001 (0.017)	Loss_ce 1.160 (1.163)	Loss_tr 0.033 (0.043)	Prec 100.00% (99.94%)
+Epoch: [117][200/200]	Time 0.926 (0.948)	Data 0.001 (0.018)	Loss_ce 1.149 (1.163)	Loss_tr 0.034 (0.042)	Prec 100.00% (99.94%)
+Epoch: [118][50/200]	Time 0.898 (0.928)	Data 0.000 (0.010)	Loss_ce 1.169 (1.161)	Loss_tr 0.062 (0.040)	Prec 100.00% (99.94%)
+Epoch: [118][100/200]	Time 0.925 (0.941)	Data 0.001 (0.015)	Loss_ce 1.155 (1.162)	Loss_tr 0.032 (0.041)	Prec 100.00% (99.92%)
+Epoch: [118][150/200]	Time 0.996 (0.944)	Data 0.001 (0.016)	Loss_ce 1.167 (1.163)	Loss_tr 0.064 (0.041)	Prec 100.00% (99.93%)
+Epoch: [118][200/200]	Time 0.988 (0.949)	Data 0.001 (0.017)	Loss_ce 1.161 (1.163)	Loss_tr 0.030 (0.041)	Prec 100.00% (99.93%)
+Epoch: [119][50/200]	Time 0.705 (0.780)	Data 0.001 (0.011)	Loss_ce 1.152 (1.163)	Loss_tr 0.026 (0.045)	Prec 100.00% (99.97%)
+Epoch: [119][100/200]	Time 0.685 (0.771)	Data 0.001 (0.016)	Loss_ce 1.155 (1.163)	Loss_tr 0.036 (0.042)	Prec 100.00% (99.95%)
+Epoch: [119][150/200]	Time 0.488 (0.717)	Data 0.001 (0.017)	Loss_ce 1.159 (1.162)	Loss_tr 0.027 (0.042)	Prec 100.00% (99.94%)
+Epoch: [119][200/200]	Time 0.763 (0.725)	Data 0.001 (0.018)	Loss_ce 1.151 (1.162)	Loss_tr 0.031 (0.041)	Prec 100.00% (99.95%)
+Extract Features: [50/156]	Time 0.634 (0.490)	Data 0.005 (0.014)	
+Extract Features: [100/156]	Time 0.335 (0.459)	Data 0.000 (0.007)	
+Extract Features: [150/156]	Time 0.327 (0.419)	Data 0.000 (0.005)	
+Mean AP: 94.5%
+CMC Scores:
+  top-1          95.4%
+  top-5          97.7%
+  top-10         98.2%
+
+ * Finished epoch 119  source mAP: 94.5%  best: 94.5% *
+
+Test on target domain:
+Extract Features: [50/151]	Time 0.324 (0.350)	Data 0.000 (0.014)	
+Extract Features: [100/151]	Time 0.335 (0.343)	Data 0.000 (0.007)	
+Extract Features: [150/151]	Time 0.328 (0.345)	Data 0.000 (0.005)	
+Mean AP: 36.6%
+CMC Scores:
+  top-1          66.4%
+  top-5          81.1%
+  top-10         86.0%
+==========
+Args:Namespace(alpha=0.999, arch='resnet101', batch_size=128, data_dir='/home/ccvn/Workspace/trinh/data/reid', dataset_target='market', dropout=0, epochs=80, eval_step=1, features=0, height=256, initial_weights='logs/duke2market_ECAB_BFMN/source_pretraining', iters=400, logs_dir='logs/duke2market_ECAB_BFMN/target_fine_tuning_700', lr=0.00035, momentum=0.9, num_clusters=700, num_instances=4, print_freq=50, resume='', seed=1, split_parts=2, weight_decay=0.0005, width=128, workers=4)
+==========
+=> Market1501 loaded
+Dataset statistics:
+  ----------------------------------------
+  subset   | # ids | # images | # cameras
+  ----------------------------------------
+  train    |  1500 |   155952 |         6
+  query    |   750 |     3368 |         6
+  gallery  |   751 |    15913 |         6
+  ----------------------------------------
+=> Loaded checkpoint 'logs/duke2market_ECAB_BFMN/source_pretraining/model_best.pth.tar'
+
+ Clustering into 700 classes 
+
+Epoch: [0][50/400]
+Loss_ce 5.054	Loss_tri 4.492	Loss_tri_2 7.647	Loss_tri_3 8.439	Prec 17.06%	
+Epoch: [0][100/400]
+Loss_ce 4.834	Loss_tri 4.034	Loss_tri_2 6.667	Loss_tri_3 7.267	Prec 21.80%	
+Epoch: [0][150/400]
+Loss_ce 4.628	Loss_tri 3.758	Loss_tri_2 6.147	Loss_tri_3 6.654	Prec 25.70%	
+Epoch: [0][200/400]
+Loss_ce 4.451	Loss_tri 3.574	Loss_tri_2 5.808	Loss_tri_3 6.262	Prec 29.18%	
+Epoch: [0][250/400]
+Loss_ce 4.309	Loss_tri 3.439	Loss_tri_2 5.546	Loss_tri_3 5.986	Prec 31.66%	
+Epoch: [0][300/400]
+Loss_ce 4.188	Loss_tri 3.343	Loss_tri_2 5.357	Loss_tri_3 5.756	Prec 33.76%	
+Epoch: [0][350/400]
+Loss_ce 4.090	Loss_tri 3.271	Loss_tri_2 5.209	Loss_tri_3 5.572	Prec 35.33%	
+Epoch: [0][400/400]
+Loss_ce 4.006	Loss_tri 3.195	Loss_tri_2 5.078	Loss_tri_3 5.424	Prec 36.61%	
+Extract Features: [50/151]	Time 0.656 (0.686)	Data 0.000 (0.019)	
+Extract Features: [100/151]	Time 0.652 (0.673)	Data 0.000 (0.010)	
+Extract Features: [150/151]	Time 0.648 (0.671)	Data 0.000 (0.006)	
+Mean AP: 46.1%
+
+ * Finished epoch   0  model no.1 mAP: 46.1%  best: 46.1% *
+
+
+ Clustering into 700 classes 
+
+Epoch: [1][50/400]
+Loss_ce 2.212	Loss_tri 1.298	Loss_tri_2 2.067	Loss_tri_3 2.064	Prec 72.92%	
+Epoch: [1][100/400]
+Loss_ce 2.079	Loss_tri 1.227	Loss_tri_2 1.973	Loss_tri_3 1.948	Prec 77.35%	
+Epoch: [1][150/400]
+Loss_ce 2.021	Loss_tri 1.191	Loss_tri_2 1.903	Loss_tri_3 1.928	Prec 79.24%	
+Epoch: [1][200/400]
+Loss_ce 1.980	Loss_tri 1.168	Loss_tri_2 1.861	Loss_tri_3 1.863	Prec 80.30%	
+Epoch: [1][250/400]
+Loss_ce 1.958	Loss_tri 1.145	Loss_tri_2 1.835	Loss_tri_3 1.805	Prec 80.93%	
+Epoch: [1][300/400]
+Loss_ce 1.931	Loss_tri 1.118	Loss_tri_2 1.807	Loss_tri_3 1.769	Prec 81.59%	
+Epoch: [1][350/400]
+Loss_ce 1.907	Loss_tri 1.093	Loss_tri_2 1.768	Loss_tri_3 1.723	Prec 82.27%	
+Epoch: [1][400/400]
+Loss_ce 1.890	Loss_tri 1.074	Loss_tri_2 1.732	Loss_tri_3 1.681	Prec 82.65%	
+Extract Features: [50/151]	Time 0.641 (0.674)	Data 0.000 (0.021)	
+Extract Features: [100/151]	Time 0.646 (0.665)	Data 0.000 (0.011)	
+Extract Features: [150/151]	Time 0.638 (0.664)	Data 0.000 (0.007)	
+Mean AP: 52.7%
+
+ * Finished epoch   1  model no.1 mAP: 52.7%  best: 52.7% *
+
+
+ Clustering into 700 classes 
+
+Epoch: [2][50/400]
+Loss_ce 2.004	Loss_tri 1.127	Loss_tri_2 1.896	Loss_tri_3 1.834	Prec 78.87%	
+Epoch: [2][100/400]
+Loss_ce 1.907	Loss_tri 1.070	Loss_tri_2 1.742	Loss_tri_3 1.755	Prec 81.91%	
+Epoch: [2][150/400]
+Loss_ce 1.865	Loss_tri 1.018	Loss_tri_2 1.712	Loss_tri_3 1.722	Prec 83.02%	
+Epoch: [2][200/400]
+Loss_ce 1.836	Loss_tri 1.011	Loss_tri_2 1.677	Loss_tri_3 1.663	Prec 83.77%	
+Epoch: [2][250/400]
+Loss_ce 1.814	Loss_tri 0.990	Loss_tri_2 1.634	Loss_tri_3 1.630	Prec 84.38%	
+Epoch: [2][300/400]
+Loss_ce 1.796	Loss_tri 0.971	Loss_tri_2 1.621	Loss_tri_3 1.604	Prec 84.84%	
+Epoch: [2][350/400]
+Loss_ce 1.779	Loss_tri 0.953	Loss_tri_2 1.586	Loss_tri_3 1.582	Prec 85.28%	
+Epoch: [2][400/400]
+Loss_ce 1.765	Loss_tri 0.939	Loss_tri_2 1.559	Loss_tri_3 1.560	Prec 85.61%	
+Extract Features: [50/151]	Time 0.643 (0.680)	Data 0.000 (0.023)	
+Extract Features: [100/151]	Time 0.644 (0.666)	Data 0.000 (0.012)	
+Extract Features: [150/151]	Time 0.641 (0.663)	Data 0.000 (0.008)	
+Mean AP: 56.7%
+
+ * Finished epoch   2  model no.1 mAP: 56.7%  best: 56.7% *
+
+
+ Clustering into 700 classes 
+
+Epoch: [3][50/400]
+Loss_ce 1.976	Loss_tri 1.055	Loss_tri_2 1.606	Loss_tri_3 1.638	Prec 79.30%	
+Epoch: [3][100/400]
+Loss_ce 1.899	Loss_tri 1.020	Loss_tri_2 1.573	Loss_tri_3 1.593	Prec 81.80%	
+Epoch: [3][150/400]
+Loss_ce 1.845	Loss_tri 0.977	Loss_tri_2 1.539	Loss_tri_3 1.531	Prec 83.39%	
+Epoch: [3][200/400]
+Loss_ce 1.815	Loss_tri 0.958	Loss_tri_2 1.496	Loss_tri_3 1.487	Prec 84.24%	
+Epoch: [3][250/400]
+Loss_ce 1.796	Loss_tri 0.941	Loss_tri_2 1.459	Loss_tri_3 1.479	Prec 84.68%	
+Epoch: [3][300/400]
+Loss_ce 1.775	Loss_tri 0.924	Loss_tri_2 1.434	Loss_tri_3 1.450	Prec 85.24%	
+Epoch: [3][350/400]
+Loss_ce 1.760	Loss_tri 0.907	Loss_tri_2 1.412	Loss_tri_3 1.428	Prec 85.61%	
+Epoch: [3][400/400]
+Loss_ce 1.748	Loss_tri 0.895	Loss_tri_2 1.386	Loss_tri_3 1.402	Prec 85.93%	
+Extract Features: [50/151]	Time 0.640 (0.672)	Data 0.000 (0.022)	
+Extract Features: [100/151]	Time 0.644 (0.663)	Data 0.000 (0.011)	
+Extract Features: [150/151]	Time 0.641 (0.662)	Data 0.000 (0.008)	
+Mean AP: 60.2%
+
+ * Finished epoch   3  model no.1 mAP: 60.2%  best: 60.2% *
+
+
+ Clustering into 700 classes 
+
+Epoch: [4][50/400]
+Loss_ce 1.906	Loss_tri 0.999	Loss_tri_2 1.556	Loss_tri_3 1.526	Prec 80.75%	
+Epoch: [4][100/400]
+Loss_ce 1.821	Loss_tri 0.926	Loss_tri_2 1.445	Loss_tri_3 1.495	Prec 83.75%	
+Epoch: [4][150/400]
+Loss_ce 1.778	Loss_tri 0.897	Loss_tri_2 1.413	Loss_tri_3 1.449	Prec 85.11%	
+Epoch: [4][200/400]
+Loss_ce 1.750	Loss_tri 0.878	Loss_tri_2 1.367	Loss_tri_3 1.424	Prec 85.93%	
+Epoch: [4][250/400]
+Loss_ce 1.728	Loss_tri 0.855	Loss_tri_2 1.331	Loss_tri_3 1.400	Prec 86.60%	
+Epoch: [4][300/400]
+Loss_ce 1.707	Loss_tri 0.834	Loss_tri_2 1.309	Loss_tri_3 1.370	Prec 87.20%	
+Epoch: [4][350/400]
+Loss_ce 1.693	Loss_tri 0.817	Loss_tri_2 1.294	Loss_tri_3 1.352	Prec 87.49%	
+Epoch: [4][400/400]
+Loss_ce 1.682	Loss_tri 0.810	Loss_tri_2 1.268	Loss_tri_3 1.341	Prec 87.73%	
+Extract Features: [50/151]	Time 0.643 (0.681)	Data 0.000 (0.022)	
+Extract Features: [100/151]	Time 0.644 (0.668)	Data 0.000 (0.011)	
+Extract Features: [150/151]	Time 0.639 (0.663)	Data 0.000 (0.008)	
+Mean AP: 62.4%
+
+ * Finished epoch   4  model no.1 mAP: 62.4%  best: 62.4% *
+
+
+ Clustering into 700 classes 
+
+Epoch: [5][50/400]
+Loss_ce 1.872	Loss_tri 0.889	Loss_tri_2 1.406	Loss_tri_3 1.372	Prec 82.41%	
+Epoch: [5][100/400]
+Loss_ce 1.799	Loss_tri 0.870	Loss_tri_2 1.357	Loss_tri_3 1.344	Prec 84.84%	
+Epoch: [5][150/400]
+Loss_ce 1.758	Loss_tri 0.846	Loss_tri_2 1.308	Loss_tri_3 1.317	Prec 85.96%	
+Epoch: [5][200/400]
+Loss_ce 1.729	Loss_tri 0.823	Loss_tri_2 1.274	Loss_tri_3 1.284	Prec 86.74%	
+Epoch: [5][250/400]
+Loss_ce 1.711	Loss_tri 0.811	Loss_tri_2 1.264	Loss_tri_3 1.270	Prec 87.29%	
+Epoch: [5][300/400]
+Loss_ce 1.695	Loss_tri 0.800	Loss_tri_2 1.242	Loss_tri_3 1.253	Prec 87.66%	
+Epoch: [5][350/400]
+Loss_ce 1.681	Loss_tri 0.791	Loss_tri_2 1.222	Loss_tri_3 1.235	Prec 87.93%	
+Epoch: [5][400/400]
+Loss_ce 1.667	Loss_tri 0.777	Loss_tri_2 1.204	Loss_tri_3 1.217	Prec 88.25%	
+Extract Features: [50/151]	Time 0.649 (0.683)	Data 0.000 (0.024)	
+Extract Features: [100/151]	Time 0.657 (0.673)	Data 0.000 (0.012)	
+Extract Features: [150/151]	Time 0.647 (0.671)	Data 0.000 (0.008)	
+Mean AP: 64.4%
+
+ * Finished epoch   5  model no.1 mAP: 64.4%  best: 64.4% *
+
+
+ Clustering into 700 classes 
+
+Epoch: [6][50/400]
+Loss_ce 1.850	Loss_tri 0.838	Loss_tri_2 1.261	Loss_tri_3 1.338	Prec 83.03%	
+Epoch: [6][100/400]
+Loss_ce 1.768	Loss_tri 0.806	Loss_tri_2 1.252	Loss_tri_3 1.269	Prec 85.53%	
+Epoch: [6][150/400]
+Loss_ce 1.736	Loss_tri 0.796	Loss_tri_2 1.231	Loss_tri_3 1.220	Prec 86.42%	
+Epoch: [6][200/400]
+Loss_ce 1.710	Loss_tri 0.785	Loss_tri_2 1.203	Loss_tri_3 1.179	Prec 87.09%	
+Epoch: [6][250/400]
+Loss_ce 1.692	Loss_tri 0.775	Loss_tri_2 1.181	Loss_tri_3 1.154	Prec 87.58%	
+Epoch: [6][300/400]
+Loss_ce 1.680	Loss_tri 0.771	Loss_tri_2 1.166	Loss_tri_3 1.127	Prec 87.86%	
+Epoch: [6][350/400]
+Loss_ce 1.663	Loss_tri 0.755	Loss_tri_2 1.143	Loss_tri_3 1.118	Prec 88.23%	
+Epoch: [6][400/400]
+Loss_ce 1.652	Loss_tri 0.741	Loss_tri_2 1.118	Loss_tri_3 1.100	Prec 88.46%	
+Extract Features: [50/151]	Time 0.642 (0.676)	Data 0.000 (0.024)	
+Extract Features: [100/151]	Time 0.650 (0.666)	Data 0.000 (0.012)	
+Extract Features: [150/151]	Time 0.649 (0.663)	Data 0.000 (0.008)	
+Mean AP: 66.2%
+
+ * Finished epoch   6  model no.1 mAP: 66.2%  best: 66.2% *
+
+
+ Clustering into 700 classes 
+
+Epoch: [7][50/400]
+Loss_ce 1.808	Loss_tri 0.796	Loss_tri_2 1.253	Loss_tri_3 1.230	Prec 83.86%	
+Epoch: [7][100/400]
+Loss_ce 1.746	Loss_tri 0.761	Loss_tri_2 1.158	Loss_tri_3 1.149	Prec 85.90%	
+Epoch: [7][150/400]
+Loss_ce 1.713	Loss_tri 0.765	Loss_tri_2 1.138	Loss_tri_3 1.141	Prec 86.75%	
+Epoch: [7][200/400]
+Loss_ce 1.688	Loss_tri 0.746	Loss_tri_2 1.101	Loss_tri_3 1.111	Prec 87.45%	
+Epoch: [7][250/400]
+Loss_ce 1.669	Loss_tri 0.735	Loss_tri_2 1.081	Loss_tri_3 1.087	Prec 87.90%	
+Epoch: [7][300/400]
+Loss_ce 1.654	Loss_tri 0.730	Loss_tri_2 1.068	Loss_tri_3 1.081	Prec 88.28%	
+Epoch: [7][350/400]
+Loss_ce 1.641	Loss_tri 0.720	Loss_tri_2 1.054	Loss_tri_3 1.063	Prec 88.59%	
+Epoch: [7][400/400]
+Loss_ce 1.632	Loss_tri 0.717	Loss_tri_2 1.045	Loss_tri_3 1.045	Prec 88.75%	
+Extract Features: [50/151]	Time 0.665 (0.681)	Data 0.000 (0.022)	
+Extract Features: [100/151]	Time 0.638 (0.672)	Data 0.000 (0.011)	
+Extract Features: [150/151]	Time 0.648 (0.667)	Data 0.000 (0.008)	
+Mean AP: 67.8%
+
+ * Finished epoch   7  model no.1 mAP: 67.8%  best: 67.8% *
+
+
+ Clustering into 700 classes 
+
+Epoch: [8][50/400]
+Loss_ce 1.790	Loss_tri 0.792	Loss_tri_2 1.088	Loss_tri_3 1.150	Prec 84.77%	
+Epoch: [8][100/400]
+Loss_ce 1.719	Loss_tri 0.744	Loss_tri_2 1.074	Loss_tri_3 1.050	Prec 87.03%	
+Epoch: [8][150/400]
+Loss_ce 1.692	Loss_tri 0.728	Loss_tri_2 1.040	Loss_tri_3 1.013	Prec 87.74%	
+Epoch: [8][200/400]
+Loss_ce 1.666	Loss_tri 0.708	Loss_tri_2 1.026	Loss_tri_3 0.986	Prec 88.35%	
+Epoch: [8][250/400]
+Loss_ce 1.648	Loss_tri 0.694	Loss_tri_2 1.005	Loss_tri_3 0.974	Prec 88.70%	
+Epoch: [8][300/400]
+Loss_ce 1.636	Loss_tri 0.684	Loss_tri_2 0.991	Loss_tri_3 0.957	Prec 88.94%	
+Epoch: [8][350/400]
+Loss_ce 1.623	Loss_tri 0.676	Loss_tri_2 0.980	Loss_tri_3 0.943	Prec 89.24%	
+Epoch: [8][400/400]
+Loss_ce 1.609	Loss_tri 0.662	Loss_tri_2 0.962	Loss_tri_3 0.937	Prec 89.54%	
+Extract Features: [50/151]	Time 0.638 (0.683)	Data 0.000 (0.024)	
+Extract Features: [100/151]	Time 0.641 (0.670)	Data 0.000 (0.012)	
+Extract Features: [150/151]	Time 0.640 (0.664)	Data 0.000 (0.008)	
+Mean AP: 68.8%
+
+ * Finished epoch   8  model no.1 mAP: 68.8%  best: 68.8% *
+
+
+ Clustering into 700 classes 
+
+Epoch: [9][50/400]
+Loss_ce 1.737	Loss_tri 0.714	Loss_tri_2 1.010	Loss_tri_3 1.034	Prec 85.58%	
+Epoch: [9][100/400]
+Loss_ce 1.681	Loss_tri 0.688	Loss_tri_2 0.966	Loss_tri_3 0.980	Prec 87.41%	
+Epoch: [9][150/400]
+Loss_ce 1.645	Loss_tri 0.667	Loss_tri_2 0.947	Loss_tri_3 0.948	Prec 88.48%	
+Epoch: [9][200/400]
+Loss_ce 1.625	Loss_tri 0.656	Loss_tri_2 0.924	Loss_tri_3 0.921	Prec 88.95%	
+Epoch: [9][250/400]
+Loss_ce 1.611	Loss_tri 0.642	Loss_tri_2 0.904	Loss_tri_3 0.916	Prec 89.26%	
+Epoch: [9][300/400]
+Loss_ce 1.598	Loss_tri 0.632	Loss_tri_2 0.887	Loss_tri_3 0.894	Prec 89.57%	
+Epoch: [9][350/400]
+Loss_ce 1.587	Loss_tri 0.625	Loss_tri_2 0.874	Loss_tri_3 0.880	Prec 89.87%	
+Epoch: [9][400/400]
+Loss_ce 1.577	Loss_tri 0.616	Loss_tri_2 0.859	Loss_tri_3 0.866	Prec 90.11%	
+Extract Features: [50/151]	Time 0.650 (0.685)	Data 0.000 (0.024)	
+Extract Features: [100/151]	Time 0.710 (0.672)	Data 0.000 (0.012)	
+Extract Features: [150/151]	Time 0.641 (0.668)	Data 0.000 (0.008)	
+Mean AP: 70.0%
+
+ * Finished epoch   9  model no.1 mAP: 70.0%  best: 70.0% *
+
+
+ Clustering into 700 classes 
+
+Epoch: [10][50/400]
+Loss_ce 1.750	Loss_tri 0.707	Loss_tri_2 0.972	Loss_tri_3 0.982	Prec 85.37%	
+Epoch: [10][100/400]
+Loss_ce 1.687	Loss_tri 0.666	Loss_tri_2 0.915	Loss_tri_3 0.915	Prec 87.41%	
+Epoch: [10][150/400]
+Loss_ce 1.660	Loss_tri 0.652	Loss_tri_2 0.871	Loss_tri_3 0.886	Prec 88.23%	
+Epoch: [10][200/400]
+Loss_ce 1.634	Loss_tri 0.640	Loss_tri_2 0.864	Loss_tri_3 0.872	Prec 88.88%	
+Epoch: [10][250/400]
+Loss_ce 1.618	Loss_tri 0.629	Loss_tri_2 0.836	Loss_tri_3 0.854	Prec 89.21%	
+Epoch: [10][300/400]
+Loss_ce 1.603	Loss_tri 0.624	Loss_tri_2 0.826	Loss_tri_3 0.846	Prec 89.57%	
+Epoch: [10][350/400]
+Loss_ce 1.592	Loss_tri 0.616	Loss_tri_2 0.815	Loss_tri_3 0.831	Prec 89.76%	
+Epoch: [10][400/400]
+Loss_ce 1.582	Loss_tri 0.610	Loss_tri_2 0.802	Loss_tri_3 0.821	Prec 90.00%	
+Extract Features: [50/151]	Time 0.651 (0.689)	Data 0.000 (0.023)	
+Extract Features: [100/151]	Time 0.651 (0.676)	Data 0.000 (0.012)	
+Extract Features: [150/151]	Time 0.647 (0.671)	Data 0.000 (0.008)	
+Mean AP: 71.0%
+
+ * Finished epoch  10  model no.1 mAP: 71.0%  best: 71.0% *
+
+
+ Clustering into 700 classes 
+
+Epoch: [11][50/400]
+Loss_ce 1.707	Loss_tri 0.666	Loss_tri_2 0.886	Loss_tri_3 0.926	Prec 86.39%	
+Epoch: [11][100/400]
+Loss_ce 1.652	Loss_tri 0.642	Loss_tri_2 0.846	Loss_tri_3 0.897	Prec 88.36%	
+Epoch: [11][150/400]
+Loss_ce 1.627	Loss_tri 0.632	Loss_tri_2 0.811	Loss_tri_3 0.864	Prec 89.10%	
+Epoch: [11][200/400]
+Loss_ce 1.603	Loss_tri 0.615	Loss_tri_2 0.799	Loss_tri_3 0.823	Prec 89.75%	
+Epoch: [11][250/400]
+Loss_ce 1.590	Loss_tri 0.607	Loss_tri_2 0.781	Loss_tri_3 0.806	Prec 90.03%	
+Epoch: [11][300/400]
+Loss_ce 1.579	Loss_tri 0.598	Loss_tri_2 0.763	Loss_tri_3 0.793	Prec 90.26%	
+Epoch: [11][350/400]
+Loss_ce 1.565	Loss_tri 0.590	Loss_tri_2 0.747	Loss_tri_3 0.784	Prec 90.55%	
+Epoch: [11][400/400]
+Loss_ce 1.556	Loss_tri 0.583	Loss_tri_2 0.740	Loss_tri_3 0.774	Prec 90.74%	
+Extract Features: [50/151]	Time 0.649 (0.688)	Data 0.000 (0.024)	
+Extract Features: [100/151]	Time 0.650 (0.675)	Data 0.000 (0.012)	
+Extract Features: [150/151]	Time 0.649 (0.671)	Data 0.000 (0.008)	
+Mean AP: 72.1%
+
+ * Finished epoch  11  model no.1 mAP: 72.1%  best: 72.1% *
+
+
+ Clustering into 700 classes 
+
+Epoch: [12][50/400]
+Loss_ce 1.705	Loss_tri 0.665	Loss_tri_2 0.849	Loss_tri_3 0.770	Prec 86.28%	
+Epoch: [12][100/400]
+Loss_ce 1.655	Loss_tri 0.640	Loss_tri_2 0.779	Loss_tri_3 0.748	Prec 88.18%	
+Epoch: [12][150/400]
+Loss_ce 1.625	Loss_tri 0.608	Loss_tri_2 0.758	Loss_tri_3 0.744	Prec 89.07%	
+Epoch: [12][200/400]
+Loss_ce 1.609	Loss_tri 0.601	Loss_tri_2 0.748	Loss_tri_3 0.730	Prec 89.45%	
+Epoch: [12][250/400]
+Loss_ce 1.590	Loss_tri 0.589	Loss_tri_2 0.740	Loss_tri_3 0.709	Prec 89.97%	
+Epoch: [12][300/400]
+Loss_ce 1.578	Loss_tri 0.582	Loss_tri_2 0.728	Loss_tri_3 0.694	Prec 90.26%	
+Epoch: [12][350/400]
+Loss_ce 1.564	Loss_tri 0.571	Loss_tri_2 0.715	Loss_tri_3 0.682	Prec 90.51%	
+Epoch: [12][400/400]
+Loss_ce 1.556	Loss_tri 0.563	Loss_tri_2 0.706	Loss_tri_3 0.679	Prec 90.67%	
+Extract Features: [50/151]	Time 0.642 (0.682)	Data 0.000 (0.024)	
+Extract Features: [100/151]	Time 0.639 (0.668)	Data 0.000 (0.012)	
+Extract Features: [150/151]	Time 0.638 (0.664)	Data 0.000 (0.008)	
+Mean AP: 73.2%
+
+ * Finished epoch  12  model no.1 mAP: 73.2%  best: 73.2% *
+
+
+ Clustering into 700 classes 
+
+Epoch: [13][50/400]
+Loss_ce 1.686	Loss_tri 0.597	Loss_tri_2 0.733	Loss_tri_3 0.800	Prec 86.95%	
+Epoch: [13][100/400]
+Loss_ce 1.640	Loss_tri 0.587	Loss_tri_2 0.717	Loss_tri_3 0.752	Prec 88.55%	
+Epoch: [13][150/400]
+Loss_ce 1.609	Loss_tri 0.566	Loss_tri_2 0.694	Loss_tri_3 0.727	Prec 89.39%	
+Epoch: [13][200/400]
+Loss_ce 1.591	Loss_tri 0.552	Loss_tri_2 0.674	Loss_tri_3 0.708	Prec 89.89%	
+Epoch: [13][250/400]
+Loss_ce 1.576	Loss_tri 0.545	Loss_tri_2 0.669	Loss_tri_3 0.690	Prec 90.24%	
+Epoch: [13][300/400]
+Loss_ce 1.562	Loss_tri 0.542	Loss_tri_2 0.664	Loss_tri_3 0.677	Prec 90.57%	
+Epoch: [13][350/400]
+Loss_ce 1.550	Loss_tri 0.535	Loss_tri_2 0.661	Loss_tri_3 0.673	Prec 90.85%	
+Epoch: [13][400/400]
+Loss_ce 1.541	Loss_tri 0.528	Loss_tri_2 0.654	Loss_tri_3 0.662	Prec 91.06%	
+Extract Features: [50/151]	Time 0.647 (0.688)	Data 0.000 (0.025)	
+Extract Features: [100/151]	Time 0.655 (0.675)	Data 0.000 (0.013)	
+Extract Features: [150/151]	Time 0.721 (0.671)	Data 0.000 (0.009)	
+Mean AP: 74.2%
+
+ * Finished epoch  13  model no.1 mAP: 74.2%  best: 74.2% *
+
+
+ Clustering into 700 classes 
+
+Epoch: [14][50/400]
+Loss_ce 1.697	Loss_tri 0.601	Loss_tri_2 0.740	Loss_tri_3 0.724	Prec 86.16%	
+Epoch: [14][100/400]
+Loss_ce 1.648	Loss_tri 0.586	Loss_tri_2 0.723	Loss_tri_3 0.691	Prec 88.12%	
+Epoch: [14][150/400]
+Loss_ce 1.615	Loss_tri 0.563	Loss_tri_2 0.701	Loss_tri_3 0.668	Prec 89.19%	
+Epoch: [14][200/400]
+Loss_ce 1.595	Loss_tri 0.545	Loss_tri_2 0.681	Loss_tri_3 0.653	Prec 89.69%	
+Epoch: [14][250/400]
+Loss_ce 1.581	Loss_tri 0.538	Loss_tri_2 0.671	Loss_tri_3 0.641	Prec 89.93%	
+Epoch: [14][300/400]
+Loss_ce 1.568	Loss_tri 0.533	Loss_tri_2 0.659	Loss_tri_3 0.633	Prec 90.21%	
+Epoch: [14][350/400]
+Loss_ce 1.558	Loss_tri 0.529	Loss_tri_2 0.646	Loss_tri_3 0.624	Prec 90.48%	
+Epoch: [14][400/400]
+Loss_ce 1.547	Loss_tri 0.523	Loss_tri_2 0.641	Loss_tri_3 0.617	Prec 90.70%	
+Extract Features: [50/151]	Time 0.650 (0.685)	Data 0.000 (0.023)	
+Extract Features: [100/151]	Time 0.651 (0.673)	Data 0.000 (0.012)	
+Extract Features: [150/151]	Time 0.647 (0.669)	Data 0.000 (0.008)	
+Mean AP: 75.0%
+
+ * Finished epoch  14  model no.1 mAP: 75.0%  best: 75.0% *
+
+
+ Clustering into 700 classes 
+
+Epoch: [15][50/400]
+Loss_ce 1.695	Loss_tri 0.622	Loss_tri_2 0.697	Loss_tri_3 0.662	Prec 86.25%	
+Epoch: [15][100/400]
+Loss_ce 1.643	Loss_tri 0.581	Loss_tri_2 0.654	Loss_tri_3 0.645	Prec 88.09%	
+Epoch: [15][150/400]
+Loss_ce 1.615	Loss_tri 0.566	Loss_tri_2 0.643	Loss_tri_3 0.630	Prec 88.94%	
+Epoch: [15][200/400]
+Loss_ce 1.596	Loss_tri 0.552	Loss_tri_2 0.642	Loss_tri_3 0.619	Prec 89.57%	
+Epoch: [15][250/400]
+Loss_ce 1.579	Loss_tri 0.538	Loss_tri_2 0.629	Loss_tri_3 0.605	Prec 89.98%	
+Epoch: [15][300/400]
+Loss_ce 1.566	Loss_tri 0.527	Loss_tri_2 0.620	Loss_tri_3 0.596	Prec 90.20%	
+Epoch: [15][350/400]
+Loss_ce 1.555	Loss_tri 0.521	Loss_tri_2 0.612	Loss_tri_3 0.594	Prec 90.49%	
+Epoch: [15][400/400]
+Loss_ce 1.544	Loss_tri 0.513	Loss_tri_2 0.604	Loss_tri_3 0.589	Prec 90.75%	
+Extract Features: [50/151]	Time 0.649 (0.689)	Data 0.000 (0.023)	
+Extract Features: [100/151]	Time 0.656 (0.676)	Data 0.000 (0.012)	
+Extract Features: [150/151]	Time 0.645 (0.671)	Data 0.000 (0.008)	
+Mean AP: 75.7%
+
+ * Finished epoch  15  model no.1 mAP: 75.7%  best: 75.7% *
+

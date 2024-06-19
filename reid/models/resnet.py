@@ -52,24 +52,18 @@ class ECAB(nn.Module):
             nn.Conv2d(channel//pow(reduction,2),channel//reduction,1,bias=False), 
             nn.ReLU(),
             nn.Conv2d(channel//reduction,channel,1,bias=False)
-
-            # nn.Conv2d(channel,channel//reduction,1,bias=False), 
-            # nn.ReLU(),
-            # nn.Conv2d(channel//reduction,channel//(reduction*reduction),1,bias=False),
-            # nn.ReLU(),
-            # nn.Conv2d(channel//(reduction*reduction),channel//reduction,1,bias=False),
-            # nn.ReLU(),
-            # nn.Conv2d(channel//reduction,channel,1,bias=False)
         )
         self.sigmoid=nn.Sigmoid()  
     
     def forward(self, x) :
-        max_result=self.maxpool(x) 
-        avg_result=self.avgpool(x)
-        max_out=self.se(max_result)
-        avg_out=self.se(avg_result)
-        output=self.sigmoid(max_out+avg_out) 
-        return output  
+        # NO ECAB
+        return self.maxpool(x)
+        # max_result=self.maxpool(x) 
+        # avg_result=self.avgpool(x)
+        # max_out=self.se(max_result)
+        # avg_out=self.se(avg_result)
+        # output=self.sigmoid(max_out+avg_out) 
+        # return output  
 
 class SpatialAttention(nn.Module):
     """Spatial Attention from CBAM
