@@ -4,7 +4,7 @@ import os.path as osp
 import random
 import numpy as np
 import os
-# os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
 import copy
 
 import sys
@@ -168,14 +168,6 @@ def main_worker(args):
         km_global = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=1500).fit(cf_global)  
         km_upper = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=900).fit(cf_upper)
         km_low = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=900).fit(cf_low)
-        
-        # km_global = KMeans(n_clusters=clusters[nc], max_iter=10, n_init=1500).fit(cf_global)  
-        # km_upper = KMeans(n_clusters=clusters[nc], max_iter=10, n_init=900).fit(cf_upper)
-        # km_low = KMeans(n_clusters=clusters[nc], max_iter=10, n_init=900).fit(cf_low)
-         
-        # km_global = BisectingKMeans(n_clusters=clusters[nc], max_iter=100, bisecting_strategy= "biggest_inertia", init="k-means++").fit(cf_global)  
-        # km_upper = BisectingKMeans(n_clusters=clusters[nc], max_iter=100, bisecting_strategy= "biggest_inertia", init="k-means++").fit(cf_upper)
-        # km_low = BisectingKMeans(n_clusters=clusters[nc], max_iter=100, bisecting_strategy= "biggest_inertia", init="k-means++").fit(cf_low)   
         
         # update classifier
         encoder.model.module.classifier.weight.data.copy_(torch.from_numpy(normalize(km_global.cluster_centers_, axis=1)).float().cuda()) 

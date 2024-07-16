@@ -10,6 +10,7 @@
             // change the directory to your env variale
             "python": "/home/ccvn/anaconda3/envs/trinh_python38/bin/python",
             "request": "launch",
+<<<<<<< HEAD
             "program": "${workspaceFolder}/model_test.py",
             "console": "integratedTerminal",
             "args": [
@@ -19,6 +20,17 @@
                 "--arch","resnet101",
                 "--num-classes", "2500",
                 "--resume","logs/duke2msmt_ECAB_BFMN/target_fine_tuning_2500/model_best.pth.tar",
+=======
+            "program": "${workspaceFolder}/model_save_feature_maps.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-dt", "market",
+                "--data-dir", "/mnt/AIProjects/trinh/DATA/reid",
+                "--resume", "logs/cuhk03np2market/target_fine_tuning_900/model_best.pth.tar",
+                "--num-classes", "900",
+                "--arch", "resnet101",
+                "--batch-size", "1",
+>>>>>>> 348c987 (update local 170)
             ],
         },
         // {
