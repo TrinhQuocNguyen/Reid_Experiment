@@ -92,7 +92,7 @@ def main_worker(args):
 
     # Create model
     model_student, model_teacher = create_model(args, False)
-    encoder = Encoder(model_student, model_teacher)
+    encoder = Encoder(model_student, model_teacher, args.arch)
     
     # Load from checkpoint
     checkpoint = load_checkpoint(args.resume)
