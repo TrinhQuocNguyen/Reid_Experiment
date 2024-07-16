@@ -20,7 +20,7 @@ class Market1501(BaseImageDataset):
     # identities: 1501 (+1 for background)
     # images: 12936 (train) + 3368 (query) + 15913 (gallery)
     """
-    dataset_dir = '/home/ccvn/Workspace/trinh/data/reid/Market1501'
+    dataset_dir = '/old/home/ccvn/Workspace/trinh/data/reid/Market1501'
 
     def __init__(self, root, verbose=True, **kwargs):
         super(Market1501, self).__init__()

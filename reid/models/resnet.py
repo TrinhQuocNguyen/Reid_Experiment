@@ -102,6 +102,7 @@ class ECAB_REAL(nn.Module):
         output2= max_result+avg_result
         output=output1*output2
         return output 
+    
 class SpatialAttention(nn.Module):
     """Spatial Attention from CBAM
 
@@ -143,13 +144,13 @@ class Fuse(nn.Module):
 
     def forward(self, x, ca_upper, ca_low) :
         # Add ECAB to global features
-        ca_global = ECAB_REAL(2048, reduction=4)
-        sa_global = SpatialAttention()
+        # ca_global = ECAB_REAL(2048, reduction=4)
+        # sa_global = SpatialAttention()
         
-        channel_embed_global = ca_global(x)
-        x = x*channel_embed_global
-        spacial_embed_global = sa_global(x)
-        x = x*spacial_embed_global
+        # channel_embed_global = ca_global(x)
+        # x = x*channel_embed_global
+        # spacial_embed_global = sa_global(x)
+        # x = x*spacial_embed_global
         
         
   
@@ -270,6 +271,15 @@ class ResNet(nn.Module):
         if self.num_split > 1:
             h = x.size(2)
             x1 = []
+            
+            # Add ECAB and SAB to global features
+            ca_global = ECAB_REAL(2048, reduction=4)
+            sa_global = SpatialAttention()
+            
+            channel_embed_global = ca_global(x)
+            x = x*channel_embed_global
+            spacial_embed_global = sa_global(x)
+            x = x*spacial_embed_global
 
             # global feature map
             x_gap = F.avg_pool2d(x, x.size()[2:])  
