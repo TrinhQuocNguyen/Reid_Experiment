@@ -5,6 +5,8 @@ from torch.nn import functional as F
 from torch.nn import init
 import torchvision
 import torch
+import torchvision.models as models
+
 
 
 __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
@@ -35,7 +37,7 @@ class ECAB(nn.Module):
 
     Args:
         nn (Torch Module - Network): Input Module
-    """  
+    """    
     def __init__(self,channel,reduction=4):
         super().__init__()
         self.maxpool=nn.AdaptiveMaxPool2d(1)
@@ -122,13 +124,17 @@ class SpatialAttention(nn.Module):
         return self.sigmoid(x)  
     
 class Fuse(nn.Module):
-    def __init__(self):
+    
+    def __init__(self, channel_size):
         super(Fuse, self).__init__()
+
+        self.channel_size = channel_size
+            
         self.maxpool=nn.AdaptiveMaxPool2d(1)
         self.avgpool=nn.AdaptiveAvgPool2d(1)
-        self.bn_1 = nn.BatchNorm1d(2048)
-        self.bn_2 = nn.BatchNorm1d(2048)
-        self.bn_3 = nn.BatchNorm1d(2048)
+        self.bn_1 = nn.BatchNorm1d(self.channel_size)
+        self.bn_2 = nn.BatchNorm1d(self.channel_size)
+        self.bn_3 = nn.BatchNorm1d(self.channel_size)
 
         # initialize
         self.bn_1.bias.requires_grad_(False)
@@ -143,7 +149,7 @@ class Fuse(nn.Module):
 
     def forward(self, x, ca_upper, ca_low) :
         # Add ECAB to global features
-        ca_global = ECAB_REAL(2048, reduction=4)
+        ca_global = ECAB_REAL(self.channel_size, reduction=4)
         sa_global = SpatialAttention()
         
         channel_embed_global = ca_global(x)
@@ -179,6 +185,12 @@ class ResNet(nn.Module):
         152: torchvision.models.resnet152,
     }
 
+    __factory_deep = {
+        50: torchvision.models.resnet50,
+        101: torchvision.models.resnet101,
+        152: torchvision.models.resnet152,
+    }
+    
     def __init__(self, depth, pretrained=True, cut_at_pooling=False,
                  num_features=0, norm=False, dropout=0, num_classes=700, num_split=2, extract_feat=False):
         super(ResNet, self).__init__()
@@ -192,18 +204,27 @@ class ResNet(nn.Module):
         if depth not in ResNet.__factory:
             raise KeyError("Unsupported depth:", depth)
         resnet = ResNet.__factory[depth](pretrained=pretrained)
-        resnet.layer4[0].conv2.stride = (1,1)
-        resnet.layer4[0].downsample[0].stride = (1,1)
+        
+        if depth in ResNet.__factory_deep: # only modify the layer4 when the depth is in [50,101,152]
+            resnet.layer4[0].conv2.stride = (1,1)
+            resnet.layer4[0].downsample[0].stride = (1,1)
 
         self.base = nn.Sequential(
             resnet.conv1, resnet.bn1, resnet.relu, resnet.maxpool, 
             resnet.layer1, resnet.layer2, resnet.layer3, resnet.layer4)
         self.gap = nn.AdaptiveAvgPool2d(1)
 
-        self.ca_upper = ECAB(2048, reduction=4)
-        self.sa_upper = SpatialAttention()  
-        self.ca_low = ECAB(2048, reduction=4)  
-        self.sa_low = SpatialAttention()  
+
+        if depth in ResNet.__factory_deep: # The size = 2048 when the depth is in [50,101,152]
+            self.ca_upper = ECAB(2048, reduction=4)
+            self.sa_upper = SpatialAttention()  
+            self.ca_low = ECAB(2048, reduction=4)  
+            self.sa_low = SpatialAttention() 
+        else:
+            self.ca_upper = ECAB(512, reduction=4)
+            self.sa_upper = SpatialAttention()  
+            self.ca_low = ECAB(512, reduction=4)  
+            self.sa_low = SpatialAttention() 
         
 
         if not self.cut_at_pooling:
@@ -260,7 +281,9 @@ class ResNet(nn.Module):
         if not pretrained:
             self.reset_params()
         
-
+    def get_depth(self):
+        return self.depth
+    
     def forward(self, x, return_featuremaps=False):
 
         x = self.base(x)  # [bs, 2048, 16, 8]
@@ -365,13 +388,18 @@ class ResNet(nn.Module):
                 if m.bias is not None:
                     init.constant_(m.bias, 0)
 
-
 class Encoder(nn.Module):
-    def __init__(self, model, model_ema):
+    
+
+    def __init__(self, model, model_ema, depth):
         super(Encoder, self).__init__()
         self.model = model
         self.model_ema = model_ema
-        self.fuse_net = Fuse().cuda()
+        self.depth = depth
+        if self.depth in ["resnet18","resnet34"]:
+            self.fuse_net = Fuse(512).cuda()
+        else:
+            self.fuse_net = Fuse(2048).cuda()
 
     def forward(self,input, return_featuremaps=False):
         if return_featuremaps==True:
