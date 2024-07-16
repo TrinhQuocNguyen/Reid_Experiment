@@ -27,11 +27,7 @@ def _pluck_msmt(list_file, subdir, pattern=re.compile(r'([-\d]+)_([-\d]+)_([-\d]
 
 class Dataset_MSMT(object):
     def __init__(self, root):
-<<<<<<< HEAD
         self.root = "/old/home/ccvn/Workspace/trinh/data/reid/"
-=======
-        self.root = "/mnt/AIProjects/trinh/DATA/reid/"
->>>>>>> 348c987 (update local 170)
         self.train, self.val, self.trainval = [], [], []
         self.query, self.gallery = [], []
         self.num_train_ids, self.num_val_ids, self.num_trainval_ids = 0, 0, 0
