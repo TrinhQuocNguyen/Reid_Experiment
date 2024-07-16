@@ -5,9 +5,10 @@ import torch
 
 from reid.feature_extraction.cnn import extract_cnn_feature_source
 from .evaluation_metrics import cmc, mean_ap
-from .feature_extraction import extract_cnn_feature
+from .feature_extraction import extract_cnn_feature, extract_cnn_feature_map
 from .utils.meters import AverageMeter
 from .utils.rerank import re_ranking
+import cv2
 
 def fliplr(img):
     '''flip horizontal'''
@@ -15,18 +16,56 @@ def fliplr(img):
     img_flip = img.index_select(3,inv_idx)
     return img_flip
 
+def extract_feature_maps(model, data_loader, source=False):
+    model.eval()
+    batch_time = AverageMeter()
+    data_time = AverageMeter()
+
+    heatmap_ori = OrderedDict()
+    heatmap_flip = OrderedDict()
+    labels = OrderedDict()
+    
+    end = time.time()
+    print_freq = 50
+    
+    with torch.no_grad():
+        for i, (imgs, fnames, pids, _) in enumerate(data_loader):
+            data_time.update(time.time() - end)
+            grid_img_ori, _ = extract_cnn_feature_map(model, imgs)
+            grid_img_flip, _ = extract_cnn_feature_map(model, fliplr(imgs))   
+            for fname, pid in zip(fnames, pids):
+                heatmap_ori[fname] = grid_img_ori
+                heatmap_flip[fname] = grid_img_flip
+                labels[fname] = pid
+
+            batch_time.update(time.time() - end)
+            end = time.time()
+
+            if (i + 1) % print_freq == 0:
+                print('Extract Features: [{}/{}]\t'
+                      'Time {:.3f} ({:.3f})\t'
+                      'Data {:.3f} ({:.3f})\t'
+                      .format(i + 1, len(data_loader),
+                              batch_time.val, batch_time.avg,
+                              data_time.val, data_time.avg))
+                
+    return heatmap_ori, heatmap_flip, labels
+
 def bidirectional_mean_feature_normalization (outputs_1, outputs_2):
     '''
     BiDirectional Mean Feature Normalization: BMFN
     Indicates the bidirectional nature of the method, involving both original and horizontally flipped vectors.
     It can increase the discriminability of the model at the feature level to a certain extent.
     '''
-    # mean https://github.com/nixingyang/FlipReID
-    means = (outputs_1 + outputs_2)/2    
-    fnorm = torch.norm(means, p=2, dim=1, keepdim=True)
-    outputs = means.div(fnorm.expand_as(means))
+    # do not use BMFN
+    return outputs_1
     
-    return outputs
+    # # mean https://github.com/nixingyang/FlipReID
+    # means = (outputs_1 + outputs_2)/2    
+    # fnorm = torch.norm(means, p=2, dim=1, keepdim=True)
+    # outputs = means.div(fnorm.expand_as(means))
+    
+    # return outputs
 
 def extract_features(model, data_loader, print_freq=50, metric=None, source=False):
     model.eval()
@@ -163,7 +202,12 @@ class Evaluator(object):
     def __init__(self, model):
         super(Evaluator, self).__init__()
         self.model = model
-
+        
+    def save_feature_maps(self, data_loader, source=False, save_path="./feature_heatmap"):
+        heatmap_ori, heatmap_flip, labels = extract_feature_maps(self.model, data_loader, source=source)
+        return heatmap_ori, heatmap_flip, labels
+        
+    
     def evaluate(self, data_loader, query, gallery, metric=None, cmc_flag=False, rerank=False, pre_features=None, source =False):
         if (pre_features is None):
             features, _ = extract_features(self.model, data_loader, source=source)

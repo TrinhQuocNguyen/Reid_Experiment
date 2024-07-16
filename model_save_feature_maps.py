@@ -1,6 +1,6 @@
 from __future__ import print_function, absolute_import
 import os
-# os.environ['CUDA_VISIBLE_DEVICES']='0,1'
+os.environ['CUDA_VISIBLE_DEVICES']='0,1'
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -25,6 +25,7 @@ from reid.utils.data import transforms as T
 from reid.utils.data.preprocessor import Preprocessor
 from reid.utils.logging import Logger
 from reid.utils.serialization import load_checkpoint
+from reid.utils.save_feature_maps import save_feature_maps
 from reid.models.resnet import Encoder
 
 device_ids = [0,1]
@@ -73,11 +74,15 @@ def main():
     main_worker(args)
 
 
+
+     
+    
+
 def main_worker(args):
     cudnn.benchmark = True
 
     log_dir = osp.dirname(args.resume)
-    sys.stdout = Logger(osp.join(log_dir, 'log_test.txt'))
+    sys.stdout = Logger(osp.join(log_dir, 'log_sfm.txt'))
     print("==========\nArgs:{}\n==========".format(args))
 
     # Create data loaders
@@ -95,11 +100,16 @@ def main_worker(args):
     start_epoch = checkpoint['epoch']
     best_mAP = checkpoint['best_mAP']
     print("=> Checkpoint of epoch {}  best mAP {:.1%}".format(start_epoch, best_mAP))
-
+    
+    
     # Evaluator
     print("Test on the target domain of {}:".format(args.dataset_target))
     evaluator_ = Evaluator(encoder)
-    evaluator_.evaluate(test_loader_target, dataset_target.query, dataset_target.gallery, cmc_flag=True, source=False)
+
+    feature_map_ori, feature_map_flip, _ = evaluator_.save_feature_maps(test_loader_target, source=False, save_path="./feature_heatmaps")
+    save_feature_maps(feature_map_ori, save_path="./feature_maps/ori")
+    save_feature_maps(feature_map_flip, save_path="./feature_maps/flip")
+    
     return
 
 if __name__ == '__main__':
