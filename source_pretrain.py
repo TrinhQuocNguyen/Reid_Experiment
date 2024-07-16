@@ -4,7 +4,7 @@ import os.path as osp
 import random
 import numpy as np
 import os
-# os.environ['CUDA_VISIBLE_DEVICE']='0,1'
+os.environ['CUDA_VISIBLE_DEVICE']='0,1'
 
 import sys
 sys.path.append('..')
@@ -153,6 +153,7 @@ def main_worker(args):
 
     # Start training
     for epoch in range(start_epoch, args.epochs):
+        print("### Starting epoch: ", epoch)
         
         train_loader_source.new_epoch()
         train_loader_target.new_epoch()

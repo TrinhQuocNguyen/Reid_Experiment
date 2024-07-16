@@ -4,6 +4,7 @@
 
 ## step 2 Target-domain fine-tuning
 # for example, duke-to-market
+<<<<<<< HEAD
 CUDA_VISIBLE_DEVICES=2,3 python target_train.py -dt market --data-dir /old/home/ccvn/Workspace/trinh/data/reid --logs-dir logs/duke2market_ECAB_BFMN/target_fine_tuning_700 --initial-weights logs/duke2market_ECAB_BFMN/source_pretraining -b 128 --num-clusters 700 --arch resnet101
 
 ## step 3 Evaluate in the target domain
@@ -27,3 +28,13 @@ CUDA_VISIBLE_DEVICES=2,3 python model_test.py -dt market --data-dir /old/home/cc
 # ## step 3 Evaluate in the target domain
 # # for example, duke-to-market
 # CUDA_VISIBLE_DEVICES=2,3 python model_test.py -dt market --data-dir /old/home/ccvn/Workspace/trinh/data/reid --resume logs/duke2market_ECAB_BFMN/target_fine_tuning_900/model_best.pth.tar --num-classes 900 --arch resnet101 
+=======
+python target_train.py -dt market --data-dir /mnt/AIProjects/trinh/DATA/reid \
+                       --logs-dir logs/duke2market_ECAB_BFMN/target_fine_tuning_700_global_Fuse_ECAB \
+                       --initial-weights logs/duke2market_ECAB_BFMN/source_pretraining -b 128 \
+                       --num-clusters 700 --arch resnet101
+
+## step 3 Evaluate in the target domain
+# for example, duke-to-market
+# CUDA_VISIBLE_DEVICES=2,3 python model_test.py -dt market --data-dir /old/home/ccvn/Workspace/trinh/data/reid --resume logs/duke2market_ECAB_BFMN/target_fine_tuning_700/model_best.pth.tar --num-classes 700 --arch resnet101 
+>>>>>>> 348c987 (update local 170)

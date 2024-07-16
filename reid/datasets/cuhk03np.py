@@ -20,7 +20,11 @@ class CUHK03NP(BaseImageDataset):
     # identities: ??? (+1 for background)
     # images: ??? (train) + 1400 (query) + ??? (gallery)
     """
+<<<<<<< HEAD
     dataset_dir = '/old/home/ccvn/Workspace/trinh/data/reid/cuhk03np'
+=======
+    dataset_dir = '/mnt/AIProjects/trinh/DATA/reid/cuhk03np'
+>>>>>>> 348c987 (update local 170)
 
     def __init__(self, root, verbose=True, **kwargs):
         super(CUHK03NP, self).__init__()
