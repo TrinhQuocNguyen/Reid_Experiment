@@ -57,24 +57,61 @@ class ECAB(nn.Module):
     
     def forward(self, x) :
         # NO ECAB
-        return self.maxpool(x)
-        # max_result=self.maxpool(x) 
-        # avg_result=self.avgpool(x)
-        # max_out=self.se(max_result)
-        # avg_out=self.se(avg_result)
-        # output=self.sigmoid(max_out+avg_out) 
-        # return output  
+        # return self.maxpool(x)
+        max_result=self.maxpool(x) 
+        avg_result=self.avgpool(x)
+        max_out=self.se(max_result)
+        avg_out=self.se(avg_result)
+        output=self.sigmoid(max_out+avg_out) 
+        return output  
 
+class ECAB_REAL(nn.Module):
+    """Enhanced Channel Attention Block
+
+    Args:
+        nn (Torch Module - Network): Input Module
+    """  
+    def __init__(self,channel,reduction=4):
+        super().__init__()
+        self.maxpool=nn.AdaptiveMaxPool2d(1)
+        self.avgpool=nn.AdaptiveAvgPool2d(1)
+        self.se=nn.Sequential(
+            nn.Conv2d(channel,channel//reduction,1,bias=False), 
+            nn.ReLU(),
+            nn.Conv2d(channel//reduction,channel//pow(reduction,2),1,bias=False), 
+            nn.ReLU(),
+            nn.Conv2d(channel//pow(reduction,2),channel//pow(reduction,3),1,bias=False), 
+            nn.ReLU(),
+            nn.Conv2d(channel//pow(reduction,3),channel//pow(reduction,2),1,bias=False), 
+            nn.ReLU(),
+            nn.Conv2d(channel//pow(reduction,2),channel//reduction,1,bias=False), 
+            nn.ReLU(),
+            nn.Conv2d(channel//reduction,channel,1,bias=False)
+        ).cuda()
+        self.sigmoid=nn.Sigmoid()  
+    
+    def forward(self, x) :
+        # NO ECAB
+        # return self.maxpool(x)
+        max_result=self.maxpool(x) 
+        avg_result=self.avgpool(x)
+        max_out=self.se(max_result)
+        avg_out=self.se(avg_result)
+        output1=self.sigmoid(max_out+avg_out) 
+        
+        output2= max_result+avg_result
+        output=output1*output2
+        return output 
 class SpatialAttention(nn.Module):
     """Spatial Attention from CBAM
 
     Args:
         nn (Torch Module - Network): Input Module
     """    
-    def __init__(self, kernel_size=5):
+    def __init__(self, kernel_size=7):
         super().__init__()
 
-        self.conv1 = nn.Conv2d(2, 1, kernel_size, padding=kernel_size//2, bias=False)
+        self.conv1 = nn.Conv2d(2, 1, kernel_size, padding=kernel_size//2, bias=False).cuda()
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
@@ -105,6 +142,16 @@ class Fuse(nn.Module):
         init.constant_(self.bn_3.bias, 0)
 
     def forward(self, x, ca_upper, ca_low) :
+        # Add ECAB to global features
+        ca_global = ECAB_REAL(2048, reduction=4)
+        sa_global = SpatialAttention()
+        
+        channel_embed_global = ca_global(x)
+        x = x*channel_embed_global
+        spacial_embed_global = sa_global(x)
+        x = x*spacial_embed_global
+        
+        
   
         x_embed_upper = x*ca_upper  
         x_embed_low = x*ca_low
