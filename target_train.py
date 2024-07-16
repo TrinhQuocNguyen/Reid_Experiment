@@ -140,7 +140,7 @@ def main_worker(args):
 
     # Create teacher-student encoder
     model_student, model_teacher = create_model(args, False)
-    encoder = Encoder(model_student, model_teacher)
+    encoder = Encoder(model_student, model_teacher, args.arch)
     
     if args.resume:
         encoder_weights = load_checkpoint(osp.join(args.resume, 'model_best.pth.tar'))
