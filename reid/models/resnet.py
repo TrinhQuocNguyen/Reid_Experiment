@@ -179,6 +179,12 @@ class ResNet(nn.Module):
         152: torchvision.models.resnet152,
     }
 
+    __factory_deep = {
+        50: torchvision.models.resnet50,
+        101: torchvision.models.resnet101,
+        152: torchvision.models.resnet152,
+    }
+    
     def __init__(self, depth, pretrained=True, cut_at_pooling=False,
                  num_features=0, norm=False, dropout=0, num_classes=700, num_split=2, extract_feat=False):
         super(ResNet, self).__init__()
@@ -192,8 +198,10 @@ class ResNet(nn.Module):
         if depth not in ResNet.__factory:
             raise KeyError("Unsupported depth:", depth)
         resnet = ResNet.__factory[depth](pretrained=pretrained)
-        resnet.layer4[0].conv2.stride = (1,1)
-        resnet.layer4[0].downsample[0].stride = (1,1)
+        
+        if depth in ResNet.__factory_deep: # only modify the layer4 when the depth is in [50,101,152]
+            resnet.layer4[0].conv2.stride = (1,1)
+            resnet.layer4[0].downsample[0].stride = (1,1)
 
         self.base = nn.Sequential(
             resnet.conv1, resnet.bn1, resnet.relu, resnet.maxpool, 
