@@ -103,7 +103,26 @@ class ECAB_REAL(nn.Module):
         
         output2= max_result+avg_result
         output=output1*output2
-        return output 
+        return output1
+    
+class ChannelAttention(nn.Module):
+    def __init__(self, in_planes, ratio=16):
+        super(ChannelAttention, self).__init__()
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.max_pool = nn.AdaptiveMaxPool2d(1)
+           
+        self.fc = nn.Sequential(nn.Conv2d(in_planes, in_planes // ratio, 1, bias=False),
+                               nn.ReLU(),
+                               nn.Conv2d(in_planes // ratio, in_planes, 1, bias=False)).cuda()
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        avg_out = self.fc(self.avg_pool(x))
+        max_out = self.fc(self.max_pool(x))
+        out = avg_out + max_out
+        return self.sigmoid(out)
+
+        
 class SpatialAttention(nn.Module):
     """Spatial Attention from CBAM
 
@@ -149,13 +168,15 @@ class Fuse(nn.Module):
 
     def forward(self, x, ca_upper, ca_low) :
         # Add ECAB to global features
+        # ca_cbam = ChannelAttention(self.channel_size)
         ca_global = ECAB_REAL(self.channel_size, reduction=4)
-        sa_global = SpatialAttention()
+        # sa_global = SpatialAttention()
         
+        # channel_embed_global = ca_cbam(x)
         channel_embed_global = ca_global(x)
         x = x*channel_embed_global
-        spacial_embed_global = sa_global(x)
-        x = x*spacial_embed_global
+        # spacial_embed_global = sa_global(x)
+        # x = x*spacial_embed_global
         
         
   
@@ -221,6 +242,7 @@ class ResNet(nn.Module):
             self.ca_low = ECAB(2048, reduction=4)  
             self.sa_low = SpatialAttention() 
         else:
+            print("The architecture is not deep: ", depth)
             self.ca_upper = ECAB(512, reduction=4)
             self.sa_upper = SpatialAttention()  
             self.ca_low = ECAB(512, reduction=4)  
@@ -295,13 +317,13 @@ class ResNet(nn.Module):
             x1 = []
             
             # Add ECAB and SAB to global features
-            ca_global = ECAB_REAL(2048, reduction=4)
-            sa_global = SpatialAttention()
+            # ca_global = ECAB_REAL(2048, reduction=4)
+            # sa_global = SpatialAttention()
             
-            channel_embed_global = ca_global(x)
-            x = x*channel_embed_global
-            spacial_embed_global = sa_global(x)
-            x = x*spacial_embed_global
+            # channel_embed_global = ca_global(x)
+            # x = x*channel_embed_global
+            # spacial_embed_global = sa_global(x)
+            # x = x*spacial_embed_global
 
             # global feature map
             x_gap = F.avg_pool2d(x, x.size()[2:])  

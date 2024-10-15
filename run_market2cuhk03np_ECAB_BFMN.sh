@@ -9,7 +9,7 @@
 
 ## step 2 Target-domain fine-tuning
 CUDA_VISIBLE_DEVICES=1,2 python target_train.py -dt cuhk03np --data-dir /old/home/ccvn/Workspace/trinh/data/reid \
-                    --logs-dir logs/market2cuhk03np_ECAB_BFMN/target_fine_tuning_900_All_Global_ES \
+                    --logs-dir logs/market2cuhk03np_ECAB_BFMN/900_ECABX_SABX_RandomGrayscale \
                     --initial-weights logs/market2cuhk03np_ECAB_BFMN/source_pretraining \
                     -b 128 --num-clusters 900 --arch resnet101
 

@@ -4,7 +4,7 @@ import os.path as osp
 import random
 import numpy as np
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
 import copy
 
 import sys
@@ -53,7 +53,10 @@ def get_train_loader(dataset, height, width, batch_size, workers,
              T.RandomHorizontalFlip(p=0.5),
              T.Pad(10, padding_mode='edge'),
              T.RandomCrop((height, width)),
-             T.RandomGrayscalePatchReplace(0.4),
+            #  T.RandomGrayscalePatchReplace(0.4),
+             T.LGPR(0.4),
+             T.RandomGrayscale(0.05),
+             #  T.Fuse_RGB_Gray_Sketch(),
              T.ToTensor(),
              normalizer,
 	         T.RandomErasing(probability=0.5, mean=[0.485, 0.456, 0.406])  ## only add in target-domain fine-tuning
@@ -165,9 +168,17 @@ def main_worker(args):
 
         # Clustering
         print('\n Clustering into {} classes \n'.format(clusters[nc]))
-        km_global = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=1500).fit(cf_global)  
-        km_upper = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=900).fit(cf_upper)
-        km_low = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=900).fit(cf_low)
+        km_global = MiniBatchKMeans(n_clusters=clusters[nc], init='k-means++', max_iter=100, batch_size=512, max_no_improvement=50, 
+                                    init_size=1500, reassignment_ratio=0.05).fit(cf_global)  
+        km_upper = MiniBatchKMeans(n_clusters=clusters[nc], init='k-means++', max_iter=100, batch_size=512, max_no_improvement=50, 
+                                    init_size=900, reassignment_ratio=0.05).fit(cf_upper)
+        km_low = MiniBatchKMeans(n_clusters=clusters[nc], init='k-means++', max_iter=100, batch_size=512, max_no_improvement=50, 
+                                    init_size=900, reassignment_ratio=0.05).fit(cf_low)
+        
+        # km_global = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=1500).fit(cf_global)  
+        # km_upper = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=900).fit(cf_upper)
+        # km_low = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=900).fit(cf_low)
+        
         
         # update classifier
         encoder.model.module.classifier.weight.data.copy_(torch.from_numpy(normalize(km_global.cluster_centers_, axis=1)).float().cuda()) 

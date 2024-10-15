@@ -58,14 +58,14 @@ def bidirectional_mean_feature_normalization (outputs_1, outputs_2):
     It can increase the discriminability of the model at the feature level to a certain extent.
     '''
     # do not use BMFN
-    return outputs_1
+    # return outputs_1
     
-    # # mean https://github.com/nixingyang/FlipReID
-    # means = (outputs_1 + outputs_2)/2    
-    # fnorm = torch.norm(means, p=2, dim=1, keepdim=True)
-    # outputs = means.div(fnorm.expand_as(means))
+    # mean https://github.com/nixingyang/FlipReID
+    means = (outputs_1 + outputs_2)/2    
+    fnorm = torch.norm(means, p=2, dim=1, keepdim=True)
+    outputs = means.div(fnorm.expand_as(means))
     
-    # return outputs
+    return outputs
 
 def extract_features(model, data_loader, print_freq=50, metric=None, source=False):
     model.eval()
