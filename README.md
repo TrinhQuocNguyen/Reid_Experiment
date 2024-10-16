@@ -1,5 +1,8 @@
 # Re-ID
+<<<<<<< HEAD
 [news!]
+=======
+>>>>>>> hpc3_core_2
 
 ## Requirements
 
@@ -36,7 +39,6 @@ python model_test.py -dt market --data-dir PATH/TO/DATA --resume PATH/TO/CHECKPO
 
 
 ## Experiments
-
 
 
 ## Acknowledgement

@@ -157,9 +157,11 @@ def main_worker(args):
 
     # Trainer
     trainer = PreTrainer(model, num_classes, margin=args.margin)
+    print(model)
 
     # Start training
     for epoch in range(start_epoch, args.epochs):
+        print("### Starting epoch: ", epoch)
         
         train_loader_source.new_epoch()
         train_loader_target.new_epoch()
@@ -222,7 +224,7 @@ if __name__ == '__main__':
     parser.add_argument('--eval-step', type=int, default=5)
     parser.add_argument('--rerank', action='store_true',
                         help="evaluation only")
-    parser.add_argument('--epochs', type=int, default=100)
+    parser.add_argument('--epochs', type=int, default=120)
     parser.add_argument('--iters', type=int, default=200)
     parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('--print-freq', type=int, default=50)

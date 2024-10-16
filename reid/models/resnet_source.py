@@ -7,14 +7,19 @@ import torchvision
 import torch
 
 
-__all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50_source', 'resnet101_source',
-           'resnet152']
+__all__ = ['ResNet', 'resnet18_source', 'resnet34_source', 'resnet50_source', 'resnet101_source',
+           'resnet152_source']
 
 
 class ResNet(nn.Module):
     __factory = {
         18: torchvision.models.resnet18,
         34: torchvision.models.resnet34,
+        50: torchvision.models.resnet50,
+        101: torchvision.models.resnet101,
+        152: torchvision.models.resnet152,
+    }
+    __factory_deep = {
         50: torchvision.models.resnet50,
         101: torchvision.models.resnet101,
         152: torchvision.models.resnet152,
@@ -30,8 +35,11 @@ class ResNet(nn.Module):
         if depth not in ResNet.__factory:
             raise KeyError("Unsupported depth:", depth)
         resnet = ResNet.__factory[depth](pretrained=pretrained)
-        resnet.layer4[0].conv2.stride = (1,1)
-        resnet.layer4[0].downsample[0].stride = (1,1)
+        
+        if depth in ResNet.__factory_deep: # only modify the layer4 when the depth is in [50,101,152]
+            resnet.layer4[0].conv2.stride = (1,1)
+            resnet.layer4[0].downsample[0].stride = (1,1)
+        
         self.base = nn.Sequential(
             resnet.conv1, resnet.bn1, resnet.relu, resnet.maxpool, 
             resnet.layer1, resnet.layer2, resnet.layer3, resnet.layer4)
@@ -130,11 +138,11 @@ class ResNet(nn.Module):
         self.base[5].load_state_dict(resnet.layer3.state_dict())
         self.base[6].load_state_dict(resnet.layer4.state_dict())
 
-def resnet18(**kwargs):
+def resnet18_source(**kwargs):
     return ResNet(18, **kwargs)
 
 
-def resnet34(**kwargs):
+def resnet34_source(**kwargs):
     return ResNet(34, **kwargs)
 
 
@@ -146,5 +154,5 @@ def resnet101_source(**kwargs):
     return ResNet(101, **kwargs)
 
 
-def resnet152(**kwargs):
+def resnet152_source(**kwargs):
     return ResNet(152, **kwargs)

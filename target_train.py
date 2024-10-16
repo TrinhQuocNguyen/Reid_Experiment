@@ -11,7 +11,7 @@ import sys
 sys.path.insert(0, os.getcwd())
 sys.path.append('..')
 
-from sklearn.cluster import KMeans, MiniBatchKMeans, BisectingKMeans
+from sklearn.cluster import KMeans, MiniBatchKMeans
 from sklearn.preprocessing import normalize
 
 import warnings
@@ -53,7 +53,10 @@ def get_train_loader(dataset, height, width, batch_size, workers,
              T.RandomHorizontalFlip(p=0.5),
              T.Pad(10, padding_mode='edge'),
              T.RandomCrop((height, width)),
-             T.RandomGrayscalePatchReplace(0.4),
+            #  T.RandomGrayscalePatchReplace(0.4),
+             T.LGPR(0.4),
+             T.RandomGrayscale(0.05),
+             #  T.Fuse_RGB_Gray_Sketch(),
              T.ToTensor(),
              normalizer,
 	         T.RandomErasing(probability=0.5, mean=[0.485, 0.456, 0.406])  ## only add in target-domain fine-tuning
@@ -140,7 +143,7 @@ def main_worker(args):
 
     # Create teacher-student encoder
     model_student, model_teacher = create_model(args, False)
-    encoder = Encoder(model_student, model_teacher)
+    encoder = Encoder(model_student, model_teacher, args.arch)
     
     if args.resume:
         encoder_weights = load_checkpoint(osp.join(args.resume, 'model_best.pth.tar'))
@@ -165,17 +168,17 @@ def main_worker(args):
 
         # Clustering
         print('\n Clustering into {} classes \n'.format(clusters[nc]))
-        km_global = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=1500).fit(cf_global)  
-        km_upper = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=900).fit(cf_upper)
-        km_low = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=900).fit(cf_low)
+        km_global = MiniBatchKMeans(n_clusters=clusters[nc], init='k-means++', max_iter=100, batch_size=512, max_no_improvement=50, 
+                                    init_size=1500, reassignment_ratio=0.05).fit(cf_global)  
+        km_upper = MiniBatchKMeans(n_clusters=clusters[nc], init='k-means++', max_iter=100, batch_size=512, max_no_improvement=50, 
+                                    init_size=900, reassignment_ratio=0.05).fit(cf_upper)
+        km_low = MiniBatchKMeans(n_clusters=clusters[nc], init='k-means++', max_iter=100, batch_size=512, max_no_improvement=50, 
+                                    init_size=900, reassignment_ratio=0.05).fit(cf_low)
         
-        # km_global = KMeans(n_clusters=clusters[nc], max_iter=10, n_init=1500).fit(cf_global)  
-        # km_upper = KMeans(n_clusters=clusters[nc], max_iter=10, n_init=900).fit(cf_upper)
-        # km_low = KMeans(n_clusters=clusters[nc], max_iter=10, n_init=900).fit(cf_low)
-         
-        # km_global = BisectingKMeans(n_clusters=clusters[nc], max_iter=100, bisecting_strategy= "biggest_inertia", init="k-means++").fit(cf_global)  
-        # km_upper = BisectingKMeans(n_clusters=clusters[nc], max_iter=100, bisecting_strategy= "biggest_inertia", init="k-means++").fit(cf_upper)
-        # km_low = BisectingKMeans(n_clusters=clusters[nc], max_iter=100, bisecting_strategy= "biggest_inertia", init="k-means++").fit(cf_low)   
+        # km_global = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=1500).fit(cf_global)  
+        # km_upper = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=900).fit(cf_upper)
+        # km_low = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=900).fit(cf_low)
+        
         
         # update classifier
         encoder.model.module.classifier.weight.data.copy_(torch.from_numpy(normalize(km_global.cluster_centers_, axis=1)).float().cuda()) 
@@ -277,7 +280,7 @@ if __name__ == '__main__':
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--alpha', type=float, default=0.999)        # temporal ensemble momentum
     parser.add_argument('--weight-decay', type=float, default=5e-4)
-    parser.add_argument('--epochs', type=int, default=100) 
+    parser.add_argument('--epochs', type=int, default=80) 
     parser.add_argument('--iters', type=int, default=400)
     # training configs
     parser.add_argument('--seed', type=int, default=1)
