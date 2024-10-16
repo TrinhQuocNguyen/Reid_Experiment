@@ -1,8 +1,4 @@
 # Re-ID
-<<<<<<< HEAD
-[news!]
-=======
->>>>>>> hpc3_core_2
 
 ## Requirements
 
