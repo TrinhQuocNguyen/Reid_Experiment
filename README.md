@@ -1,13 +1,4 @@
-# Learning Feature Fusion for Unsupervised Domain Adaptive Person Re-identification
-[news!]
-[2022.7.27] Our paper is accepted by ICPR2022 oral ! [URL](https://ieeexplore.ieee.org/document/9956264)
-
-<div align="center">
-    <img src="figs/fig1.png">  
-</div>
-<div align="center">
-    <img src="figs/fig2.png">  
-</div>
+# Re-ID
 
 ## Requirements
 
@@ -20,7 +11,6 @@
 - CUDA 10.2
 
 ## Weights
-Download the pre-training weights and fine-tuning weights in Baidu Netdisk：[lf2m](https://pan.baidu.com/s/12_KrtSOf_--Voverri8tkw).
 ## Running
 
 ### step 1 Source-domain pre-training
@@ -45,11 +35,6 @@ python model_test.py -dt market --data-dir PATH/TO/DATA --resume PATH/TO/CHECKPO
 
 
 ## Experiments
-
-<div align="center">
-    <img src="figs/fig3.png">  
-</div>
-
 
 
 ## Acknowledgement

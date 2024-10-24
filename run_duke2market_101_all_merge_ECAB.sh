@@ -1,6 +1,6 @@
 ## step 1 Source-domain pre-training
 # for example, duke-to-market
-# CUDA_VISIBLE_DEVICES=1,2 python source_pretrain.py -ds duke -dt market --data-dir /home/ccvn/Workspace/trinh/data/reid --logs-dir logs/duke2market_101_all_merge_ECAB_Z/source_pretraining -b 128 --arch resnet101_source
+# CUDA_VISIBLE_DEVICES=1,2 python source_pretrain.py -ds duke -dt market --data-dir /old/home/ccvn/Workspace/trinh/data/reid --logs-dir logs/duke2market_101_all_merge_ECAB_Z/source_pretraining -b 128 --arch resnet101_source
 
 ## step 2 Target-domain fine-tuning
 # for example, duke-to-market
