@@ -213,7 +213,7 @@ if __name__ == '__main__':
     parser.add_argument('--resume', type=str, default='', metavar='PATH')
     parser.add_argument('--evaluate', action='store_true',
                         help="evaluation only")
-    parser.add_argument('--eval-step', type=int, default=5)
+    parser.add_argument('--eval-step', type=int, default=3)
     parser.add_argument('--rerank', action='store_true',
                         help="evaluation only")
     parser.add_argument('--epochs', type=int, default=120)
