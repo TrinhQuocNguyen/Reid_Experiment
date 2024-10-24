@@ -25,7 +25,7 @@ class CUHK03NP(BaseImageDataset):
     def __init__(self, root, verbose=True, **kwargs):
         super(CUHK03NP, self).__init__()
         self.dataset_dir = osp.join(root, self.dataset_dir)
-        self.train_dir = osp.join(self.dataset_dir, 'bounding_box_train')
+        self.train_dir = osp.join(self.dataset_dir, 'bounding_box_train_all_merge')
         self.query_dir = osp.join(self.dataset_dir, 'query')
         self.gallery_dir = osp.join(self.dataset_dir, 'bounding_box_test')
 

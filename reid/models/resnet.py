@@ -217,12 +217,13 @@ class ResNet(nn.Module):
 
 
         if depth in ResNet.__factory_deep: # The size = 2048 when the depth is in [50,101,152]
+            print("The architecture is DEEP: ", depth)
             self.ca_upper = ECAB(2048, reduction=4)
             self.sa_upper = SpatialAttention()  
             self.ca_low = ECAB(2048, reduction=4)  
             self.sa_low = SpatialAttention() 
         else:
-            print("The architecture is not deep: ", depth)
+            print("The architecture is NOT DEEP: ", depth)
             self.ca_upper = ECAB(512, reduction=4)
             self.sa_upper = SpatialAttention()  
             self.ca_low = ECAB(512, reduction=4)  
