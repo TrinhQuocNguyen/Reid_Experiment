@@ -11,6 +11,9 @@ from ..utils.osutils import mkdir_if_missing
 from ..utils.serialization import write_json
 import json
 
+from collections import defaultdict
+import random
+
 class VehicleID(BaseImageDataset):
     """
     VehicleID
@@ -34,9 +37,9 @@ class VehicleID(BaseImageDataset):
     """
     dataset_dir = '/old/home/ccvn/Workspace/trinh/data/reid/VehicleID'
 
-    def __init__(self, root='datasets', verbose=True, test_size=800, **kwargs):
-        super(VehicleID, self).__init__(root)
-        self.dataset_dir = osp.join(self.root, self.dataset_dir)
+    def __init__(self, root, verbose=True, test_size=800, **kwargs):
+        super(VehicleID, self).__init__()
+        self.dataset_dir = osp.join(root, self.dataset_dir)
         self.img_dir = osp.join(self.dataset_dir, 'image')
         self.split_dir = osp.join(self.dataset_dir, 'train_test_split')
         self.train_list = osp.join(self.split_dir, 'train_list.txt')
@@ -85,7 +88,7 @@ class VehicleID(BaseImageDataset):
         pid2label = {pid: label for label, pid in enumerate(pid_container)}
         return pid2label
 
-    def parse_img_pids(self, nl_pairs, pid2label=None):
+    def parse_img_pids(self, nl_pairs, camid=1, pid2label=None,):
         # il_pair is the pairs of img name and label
         output = []
         for info in nl_pairs:
@@ -93,7 +96,7 @@ class VehicleID(BaseImageDataset):
             pid = info[1]
             if pid2label is not None:
                 pid = pid2label[pid]
-            camid = 1  # don't have camid information use 1 for all
+            camid = camid  # don't have camid information use 1 for all
             img_path = osp.join(self.img_dir, name+'.jpg')
             output.append((img_path, pid, camid))
         return output
@@ -153,9 +156,9 @@ class VehicleID(BaseImageDataset):
             train_pid2label = None
         for key, value in train_pid2label.items():
             print('{key}:{value}'.format(key=key, value=value))
-
-        train = self.parse_img_pids(train_data, train_pid2label)
-        query = self.parse_img_pids(query_data)
-        gallery = self.parse_img_pids(gallery_data)
+        # Set the camera 1,2,3 for train, query, gallery to pass the filter in evaluation
+        train = self.parse_img_pids(train_data, camid=1, pid2label=train_pid2label)
+        query = self.parse_img_pids(query_data, camid=2)
+        gallery = self.parse_img_pids(gallery_data, camid=3)
         return train, query, gallery
 
