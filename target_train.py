@@ -255,7 +255,7 @@ def main_worker(args):
     evaluator_.evaluate(test_loader_target, dataset_target.query, dataset_target.gallery, cmc_flag=True, source=False)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="LF2 Training")
+    parser = argparse.ArgumentParser(description="Training")
     # data
     parser.add_argument('-dt', '--dataset-target', type=str, default='market') # target domain
     parser.add_argument('-b', '--batch-size', type=int, default=64)
