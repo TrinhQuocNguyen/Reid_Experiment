@@ -65,10 +65,13 @@ class ECAB(nn.Module):
         max_out=self.se(max_result)
         avg_out=self.se(avg_result)
         output=self.sigmoid(max_out+avg_out) 
+        
+        # The residual information will be added later
         return output  
 
-class ECAB_REAL(nn.Module):
-    """Enhanced Channel Attention Block
+class SECAB(nn.Module):
+    """Simplified Enhanced Channel Attention Block
+    GPU version for global feature x
 
     Args:
         nn (Torch Module - Network): Input Module
@@ -101,9 +104,9 @@ class ECAB_REAL(nn.Module):
         avg_out=self.se(avg_result)
         output1=self.sigmoid(max_out+avg_out) 
         
-        output2= max_result+avg_result
-        output=output1*output2
-        # return without resudial information
+        # output2= max_result+avg_result
+        # output=output1*output2
+        # return without residual information
         return output1
         
 class SpatialAttention(nn.Module):
@@ -151,7 +154,7 @@ class Fuse(nn.Module):
 
     def forward(self, x, ca_upper, ca_low) :
         # Add ECAB to global features
-        ca_global = ECAB_REAL(self.channel_size, reduction=4)
+        ca_global = SECAB(self.channel_size, reduction=4)
         # sa_global = SpatialAttention()
         
         channel_embed_global = ca_global(x)
@@ -298,7 +301,7 @@ class ResNet(nn.Module):
             x1 = []
             
             # Add ECAB and SAB to global features
-            # ca_global = ECAB_REAL(2048, reduction=4)
+            # ca_global = SECAB(2048, reduction=4)
             # sa_global = SpatialAttention()
             
             # channel_embed_global = ca_global(x)
