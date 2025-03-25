@@ -176,7 +176,7 @@ def evaluate_all(query_features, gallery_features, distmat, query=None, gallery=
 
     # Compute mean AP
     mAP = mean_ap(distmat, query_ids, gallery_ids, query_cams, gallery_cams)
-    print('Mean AP: {:4.1%}'.format(mAP))
+    print('Mean AP: {:4.2%}'.format(mAP))
 
     if (not cmc_flag):
         return mAP
@@ -192,7 +192,7 @@ def evaluate_all(query_features, gallery_features, distmat, query=None, gallery=
 
     print('CMC Scores:')
     for k in cmc_topk:
-        print('  top-{:<4}{:12.1%}'
+        print('  top-{:<4}{:12.2%}'
               .format(k,
                       cmc_scores['market1501'][k-1]))
     return cmc_scores['market1501'][0], mAP

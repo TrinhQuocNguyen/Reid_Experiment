@@ -105,7 +105,12 @@ def main_worker(args):
     # Evaluator
     print("Test on the target domain of {}:".format(args.dataset_target))
     evaluator_ = Evaluator(encoder)
-
+    
+    if not os.path.exists("./feature_maps/ori"):
+        os.makedirs("./feature_maps/ori")
+    if not os.path.exists("./feature_maps/flip"):
+        os.makedirs("./feature_maps/flip")
+        
     feature_map_ori, feature_map_flip, _ = evaluator_.save_feature_maps(test_loader_target, source=False, save_path="./feature_heatmaps")
     save_feature_maps(feature_map_ori, save_path="./feature_maps/ori")
     save_feature_maps(feature_map_flip, save_path="./feature_maps/flip")

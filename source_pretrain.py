@@ -174,7 +174,7 @@ def main_worker(args):
                 'best_mAP': best_mAP,
             }, is_best, fpath=osp.join(args.logs_dir, 'checkpoint.pth.tar'))
 
-            print('\n * Finished epoch {:3d}  source mAP: {:5.1%}  best: {:5.1%}{}\n'.
+            print('\n * Finished epoch {:3d}  source mAP: {:5.2%}  best: {:5.2%}{}\n'.
                   format(epoch, mAP, best_mAP, ' *' if is_best else ''))
 
     print("Test on target domain:")

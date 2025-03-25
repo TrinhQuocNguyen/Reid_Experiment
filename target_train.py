@@ -161,7 +161,6 @@ def main_worker(args):
         features, _ = extract_features_new(encoder, cluster_loader)  
         len_f = len(features[dataset_target.train[0][0]])     
         features = [torch.cat([features[f][i].unsqueeze(0) for f, _, _ in dataset_target.train], 0) for i in range(len_f)]
-        
         cf_global =  features[0]    # global features
         cf_upper = features[1]      # upper features
         cf_low = features[2]        # low features
@@ -245,7 +244,7 @@ def main_worker(args):
             best_mAP = max([mAP] + [best_mAP])  
             save_model(encoder, (is_best and (mAP==best_mAP)), best_mAP, '_last')
 
-            print('\n * Finished epoch {:3d}  model no.1 mAP: {:5.1%}  best: {:5.1%}{}\n'.
+            print('\n * Finished epoch {:3d}  model no.1 mAP: {:5.2%}  best: {:5.2%}{}\n'.
                   format(epoch, mAP, best_mAP, ' *' if is_best else ''))  
 
     # Test on target domain
