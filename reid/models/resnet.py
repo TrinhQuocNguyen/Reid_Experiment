@@ -96,7 +96,7 @@ class SECAB(nn.Module):
         self.sigmoid=nn.Sigmoid()  
     
     def forward(self, x) :
-        # NO ECAB
+        # NO SECAB
         # return self.maxpool(x)
         max_result=self.maxpool(x) 
         avg_result=self.avgpool(x)
@@ -104,9 +104,6 @@ class SECAB(nn.Module):
         avg_out=self.se(avg_result)
         output1=self.sigmoid(max_out+avg_out) 
         
-        # output2= max_result+avg_result
-        # output=output1*output2
-        # return without residual information
         return output1
         
 class SpatialAttention(nn.Module):
@@ -162,7 +159,7 @@ class Fuse(nn.Module):
         # spacial_embed_global = sa_global(x)
         # x = x*spacial_embed_global
         
-        ### Continue to fuse the features 
+        ### Continue to fuse the features to complete the ECAB
         x_embed_upper = x*ca_upper  
         x_embed_low = x*ca_low
 
