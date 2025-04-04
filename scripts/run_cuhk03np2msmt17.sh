@@ -1,31 +1,59 @@
-# ## step 1 Source-domain pre-training
-# CUDA_VISIBLE_DEVICES=1,2 python source_pretrain.py -ds cuhk03np -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid --logs-dir logs/cuhk03np2msmt_2500_ECAB_BFMN/source_pretraining -b 128 --arch resnet101_source
+
+# ################################## //RESNET 18// ################################## 
+# ## Step 2 Target-domain fine-tuning                        
+CUDA_VISIBLE_DEVICES=2,3 python target_train.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid \
+                       --logs-dir logs/cuhk03np2msmt/resnet18/2000_ECAB1_LR \
+                       --initial-weights logs/cuhk03np2market/resnet18/source_pretraining -b 128 \
+                       --num-clusters 2000 --arch resnet18
+
+# # ## Step 2 Target-domain fine-tuning                        
+# CUDA_VISIBLE_DEVICES=2,3 python target_train.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid \
+#                        --logs-dir logs/cuhk03np2msmt/resnet18/2000_ECAB1_LR \
+#                        --initial-weights logs/cuhk03np2market/resnet18/source_pretraining -b 128 \
+#                        --num-clusters 2000 --arch resnet18
+
+
+################################## //RESNET 101// ################################## 
+## Step 2 Target-domain fine-tuning                        
+# CUDA_VISIBLE_DEVICES=2,3 python target_train.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid \
+#                        --logs-dir logs/cuhk03np2msmt/resnet101/2000_ECAB1_LR \
+#                        --initial-weights logs/cuhk03np2market/resnet101/source_pretraining -b 128 \
+#                        --num-clusters 2000 --arch resnet101
+
+# ## Step 2 Target-domain fine-tuning                        
+# CUDA_VISIBLE_DEVICES=2,3 python target_train.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid \
+#                        --logs-dir logs/cuhk03np2msmt/resnet101/2500_ECAB1_LR \
+#                        --initial-weights logs/cuhk03np2market/resnet101/source_pretraining -b 128 \
+#                        --num-clusters 2500 --arch resnet101
+
+## Step 2 Target-domain fine-tuning                        
+CUDA_VISIBLE_DEVICES=2,3 python target_train.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid \
+                       --logs-dir logs/cuhk03np2msmt/resnet101/3000_ECAB1_LR \
+                       --initial-weights logs/cuhk03np2market/resnet101/source_pretraining -b 128 \
+                       --num-clusters 3000 --arch resnet101
 
 
 
-# ## step 2 Target-domain fine-tuning
-# CUDA_VISIBLE_DEVICES=1,2 python target_train.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid --logs-dir logs/cuhk03np2msmt_2500_ECAB_BFMN/target_fine_tuning --initial-weights logs/cuhk03np2msmt_2500_ECAB_BFMN/source_pretraining -b 128 --num-clusters 2500 --arch resnet101
-
-# ## step 3 Evaluate in the target domain
-# CUDA_VISIBLE_DEVICES=1,2 python model_test.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid --resume logs/cuhk03np2msmt_2500_ECAB_BFMN/target_fine_tuning/model_best.pth.tar --num-classes 2500 --arch resnet101
 
 
+# ################################## //RESNET 34// ################################## 
+# ## Step 2 Target-domain fine-tuning                        
+# CUDA_VISIBLE_DEVICES=2,3 python target_train.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid \
+#                        --logs-dir logs/cuhk03np2msmt/resnet34/2000_ECAB1_LR \
+#                        --initial-weights logs/cuhk03np2market/resnet34/source_pretraining -b 128 \
+#                        --num-clusters 2000 --arch resnet34
 
+# ################################## //RESNET 50// ################################## 
+# ## Step 2 Target-domain fine-tuning                        
+# CUDA_VISIBLE_DEVICES=2,3 python target_train.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid \
+#                        --logs-dir logs/cuhk03np2msmt/resnet50/2000_ECAB1_LR \
+#                        --initial-weights logs/cuhk03np2market/resnet50/source_pretraining -b 128 \
+#                        --num-clusters 2000 --arch resnet50
 
-# ## step 2 Target-domain fine-tuning
-# CUDA_VISIBLE_DEVICES=1,2 python target_train.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid --logs-dir logs/cuhk03np2msmt_2500_ECAB_BFMN/target_fine_tuning_3000 --initial-weights logs/cuhk03np2msmt_2500_ECAB_BFMN/source_pretraining -b 128 --num-clusters 3000 --arch resnet101
+# ################################## //RESNET 152// ################################## 
+# ## Step 2 Target-domain fine-tuning                        
+# CUDA_VISIBLE_DEVICES=2,3 python target_train.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid \
+#                        --logs-dir logs/cuhk03np2msmt/resnet152/2000_ECAB1_LR \
+#                        --initial-weights logs/cuhk03np2market/resnet152/source_pretraining -b 64 \
+#                        --num-clusters 2000 --arch resnet152
 
-# ## step 3 Evaluate in the target domain
-# CUDA_VISIBLE_DEVICES=1,2 python model_test.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid --resume logs/cuhk03np2msmt_2500_ECAB_BFMN/target_fine_tuning_3000/model_best.pth.tar --num-classes 3000 --arch resnet101
-
-# ## step 2 Target-domain fine-tuning
-# CUDA_VISIBLE_DEVICES=1,2 python target_train.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid --logs-dir logs/cuhk03np2msmt_2500_ECAB_BFMN/target_fine_tuning_3500 --initial-weights logs/cuhk03np2msmt_2500_ECAB_BFMN/source_pretraining -b 128 --num-clusters 3500 --arch resnet101
-
-# ## step 3 Evaluate in the target domain
-# CUDA_VISIBLE_DEVICES=1,2 python model_test.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid --resume logs/cuhk03np2msmt_2500_ECAB_BFMN/target_fine_tuning_3500/model_best.pth.tar --num-classes 3500 --arch resnet101
-
-# ## step 2 Target-domain fine-tuning
-CUDA_VISIBLE_DEVICES=2,3 python target_train.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid --logs-dir logs/cuhk03np2msmt_2500_ECAB_BFMN/target_fine_tuning_2500_global_ECAB_SAB --initial-weights logs/cuhk03np2msmt_2500_ECAB_BFMN/source_pretraining -b 128 --num-clusters 2500 --arch resnet101
-
-## step 3 Evaluate in the target domain
-# CUDA_VISIBLE_DEVICES=1,2 python model_test.py -dt msmt17 --data-dir /old/home/ccvn/Workspace/trinh/data/reid --resume logs/cuhk03np2msmt_2500_ECAB_BFMN/target_fine_tuning_2500/model_best.pth.tar --num-classes 2500 --arch resnet101

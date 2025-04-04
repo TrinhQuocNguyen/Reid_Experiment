@@ -31,6 +31,9 @@ class VeRi(BaseImageDataset):
         self.train_dir = osp.join(self.dataset_dir, 'image_train')
         self.query_dir = osp.join(self.dataset_dir, 'image_query')
         self.gallery_dir = osp.join(self.dataset_dir, 'image_test')
+        
+        # self.query_dir = osp.join(self.dataset_dir, 'image_test_mini')
+        # self.gallery_dir = osp.join(self.dataset_dir, 'image_test_mini')
 
         self.check_before_run()
 

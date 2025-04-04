@@ -43,6 +43,10 @@ class Dataset_MSMT(object):
         self.train = self.train + self.val
         self.query, query_pids = _pluck_msmt(osp.join(exdir, 'list_query.txt'), 'test')
         self.gallery, gallery_pids = _pluck_msmt(osp.join(exdir, 'list_gallery.txt'), 'test')
+        
+        # For saving the features
+        # self.query, query_pids = _pluck_msmt(osp.join(exdir, 'list_query_mini.txt'), 'test')
+        # self.gallery, gallery_pids = _pluck_msmt(osp.join(exdir, 'list_query_mini.txt'), 'test')
         self.num_train_pids = len(list(set(train_pids).union(set(val_pids))))
 
         if verbose:

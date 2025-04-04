@@ -40,9 +40,10 @@ class VehicleID(BaseImageDataset):
     def __init__(self, root, verbose=True, test_size=800, **kwargs):
         super(VehicleID, self).__init__()
         self.dataset_dir = osp.join(root, self.dataset_dir)
-        self.img_dir = osp.join(self.dataset_dir, 'image')
+        self.img_dir = osp.join(self.dataset_dir, 'image_combine_gan')
         self.split_dir = osp.join(self.dataset_dir, 'train_test_split')
-        self.train_list = osp.join(self.split_dir, 'train_list.txt')
+        # self.train_list = osp.join(self.split_dir, 'train_list.txt')
+        self.train_list = osp.join(self.split_dir, 'train_list_all_merge.txt')
         self.test_size = test_size
 
         if self.test_size == 800:
@@ -52,7 +53,7 @@ class VehicleID(BaseImageDataset):
         elif self.test_size == 2400:
             self.test_list = osp.join(self.split_dir, 'test_list_2400.txt')
 
-        print(self.test_list)
+        # print(self.test_list)
 
         self.check_before_run()
 
@@ -116,9 +117,9 @@ class VehicleID(BaseImageDataset):
                 train_pid_dict[pid].append([name, pid])
         train_pids = list(train_pid_dict.keys())
         num_train_pids = len(train_pids)
-        assert num_train_pids == 13164, 'There should be 13164 vehicles for training,' \
-                                        ' but but got {}, please check the data'\
-                                        .format(num_train_pids)
+        # assert num_train_pids == 13164, 'There should be 13164 vehicles for training,' \
+        #                                 ' but but got {}, please check the data'\
+        #                                 .format(num_train_pids)
         print('num of train ids: {}'.format(num_train_pids))
         test_pid_dict = defaultdict(list)
         with open(self.test_list) as f_test:
@@ -154,8 +155,8 @@ class VehicleID(BaseImageDataset):
             train_pid2label = self.get_pid2label(train_pids)
         else:
             train_pid2label = None
-        for key, value in train_pid2label.items():
-            print('{key}:{value}'.format(key=key, value=value))
+        # for key, value in train_pid2label.items():
+        #     print('{key}:{value}'.format(key=key, value=value))
         # Set the camera 1,2,3 for train, query, gallery to pass the filter in evaluation
         train = self.parse_img_pids(train_data, camid=1, pid2label=train_pid2label)
         query = self.parse_img_pids(query_data, camid=2)
