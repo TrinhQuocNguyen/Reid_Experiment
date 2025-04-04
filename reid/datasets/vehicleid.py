@@ -13,7 +13,11 @@ import json
 
 from collections import defaultdict
 import random
+import yaml
 
+# Load the global config
+with open("global_config.yaml", "r") as file:
+    global_config = yaml.safe_load(file)
 class VehicleID(BaseImageDataset):
     """
     VehicleID
@@ -35,7 +39,7 @@ class VehicleID(BaseImageDataset):
     # test_list_6000: 6000 vehicles for model testing
     # test_list_13164: 13164 vehicles for model testing
     """
-    dataset_dir = '/old/home/ccvn/Workspace/trinh/data/reid/VehicleID'
+    dataset_dir = global_config["data_path"] + 'VehicleID'
 
     def __init__(self, root, verbose=True, test_size=800, **kwargs):
         super(VehicleID, self).__init__()

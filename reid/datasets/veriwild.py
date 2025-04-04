@@ -10,7 +10,11 @@ import os.path as osp
 from ..utils.data import BaseImageDataset
 from ..utils.osutils import mkdir_if_missing
 from ..utils.serialization import write_json
+import yaml
 
+# Load the global config
+with open("global_config.yaml", "r") as file:
+    global_config = yaml.safe_load(file)
 
 class VeRiWild(BaseImageDataset):
     """VeRi-Wild.
@@ -26,7 +30,7 @@ class VeRiWild(BaseImageDataset):
     """
     # dataset_dir = "VeRI-Wild"
     dataset_name = "veriwild"
-    dataset_dir = '/old/home/ccvn/Workspace/trinh/data/reid/VeRI-Wild'
+    dataset_dir = global_config["data_path"] + 'VeRI-Wild'
     
 
     def __init__(self, root, query_list='', gallery_list='', verbose=True, **kwargs):

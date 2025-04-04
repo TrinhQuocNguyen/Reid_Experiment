@@ -74,10 +74,6 @@ def main():
     main_worker(args)
 
 
-
-     
-    
-
 def main_worker(args):
     cudnn.benchmark = True
 

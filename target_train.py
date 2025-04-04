@@ -175,11 +175,6 @@ def main_worker(args):
         km_low = MiniBatchKMeans(n_clusters=clusters[nc], init='k-means++', max_iter=100, batch_size=512, max_no_improvement=50, 
                                     init_size=900, reassignment_ratio=0.05).fit(cf_low)
         
-        # km_global = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=1500).fit(cf_global)  
-        # km_upper = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=900).fit(cf_upper)
-        # km_low = MiniBatchKMeans(n_clusters=clusters[nc], max_iter=100, batch_size=300, init_size=900).fit(cf_low)
-        
-        
         # update classifier
         encoder.model.module.classifier.weight.data.copy_(torch.from_numpy(normalize(km_global.cluster_centers_, axis=1)).float().cuda()) 
         encoder.model_ema.module.classifier.weight.data.copy_(torch.from_numpy(normalize(km_global.cluster_centers_, axis=1)).float().cuda()) 

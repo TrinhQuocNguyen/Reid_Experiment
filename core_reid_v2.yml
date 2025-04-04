@@ -1,4 +1,4 @@
-name: trinh_py38
+name: core_reid_v2
 channels:
   - defaults
 dependencies:
@@ -24,6 +24,7 @@ dependencies:
   - pip:
       - contourpy==1.1.1
       - cycler==0.12.1
+      - einops==0.8.0
       - fonttools==4.53.0
       - h5py==3.11.0
       - importlib-resources==6.4.0
@@ -36,6 +37,7 @@ dependencies:
       - pillow==9.1.0
       - pyparsing==3.1.2
       - python-dateutil==2.9.0.post0
+      - pyyaml==6.0.2
       - scikit-learn==1.0.2
       - scipy==1.9.3
       - six==1.16.0
@@ -44,4 +46,3 @@ dependencies:
       - torchvision==0.9.1
       - typing-extensions==4.12.2
       - zipp==3.19.2
-prefix: /home/trinh/anaconda3/envs/trinh_py38

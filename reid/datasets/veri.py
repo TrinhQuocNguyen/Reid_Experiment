@@ -10,7 +10,11 @@ from ..utils.data import BaseImageDataset
 from ..utils.osutils import mkdir_if_missing
 from ..utils.serialization import write_json
 import json
+import yaml
 
+# Load the global config
+with open("global_config.yaml", "r") as file:
+    global_config = yaml.safe_load(file)
 class VeRi(BaseImageDataset):
     """
     VeRi
@@ -23,7 +27,7 @@ class VeRi(BaseImageDataset):
     # images: 37778 (train) + 11579 (query)
     """
     # dataset_dir = 'VeRi'
-    dataset_dir = '/old/home/ccvn/Workspace/trinh/data/reid/VeRi'
+    dataset_dir = global_config["data_path"] + 'VeRi'
 
     def __init__(self, root, verbose=True, **kwargs):
         super(VeRi, self).__init__()

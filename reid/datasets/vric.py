@@ -9,7 +9,12 @@ from ..utils.data import BaseImageDataset
 from ..utils.osutils import mkdir_if_missing
 from ..utils.serialization import write_json
 import json
+import yaml
 
+# Load the global config
+with open("global_config.yaml", "r") as file:
+    global_config = yaml.safe_load(file)
+    
 class VRIC(BaseImageDataset):
     """
     Vric: https://qmul-vric.github.io/
@@ -19,7 +24,7 @@ class VRIC(BaseImageDataset):
     captured by 60 different cameras at heterogeneous road traffic scenes in both day-time and night-time.
     """
     # dataset_dir = 'VRIC'
-    dataset_dir = '/old/home/ccvn/Workspace/trinh/data/reid/VRIC'
+    dataset_dir = global_config["data_path"] + 'VRIC'
     
     def __init__(self, root, verbose=True, add_mask=False, num_instance=4, **kwargs):
         super(VRIC, self).__init__()
