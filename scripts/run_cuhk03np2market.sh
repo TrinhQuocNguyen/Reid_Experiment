@@ -26,10 +26,10 @@
 #                         --logs-dir logs/cuhk03np2market/resnet50/source_pretraining -b 128 --arch resnet50_source
 
 # ## Step 2 Target-domain fine-tuning                        
-# CUDA_VISIBLE_DEVICES=2,3 python target_train.py -dt market \
-#                        --logs-dir logs/cuhk03np2market/resnet50/900_ECAB1_LR \
-#                        --initial-weights logs/cuhk03np2market/resnet50/source_pretraining -b 128 \
-#                        --num-clusters 900 --arch resnet50
+CUDA_VISIBLE_DEVICES=2,3 python target_train.py -dt market \
+                       --logs-dir logs/cuhk03np2market/resnet50/900_ECAB1_LR \
+                       --initial-weights logs/cuhk03np2market/resnet50/source_pretraining -b 128 \
+                       --num-clusters 900 --arch resnet50
 
 # ################################## //RESNET 101// ################################## 
 # ## Step 1 Source-domain pre-training

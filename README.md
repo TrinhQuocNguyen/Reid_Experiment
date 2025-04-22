@@ -1,11 +1,12 @@
-# CORE-ReID
+# CORE-ReID V2
 CORE-ReID V2 : Advancing the Domain Adaptation for Object Re-Identification with Optimized Training and Ensemble Fusion
 
-Our project page: https://trinhquocnguyen.github.io/core-reid-v2-homepage/
+- Our project page: https://trinhquocnguyen.github.io/core-reid-v2-homepage/
+- Paper: XXXXXXXXXXXXX
 
-**[2024/12/01: Good News!]** ![new](https://img.alicdn.com/imgextra/i4/O1CN01kUiDtl1HVxN6G56vN_!!6000000000764-2-tps-43-19.png)    
+**[2025/05/XX: Good News!]** ![new](https://img.alicdn.com/imgextra/i4/O1CN01kUiDtl1HVxN6G56vN_!!6000000000764-2-tps-43-19.png)    
 
-* We have developed the second version of CORE-ReID, the performance is much better, please stay in tune.
+* Our paper got accepted by MDPI Journal.
 
 ## TODO
 - [ ] Explain step by step how to run the source code with tutorial videos
@@ -14,14 +15,8 @@ Our project page: https://trinhquocnguyen.github.io/core-reid-v2-homepage/
 - [X] Initialize the source code
 
 ## Updates
-- **[2024/12/01: Good News!]** ![new](https://img.alicdn.com/imgextra/i4/O1CN01kUiDtl1HVxN6G56vN_!!6000000000764-2-tps-43-19.png)
-    * We have developed the second version of CORE-ReID, the performance is much better, please stay in tune.
-- **[2024/07/14: Source code is released!]** ![new](https://img.alicdn.com/imgextra/i4/O1CN01kUiDtl1HVxN6G56vN_!!6000000000764-2-tps-43-19.png)
+- **[2024/05/XX: Source code is released!]** ![new](https://img.alicdn.com/imgextra/i4/O1CN01kUiDtl1HVxN6G56vN_!!6000000000764-2-tps-43-19.png)
     * The first version of source code has been initialized.
-- **[2024/06/03: CORE-ReID  is published by MDPI!]**
-    * The paper of CORE-ReID is publised by MDPI: https://www.mdpi.com/2674-113X/3/2/12 
-- **[2024/05/27: CORE-ReID is accepted by MDPI!]**
-    * The paper of CORE-ReID is accepted by MDPI.
 
 ## (I) Installation
 This codebase has been developed with python version 3.8, PyTorch version 1.8.1, CUDA 12.1 and torchvision 0.9.1
@@ -33,17 +28,52 @@ This codebase has been developed with python version 3.8, PyTorch version 1.8.1,
 
 ## (II) Training 
 ### 1. Train CycleGAN models
-Comming...
-### 2. Generate the training datataset
-Comming...
-### 3. Train the ReID model - Step 1: Pretraining on Source Domain
-For example, CUKH03 => MARKET1501: 
-```sh scripts/run_cuhk03np2market.sh```
-### 4. Train the ReID model - Step 2: Fine-Tuning on Target Domain
-Comming...
-### 5. Train the ReID model - Step 3: Evaluation on Target Domain
-Comming...
+For Person ReID, Follow the guidance from: [camstyle-for-person-reid](https://github.com/TrinhQuocNguyen/camstyle-for-person-reid)
 
+### 2. Generate the training datataset
+For Person ReID, Follow the guidance from: [camstyle-for-person-reid](https://github.com/TrinhQuocNguyen/camstyle-for-person-reid)
+
+### 3. Train the ReID model 
+- Modify the data path in the "global_config.yaml" file: 
+```data_path: "/your/data/path/"```
+- Reconfirm the train files in "scripts" folder
+- For example, train CUKH03 => MARKET1501: 
+```sh scripts/run_cuhk03np2market.sh```
+#### 3.1 Step 1: Pretraining on Source Domain
+For example, train CUKH03 => MARKET1501 with Resnet50 architecture:
+```
+CUDA_VISIBLE_DEVICES=2,3 python source_pretrain.py -ds cuhk03np -dt market \
+                        --logs-dir logs/cuhk03np2market/resnet50/source_pretraining -b 128 --arch resnet50_source
+```
+#### 3.2 Step 2: Fine-Tuning on Target Domain
+For example, fine-tune CUKH03 => MARKET1501 with Resnet50 architecture:
+```
+CUDA_VISIBLE_DEVICES=2,3 python target_train.py -dt market \
+                       --logs-dir logs/cuhk03np2market/resnet50/900_ECAB1_LR \
+                       --initial-weights logs/cuhk03np2market/resnet50/source_pretraining -b 128 \
+                       --num-clusters 900 --arch resnet50
+```
+#### 3.3 Step 3: Evaluation on Target Domain
+For example, test CUKH03 => MARKET1501 with Resnet50 architecture:
+```
+CUDA_VISIBLE_DEVICES=2,3 python model_test.py -dt market --data-dir /old/home/ccvn/Workspace/trinh/data/reid --resume logs/cuhk03np2market/resnet50/900_ECAB1_LR/model_best.pth.tar --num-classes 900 --arch resnet50 
+```
+### 4. Tutorials
+Comming soon....
+
+## Citations
+Please cite our paper if you find it useful
+```
+@article{,
+  author    = {Nguyen TQ, Prima ODA, Hotta K},
+  title     = {CORE-ReID: Comprehensive Optimization and Refinement through Ensemble Fusion in Domain Adaptation for Person Re-Identification.},
+  journal   = {Software},
+  doi       = {https://doi.org/10.3390/software3020012},
+  volume    = {3},
+  pages     = {227-249},
+  year      = {2024},
+}
+```
 ## Acknowledgement
 Thank you for great works below:
 - [open-reid](https://github.com/Cysu/open-reid)
