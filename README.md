@@ -28,10 +28,12 @@ This codebase has been developed with python version 3.8, PyTorch version 1.8.1,
 
 ## (II) Training 
 ### 1. Train CycleGAN models
-For Person ReID, Follow the guidance from: [camstyle-for-person-reid](https://github.com/TrinhQuocNguyen/camstyle-for-person-reid)
+- For Person ReID, Follow the guidance from: [camstyle-for-person-reid](https://github.com/TrinhQuocNguyen/camstyle-for-person-reid)
+- For Vehicle ReID, Follow the guidance from: [pytorch-CycleGAN-and-pix2pix-vehicle-reid](https://github.com/TrinhQuocNguyen/pytorch-CycleGAN-and-pix2pix-vehicle-reid)
 
 ### 2. Generate the training datataset
-For Person ReID, Follow the guidance from: [camstyle-for-person-reid](https://github.com/TrinhQuocNguyen/camstyle-for-person-reid)
+- For Person ReID, Follow the guidance from: [camstyle-for-person-reid](https://github.com/TrinhQuocNguyen/camstyle-for-person-reid)
+- For Vehicle ReID, Follow the guidance from: [pytorch-CycleGAN-and-pix2pix-vehicle-reid](https://github.com/TrinhQuocNguyen/pytorch-CycleGAN-and-pix2pix-vehicle-reid)
 
 ### 3. Train the ReID model 
 - Modify the data path in the "global_config.yaml" file: 
@@ -58,8 +60,20 @@ For example, test CUKH03 => MARKET1501 with Resnet50 architecture:
 ```
 CUDA_VISIBLE_DEVICES=2,3 python model_test.py -dt market --data-dir /old/home/ccvn/Workspace/trinh/data/reid --resume logs/cuhk03np2market/resnet50/900_ECAB1_LR/model_best.pth.tar --num-classes 900 --arch resnet50 
 ```
+
+#### 3.4 Step 4: Visualize the heatmap by using Grad-CAM
+For example, saving the heatmap of CUKH03 => MARKET1501 with Resnet50 architecture:
+```
+python model_save_feature_maps.py -dt market --data-dir /old/home/ccvn/Workspace/trinh/data/reid \
+                                --resume logs/cuhk03np2market/resnet50/900_ECAB1_LR/model_best.pth.tar \
+                                --num-classes 900 --arch resnet50 --batch-size 1
+
+```
+
 ### 4. Tutorials
-Comming soon....
+Watch the Tutorial: 
+
+[![Watch the Tutorial](https://i9.ytimg.com/vi_webp/bVyPntMedLQ/mqdefault.webp?v=68075df2&sqp=COi5ncAG&rs=AOn4CLCtg8fixc-4OHoD8bDoSxWygQaJ1g)](https://youtu.be/bVyPntMedLQ)
 
 ## Citations
 Please cite our paper if you find it useful
