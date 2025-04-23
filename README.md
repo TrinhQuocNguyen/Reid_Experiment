@@ -1,15 +1,18 @@
-# CORE-ReID V2
-CORE-ReID V2 : Advancing the Domain Adaptation for Object Re-Identification with Optimized Training and Ensemble Fusion
+# CORE-ReID V2 
+**CORE-ReID V2 : Advancing the Domain Adaptation for Object Re-Identification with Optimized Training and Ensemble Fusion**
 
-- Our project page: https://trinhquocnguyen.github.io/core-reid-v2-homepage/
-- Paper: XXXXXXXXXXXXX
+
+<img src="resource\people_dance.gif" height="270" /> <img src="resource\car_dance.gif" height="270" />
+
+- ❤️ Our project page: https://trinhquocnguyen.github.io/core-reid-v2-homepage/
+- ❤️ Paper: XXXXXXXXXXXXX
 
 **[2025/05/XX: Good News!]** ![new](https://img.alicdn.com/imgextra/i4/O1CN01kUiDtl1HVxN6G56vN_!!6000000000764-2-tps-43-19.png)    
 
 * Our paper got accepted by MDPI Journal.
 
 ## TODO
-- [ ] Explain step by step how to run the source code with tutorial videos
+- [X] Explain step by step how to run the source code with tutorial videos
 - [X] Update Readme.md file
 - [X] Fix the absolute path
 - [X] Initialize the source code
@@ -73,7 +76,7 @@ python model_save_feature_maps.py -dt market --data-dir /old/home/ccvn/Workspace
 ### 4. Tutorials
 Watch the Tutorial: 
 
-[![Watch the Tutorial](https://i9.ytimg.com/vi_webp/bVyPntMedLQ/mqdefault.webp?v=68075df2&sqp=COi5ncAG&rs=AOn4CLCtg8fixc-4OHoD8bDoSxWygQaJ1g)](https://youtu.be/bVyPntMedLQ)
+[![Watch the Tutorial](resource/youtube.png)](https://youtu.be/bVyPntMedLQ)
 
 ## Citations
 Please cite our paper if you find it useful
