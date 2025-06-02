@@ -9,6 +9,7 @@ from .cuhk03np import CUHK03NP
 from .veri import VeRi
 from .vric import VRIC
 from .vehicleid import VehicleID
+from .veriwild import VeRiWild
 
 
 __factory = {
@@ -20,6 +21,7 @@ __factory = {
     'veri': VeRi,
     'vric': VRIC,
     'vehicleid': VehicleID,
+    'veriwild': VeRiWild,
 }
 
 
