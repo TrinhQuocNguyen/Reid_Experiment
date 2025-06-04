@@ -64,7 +64,12 @@ class ECAB(nn.Module):
         avg_result=self.avgpool(x)
         max_out=self.se(max_result)
         avg_out=self.se(avg_result)
-        output=self.sigmoid(max_out+avg_out) 
+        
+        output1=self.sigmoid(max_out+avg_out) 
+        output2= max_result+avg_result
+        output=output1*output2
+        
+        # output=self.sigmoid(max_out+avg_out) 
         
         # The residual information will be added later
         return output  
